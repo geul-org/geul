@@ -12,7 +12,8 @@ go get github.com/geul-org/geul/go
 ```
 pkg/core/              읽기·쓰기, 프레이밍, 정규형, 버전 ID (엔진 내장 규칙)
 pkg/toulmin/           TOULMIN 코덱 (판정·실행 그래프 레코드, 코드표, 값)
-pkg/geulmd/            GEUL → GEULMD (text/vnd.geulmd) 텍스트 표현
+pkg/inspect/           해석된 문서 모델 (레코드별 이름·내용·Edge Id·참조, 무손실일 때만)
+pkg/geulmd/            GEUL → GEULMD (text/vnd.geulmd) 텍스트 표현 (inspect 위)
 pkg/resolve/           IMPORT 의존성 해석 (Resolver 주입)
 pkg/schema/            스키마 적합 검사 (형식, 격틀)
 ```

@@ -1,38 +1,29 @@
 //ff:func feature=geulmd type=encoder control=selection
-//ff:what renderMeta — one HEAD line: a typed form for the Meta GEULMD knows, a raw line otherwise
+//ff:what renderMeta — one HEAD line: a typed form for interpreted Meta, a raw line otherwise
 package geulmd
 
 import (
-	"strings"
+	"fmt"
 
 	"github.com/geul-org/geul/go/pkg/core"
+	"github.com/geul-org/geul/go/pkg/inspect"
 )
 
-// renderMeta renders a HEAD Meta record. SPEC-VERSION, PROFILE and
-// DEFAULT-LANGUAGE show their Value, ID-WIDTH its widths, DOC-NAME and
-// IMPORT-DOC their ids; every other Meta, or a known one whose payload does not
-// fit its form, becomes a raw RECORD line. PROFILE "tangeul-…" turns on
-// structured TOULMIN rendering of the BODY.
-func renderMeta(r core.Record, ctx *headCtx) string {
-	var s string
-	ok := false
-	switch r.Codec {
-	case core.MetaSpecVersion:
-		s, ok = metaValue("SPEC-VERSION", r)
-	case core.MetaProfile:
-		s, ok = metaValue("PROFILE", r)
-		ctx.tangeul = ok && strings.HasPrefix(s, `PROFILE "tangeul-`)
-	case core.MetaDefaultLanguage:
-		s, ok = metaValue("DEFAULT-LANGUAGE", r)
-	case core.MetaIDWidth:
-		s, ok = renderIDWidth(r, ctx)
-	case core.MetaDocName:
-		s, ok = renderDocName(r)
-	case core.MetaImportDoc:
-		s, ok = renderImportDoc(r, ctx.importWidth)
+// renderMeta renders a HEAD entry. SPEC-VERSION, PROFILE and DEFAULT-LANGUAGE
+// show their Value, ID-WIDTH its widths, DOC-NAME and IMPORT-DOC their ids;
+// every other Meta, or a known one whose payload did not fit its form, becomes
+// a raw RECORD line.
+func renderMeta(e inspect.Entry) string {
+	switch v := e.Data.(type) {
+	case inspect.Value:
+		return e.Name + " " + renderValue(v)
+	case inspect.Widths:
+		return fmt.Sprintf("ID-WIDTH edge=%d var=%d import=%d", v.Edge, v.Var, v.Import)
+	case inspect.DocName:
+		return "DOC-NAME " + core.FormatID(v.Issuer) + " " + core.FormatID(v.Doc)
+	case inspect.ImportDoc:
+		return renderImportDoc(v)
+	default:
+		return rawRecord(e.Record)
 	}
-	if !ok {
-		return rawRecord(r)
-	}
-	return s
 }

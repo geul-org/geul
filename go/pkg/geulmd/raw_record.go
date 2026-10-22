@@ -12,9 +12,9 @@ import (
 // the Issuer and format number when the codec is an ISSUER code, then `:` and
 // the payload words. Length is recomputed on encoding, so it is not written.
 func rawRecord(r core.Record) string {
-	s := fmt.Sprintf("RECORD %s 0x%02x", kindName(r.Kind), r.Codec)
+	s := fmt.Sprintf("RECORD %s 0x%02x", r.Kind, r.Codec)
 	if len(r.Issuer) > 0 {
-		s += fmt.Sprintf(" %s 0x%04x", hexID(r.Issuer), r.Format)
+		s += fmt.Sprintf(" %s 0x%04x", core.FormatID(r.Issuer), r.Format)
 	}
 	if len(r.Payload) == 0 {
 		return s + " :"

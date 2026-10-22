@@ -2,9 +2,7 @@
 //ff:what Render — a .geul document as GEULMD: a `geul` HEAD block then a `geul` BODY block
 package geulmd
 
-import (
-	"github.com/geul-org/geul/go/pkg/core"
-)
+import "github.com/geul-org/geul/go/pkg/inspect"
 
 // Render converts b, exactly one GEUL document, to GEULMD text: the first fenced
 // block (info string `geul`) holds the HEAD — and marks the file as GEULMD, not
@@ -12,15 +10,9 @@ import (
 // DOC, BODY and END structure records are not written; they are recomputed on
 // encoding.
 func Render(b []byte) (string, error) {
-	ws, err := core.ReadWords(b)
+	d, err := inspect.Decode(b)
 	if err != nil {
 		return "", err
 	}
-	d, err := core.SplitDocument(ws)
-	if err != nil {
-		return "", err
-	}
-	head, ctx := renderHead(d.Head)
-	body := renderBody(d.Body, ctx)
-	return block(head) + "\n" + block(body), nil
+	return block(renderLines(d.Head, renderMeta)) + "\n" + block(renderLines(d.Body, bodyLine)), nil
 }

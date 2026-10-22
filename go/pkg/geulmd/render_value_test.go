@@ -1,32 +1,25 @@
 //ff:func feature=geulmd type=encoder control=iteration dimension=1
-//ff:what TestRenderValue — every known Value codec renders; unknown codecs and bad payloads do not
+//ff:what TestRenderValue — every Value codec renders as its literal
 package geulmd
 
 import (
 	"testing"
 
 	"github.com/geul-org/geul/go/pkg/core"
+	"github.com/geul-org/geul/go/pkg/inspect"
 )
 
 func TestRenderValue(t *testing.T) {
-	sd, _ := core.EncodeDecimalValue(true, -1, 8)
-	ud, _ := core.EncodeDecimalValue(false, 0, 75)
-	cases := map[string]core.Record{
-		`"a\n"`:      core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("a\n")),
-		`lang"ko"`:   core.EncodeBytesValue(core.CodecLanguageBCP47Even, []byte("ko")),
-		"uint(7)":    core.EncodeUintValue(7),
-		"dec(8e-1)":  sd,
-		"udec(75e0)": ud,
+	cases := map[string]inspect.Value{
+		`"a\n"`:      {Codec: core.CodecUTF8TextEven | 1, Text: "a\n"},
+		`lang"ko"`:   {Codec: core.CodecLanguageBCP47Even, Text: "ko"},
+		"uint(7)":    {Codec: core.CodecUnsignedInteger, Uint: 7},
+		"dec(8e-1)":  {Codec: core.CodecSignedDecimal, Coef: 8, Exp: -1},
+		"udec(75e0)": {Codec: core.CodecUnsignedDecimal, Coef: 75},
 	}
-	for want, r := range cases {
-		if got, ok := renderValue(r); !ok || got != want {
-			t.Fatalf("%s: got %q %v", want, got, ok)
+	for want, v := range cases {
+		if got := renderValue(v); got != want {
+			t.Fatalf("%s: got %q", want, got)
 		}
-	}
-	if _, ok := renderValue(core.Record{Kind: core.KindValue, Codec: 0x60}); ok {
-		t.Fatal("unknown codec: want not ok")
-	}
-	if _, ok := renderValue(core.Record{Kind: core.KindValue, Codec: 0x41}); ok {
-		t.Fatal("bad odd text: want not ok")
 	}
 }

@@ -1,5 +1,5 @@
 //ff:func feature=geulmd type=encoder control=sequence
-//ff:what TestRenderImportDoc — with and without a pinned version; an impossible layout fails
+//ff:what TestRenderImportDoc — with and without a pinned version
 package geulmd
 
 import (
@@ -7,17 +7,16 @@ import (
 	"testing"
 
 	"github.com/geul-org/geul/go/pkg/core"
+	"github.com/geul-org/geul/go/pkg/inspect"
 )
 
 func TestRenderImportDoc(t *testing.T) {
-	if got, ok := renderImportDoc(core.Record{Payload: []core.Word{3, 1, 0, 0, 0, 2}}, 1); !ok || got != "IMPORT-DOC #3 0x0001 0x0000000000000002" {
-		t.Fatalf("plain: %q %v", got, ok)
+	v := inspect.ImportDoc{ID: 3, Issuer: []core.Word{1}, Doc: []core.Word{0, 0, 0, 2}}
+	if got := renderImportDoc(v); got != "IMPORT-DOC #3 0x0001 0x0000000000000002" {
+		t.Fatalf("plain: %q", got)
 	}
-	pinned := append([]core.Word{3, 1, 0, 0, 0, 2}, make([]core.Word, 16)...)
-	if got, ok := renderImportDoc(core.Record{Payload: pinned}, 1); !ok || !strings.Contains(got, " v=0x"+strings.Repeat("0", 64)) {
-		t.Fatalf("pinned: %q %v", got, ok)
-	}
-	if _, ok := renderImportDoc(core.Record{Payload: []core.Word{3, 1, 1, 1, 0, 0, 0, 2}}, 1); ok {
-		t.Fatal("3-word issuer: want not ok")
+	v.Version = make([]core.Word, 16)
+	if got := renderImportDoc(v); !strings.HasSuffix(got, " v=0x"+strings.Repeat("0", 64)) {
+		t.Fatalf("pinned: %q", got)
 	}
 }
