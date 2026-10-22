@@ -8,7 +8,7 @@ func TestSplitDocument(t *testing.T) {
 	inner := []Word{0x1811, 0x180E}
 	edge, _ := EncodeRecord(Record{Kind: KindEdge, Codec: 0x60, Payload: []Word{1}})
 	inner = append(append(inner, edge...), 0x180F)
-	ws, _ := WrapDocument(inner)
+	ws := WrapDocument(inner)
 	d, err := SplitDocument(ws)
 	if err != nil || len(d.Head) != 1 || len(d.Body) != 1 {
 		t.Fatalf("got %+v %v", d, err)
@@ -19,15 +19,15 @@ func TestSplitDocument(t *testing.T) {
 	if _, err := SplitDocument([]Word{0x180F}); err == nil {
 		t.Fatal("non-DOC open must fail")
 	}
-	noEnd, _ := WrapDocument([]Word{0x180E})
+	noEnd := WrapDocument([]Word{0x180E})
 	if _, err := SplitDocument(noEnd); err == nil {
 		t.Fatal("missing END must fail")
 	}
-	badRec, _ := WrapDocument([]Word{0xE000})
+	badRec := WrapDocument([]Word{0xE000})
 	if _, err := SplitDocument(badRec); err == nil {
 		t.Fatal("bad record must fail")
 	}
-	twice, _ := WrapDocument([]Word{0x180F, 0x180F})
+	twice := WrapDocument([]Word{0x180F, 0x180F})
 	if _, err := SplitDocument(twice); err == nil {
 		t.Fatal("record after END must fail")
 	}

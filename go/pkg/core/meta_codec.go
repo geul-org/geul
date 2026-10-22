@@ -19,8 +19,12 @@ const (
 	MetaSpecVersion uint8 = 0x10
 	// MetaProfile declares the applied profile.
 	MetaProfile uint8 = 0x11
+	// MetaDocName names this document: Issuer + 4-word document ID.
+	MetaDocName uint8 = 0x12
 	// MetaIDWidth declares the Edge Id / Variable ID / IMPORT ID widths.
 	MetaIDWidth uint8 = 0x13
 	// MetaDefaultLanguage declares the default language.
 	MetaDefaultLanguage uint8 = 0x16
+	// MetaImportDoc imports another document under an IMPORT ID.
+	MetaImportDoc uint8 = 0x60
 )
