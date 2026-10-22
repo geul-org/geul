@@ -3,6 +3,7 @@ required:
     core: "프레이밍·인코딩·정규화·버전 ID·서명 — 엔진 내장 규칙. 외부 의존·네트워크 없음"
     resolve: "IMPORT 의존성 해석 — Resolver 주입(로컬 아카이브·HTTP·메모리), 명시적 단계"
     toulmin: "TOULMIN 코덱 — 판정·실행 그래프 레코드(NODE·LINK·제어·TEXT·SOURCE), 코덱·형식 번호표, 판정값·게이트·SPAN (명세 TOULMIN.md)"
+    inspect: "GEUL → 해석된 문서 모델 — 레코드별 스펙 이름·디코드 내용·Edge Id·참조. 재인코딩이 같을 때만 타입 내용, 아니면 원본 레코드 (뷰어·텍스트 표현의 공통 기반)"
     geulmd: "GEUL → GEULMD(text/vnd.geulmd) — HEAD·BODY를 `geul` 펜스 블록으로, 레코드는 재인코딩이 같을 때만 구조 표기, 아니면 raw"
     schema: "스키마 적합 검사 — 형식 번호 레이아웃, 격틀·선택 제약"
   type:
