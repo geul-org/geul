@@ -11,27 +11,22 @@ go get github.com/geul-org/geul/go
 
 ```
 pkg/core/              읽기·쓰기, 프레이밍, 정규형, 버전 ID (엔진 내장 규칙)
-pkg/encode/geulgson/   GEUL → GSON (원형·해석)
-pkg/encode/geulnl/ko/  GEUL → 한국어
-pkg/decode/gsongeul/   원형 GSON → GEUL
-pkg/decode/wikigeul/   위키데이터 → GEUL
-pkg/decode/nlgeul/     자연어 → GEUL
+pkg/toulmin/           TOULMIN 코덱 (판정·실행 그래프 레코드, 코드표, 값)
+pkg/geulmd/            GEUL → GEULMD (text/vnd.geulmd) 텍스트 표현
 pkg/resolve/           IMPORT 의존성 해석 (Resolver 주입)
 pkg/schema/            스키마 적합 검사 (형식, 격틀)
 ```
 
-- `encode`는 GEUL에서 나가는 쪽, `decode`는 GEUL로 들어오는 쪽이다.
-- 패키지 이름은 원천 + 대상 순서다. `geulgson`은 GEUL → GSON, `nlgeul`은 자연어 → GEUL이다.
+- GEUL과 다른 표현 사이의 코덱(`geulgson`, `geulnl`, `gsongeul`, `wikigeul`, `nlgeul`)은 이 라이브러리가 아니라 TANGEUL 문서로 작성한다(geul-dev `draft/t002/codec/`). 이 라이브러리는 코덱 문서가 부르는 호스트 함수와 그 문서를 실행하는 기반을 제공한다.
 
 ## 흐름
 
 ```
-.geul 바이트 → core.Decode → Doc ─┬→ geulgson  (GSON)
-                    ↑             ├→ schema    (Fact)
-                    │             └→ geulnl/ko (자연어)
+.geul 바이트 → core → Doc ─┬→ schema  (Fact)
+                ↑          └→ 코덱 문서(TANGEUL) 실행 → GSON·자연어 등
      resolve: IMPORT-DOC → 아카이브 → 외부 Doc 연결
 
-gsongeul·wikigeul·nlgeul → core 빌더 → 정규형 바이트 → 버전 ID
+코덱 문서(TANGEUL) 실행 → core 빌더 → 정규형 바이트 → 버전 ID
 ```
 
 ## 원칙
