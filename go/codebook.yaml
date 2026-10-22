@@ -1,0 +1,18 @@
+required:
+  feature:
+    core: "프레이밍·인코딩·정규화·버전 ID·서명 — 엔진 내장 규칙. 외부 의존·네트워크 없음"
+    encode: "GEUL → 외부 표현 — geulgson(GSON 원형·해석), geulnl(언어별 자연어 실현)"
+    decode: "외부 표현 → GEUL — gsongeul(GSON 원형 역방향), wikigeul(구조 사상), nlgeul(자연어 번역)"
+    resolve: "IMPORT 의존성 해석 — Resolver 주입(로컬 아카이브·HTTP·메모리), 명시적 단계"
+    schema: "스키마 적합 검사 — 형식 번호 레이아웃, 격틀·선택 제약"
+  type:
+    model: "data type definition"
+    decoder: "binary → structure"
+    encoder: "structure → binary"
+    rule: "individual validation rule"
+    resolver: "document location/fetch implementation"
+    helper: "internal utility function"
+
+optional:
+  level:
+    error: "error-path handling"
