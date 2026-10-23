@@ -25,7 +25,7 @@ func sampleDoc(t *testing.T) []byte {
 	in = append(in, raw(core.EncodeSpecVersion(core.SpecVersion))...)
 	in = append(in, meta(core.MetaProfile, core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("tangeul-1.0")))...)
 	in = append(in, meta(core.MetaDefaultLanguage, core.EncodeBytesValue(core.CodecLanguageBCP47Even, []byte("ko")))...)
-	in = append(in, raw(core.Record{Kind: core.KindMeta, Codec: core.MetaDocID, Payload: []core.Word{1, 0, 0, 0, 5}})...)
+	in = append(in, raw(func() core.Record { r, _ := core.EncodeDocID([]core.Word{1}, []core.Word{0, 0, 0, 5}); return r }())...)
 	in = append(in, raw(core.Record{Kind: core.KindMeta, Codec: core.MetaImportDoc1Word, Payload: []core.Word{1, 1, 0, 0, 0, 2, 0, 0}})...)
 	in = append(in, raw(core.Record{Kind: core.KindMeta, Codec: 0x2A, Payload: []core.Word{7}})...)
 	in = append(in, 0x180E)
