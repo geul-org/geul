@@ -1,0 +1,34 @@
+//ff:func feature=schema type=rule control=iteration dimension=1
+//ff:what TestCheckValue — each Value branch and the reserved code
+package schema
+
+import (
+	"github.com/geul-org/geul/go/pkg/core"
+	"testing"
+)
+
+func TestCheckValue(t *testing.T) {
+	v := func(c uint8, p ...core.Word) rec {
+		return recOf(core.Record{Kind: core.KindValue, Codec: c, Payload: p})
+	}
+	cases := []struct {
+		r    rec
+		want string
+	}{
+		{v(0x7C), ""},
+		{v(0x00, 2), "V2"},
+		{v(0x01, 0, 1), "V3"},
+		{v(0x02, 0, 1), "V3"},
+		{v(0x03, 1, 2, 3), "V2"},
+		{v(0x11, 0), "V3"},
+		{v(0x21, 1), "V2"},
+		{v(0x60, 1), "V2"},
+		{v(0x41), "V4"},
+		{v(0x30), "V1"},
+	}
+	for i, c := range cases {
+		if got := rulesOf(checkValue(c.r)); got != c.want {
+			t.Fatalf("case %d: %q", i, got)
+		}
+	}
+}

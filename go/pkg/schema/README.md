@@ -24,7 +24,7 @@
 | F1 | 바이트 수가 짝수다(WORD 정렬). |
 | F2 | Length가 레코드의 전체 WORD 수와 같고, 레코드가 입력 안에 들어간다. |
 | F3 | 1~14 WORD는 직접 길이, 15~65535는 `1110`, 그 위는 `1111`이다. 더 넓은 표현은 비정규로 거부한다. |
-| F4 | 2^32−1 WORD를 넘지 않는다. |
+| F4 | TAG WORD 접두사가 `000`(Proposal)이다. `001`(Standard)은 아직 배정이 없어 Warn, 그 밖은 Error다. |
 | F5 | Codec이 ISSUER-1/2/4/16WORD(Value·Edge)면 Codec 확장 TAG에 그 폭의 Issuer와 형식 번호 1 WORD가 있다. |
 
 ### D 문서 구조 (OVERVIEW 구조)
@@ -75,7 +75,7 @@
 | M3 | `IMPORT-DOC-*`: Issuer 폭이 Codec과 맞고, 버전 ID가 2 WORD이며, IMPORT ID가 최소 폭이고 문서 안에서 중복되지 않는다. |
 | M4 | `SPEC-VERSION`·`PROFILE`·`DEFAULT-LANGUAGE`은 각각 하나이고, 내장 Value가 해당 형식이다. |
 | M5 | `EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`은 각각 하나이고 GREGORIAN-DATE 또는 POSIX-TIMESTAMP-SECONDS다. 둘 다 있으면 FROM이 UNTIL보다 앞선다. |
-| M6 | Meta Payload에 내장한 Value 레코드는 V 규칙을 통과한다. |
+| M6 | `PARENT`는 SHA-256-DIGEST Value 하나다. M4~M6이 검사하는 Meta의 내장 Value는 V 규칙도 통과한다. 그 밖의 Meta Payload는 2층이다. |
 
 ### P 버전 목록 문서 (edge/PUBLICATION)
 
@@ -86,8 +86,7 @@
 | P1 | `IMPORT-DOC-*`이 없고, BODY에는 `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`만 있다. |
 | P2 | Edge Id는 1부터 이어지는 순번이다. |
 | P3 | 문서 ID마다 PUBLICATION의 버전 ID가 1부터 빠짐없이 오름차순이고, 같은 내용 해시를 다시 공표하지 않는다. |
-| P4 | DEPRECATION·TOMBSTONE은 앞에 나온 PUBLICATION을 가리킨다. 삭제된 버전을 다시 공표하지 않는다. |
-| P5 | `PARENT`가 있으면 SHA-256-DIGEST Value 하나다. |
+| P4 | DEPRECATION·TOMBSTONE은 앞에 나온 PUBLICATION을 가리킨다. |
 
 - 1층은 서명을 확인하지 않는다. 서명 검증과 `PARENT` 사슬 확인은 resolve와 검증기(ISSUER 서명 절)의 일이다.
 
@@ -134,15 +133,13 @@ type Options struct {
 - 규칙 ID는 이 README의 표와 1:1이다. 규칙을 바꾸면 표를 먼저 고친다.
 - 2층 Codec은 인터페이스로 받는다. 대략 `Match(r core.Record) bool`과 `Check(r core.Record, at Where) []Fact`다.
 
-## 구현 순서
+## 구현 상태
 
-1. Fact·Where·Report·Verdict, 레코드 순회(F1~F5, D1~D4).
-2. R, M(M1~M4), E1~E3.
-3. V1~V4, M5·M6.
-4. V5(UTF-8, ASCII; NFC는 미결정 참고).
-5. E4, P1~P5.
-6. 2층: Codec 인터페이스와 내장 규격(TOULMIN, `docs/value`, `docs/edge`).
-7. 3층: 격틀, 선택 제약.
+- 1층 규칙 표 전체를 구현했다(`Check`). 예외: V5의 NFC 검사(미결정).
+- 2층은 `Options.Codecs`로 받은 Codec을 모든 레코드에 돌리는 틀만 있다. 내장 규격(TOULMIN, `docs/value`, `docs/edge`)은 아직 없다.
+- 3층(격틀, 선택 제약)은 없다.
+- core에 버전 목록 레코드 디코드(`core.DecodePublication`)를 넣어 E4·P 규칙이 쓴다.
+- 지금 있는 `.geul`(toulmin testdata, 견본 공표 문서, core.geul)은 1층 위반 0건이다.
 
 ## 미결정
 

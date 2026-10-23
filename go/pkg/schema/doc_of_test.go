@@ -1,0 +1,20 @@
+//ff:func feature=schema type=helper control=iteration dimension=1
+//ff:what docOf — test fixture: a document from HEAD records and BODY records
+package schema
+
+import (
+	"github.com/geul-org/geul/go/pkg/core"
+)
+
+// docOf wraps head records, BODY, body records and END in a DOC record.
+func docOf(head, body []core.Record) []byte {
+	var in []core.Word
+	for _, r := range head {
+		in = append(in, enc(r)...)
+	}
+	in = append(in, 0x180E)
+	for _, r := range body {
+		in = append(in, enc(r)...)
+	}
+	return core.PutWords(core.WrapDocument(append(in, 0x180F)))
+}
