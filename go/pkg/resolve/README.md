@@ -16,7 +16,7 @@
                               문서별 버전 선택(IMPORT 고정 > 잠금 > 최신)
                                                     ▼
                         Path ─▶ Source(아카이브·HTTP·메모리) ─▶ 바이트
-                                                    │ 버전 ID 검증, 잠금 기록
+                                                    │ 내용 해시 검증, 잠금 기록
                                                     ▼
                         Graph: 문서 + 의존 문서 (재귀) ─▶ Target(Reference) ─▶ 대상 레코드
 ```
@@ -25,13 +25,13 @@
 
 - 조회는 명시적 단계다. `core`·`inspect`의 디코드는 조회하지 않는다.
 - 위치는 문서에 넣지 않는다. 문서는 ID만 적고, ID를 위치로 바꾸는 것은 이 패키지와 사용자 설정이 한다.
-- 받은 곳을 믿지 않는다. 버전 ID(내용 해시)로 검증하므로 미러·캐시·CDN 어디서 받아도 된다.
+- 받은 곳을 믿지 않는다. 버전 ID의 내용 해시(잠금 기록 또는 서명된 버전 목록)로 검증하므로 미러·캐시·CDN 어디서 받아도 된다.
 - 네트워크는 HTTP Source를 주입했을 때만 쓴다. 기본은 오프라인(아카이브)이다.
 - 실제로 쓰는 참조만 조회한다. 깊이·문서 수·크기에 상한을 두고 설정으로 바꿀 수 있다.
 
 ## 주소
 
-`Key{Issuer, Doc, Version}`는 두 곳에서 만든다. Issuer 폭은 Codec 하위 2비트가 정하고(1/2/4/16 WORD), 문서 ID는 4 WORD, 버전 ID는 16 WORD이며 모두 0이면 최신이다.
+`Key{Issuer, Doc, Version}`는 두 곳에서 만든다. Issuer 폭은 Codec 하위 2비트가 정하고(1/2/4/16 WORD), 문서 ID는 4 WORD, 버전 ID는 2 WORD 순번이며 0이면 최신이다.
 
 | 출처 | 레이아웃 | Key |
 |---|---|---|
@@ -47,7 +47,7 @@ ID는 소문자 `0x` + 소문자 hex, 자릿수 = 폭 × 4로 적는다. 앞의 
 |---|---|---|
 | 버전 고정 | `<Issuer>/<문서 ID>/<버전 ID>.geul` | 불변, 정본. 영구 캐시 |
 | 최신 | `<Issuer>/<문서 ID>.geul` | 가변. 서버는 302로 정본 주소에 보낸다 |
-| 버전 ID만 | `v/<버전 ID>.geul` | 불변 |
+| 내용 해시만 | `h/<내용 해시>.geul` | 불변 |
 | 버전 목록 | `<Issuer>/<문서 ID>/` | 가변, GEUL Issuer 서명 |
 
 예: `IMPORT-DOC-1WORD #1 0x0001 0x…0002 (버전 0)` → `geul.org/.well-known/geul/0x0001/0x0000000000000002.geul`
@@ -57,7 +57,7 @@ ID는 소문자 `0x` + 소문자 hex, 자릿수 = 폭 × 4로 적는다. 앞의 
 위치는 해석하는 쪽의 설정이 정한다. 규격은 명세 `GEUL-ORG` 위치 해석 절이다.
 
 ```go
-type Config struct {
+type Config struct { // 설계 전체. 지금은 Proxy·Private만 있다(구현 상태)
 	Proxy    []Entry   // GEULPROXY. 기본 https://geul.org,registry
 	Private  []Pattern // GEULPRIVATE
 	NoLog    []Pattern // GEULNOLOG. 비면 Private
@@ -66,9 +66,11 @@ type Config struct {
 	Work     *Workspace // geul.work (GEULWORK)
 }
 type Entry struct {
-	Source   Source // https:// → HTTP, file:// → Dir, registry → Registry
-	AnyError bool   // 앞 구분자가 | 이면 어떤 오류에도 다음 출처로
-	Off      bool   // off: 여기서 멈춘다
+	Name        string // 적힌 그대로. Node.Source에 남는다
+	Source      Source // https:// → HTTP, file:// → Dir, registry → Registry
+	Public      bool   // https://geul.org, registry. Private 문서는 건너뛴다
+	Fallthrough bool   // 뒤 구분자가 | 이면 어떤 오류에도 다음 출처로
+	Off         bool   // off: 여기서 멈춘다
 }
 func ConfigFromEnv(getenv func(string) string) (Config, error)
 ```
@@ -81,19 +83,17 @@ func ConfigFromEnv(getenv func(string) string) (Config, error)
 
 ```go
 type Source interface {
-	Fetch(ctx context.Context, path string) (Fetched, error) // path는 .well-known/geul/ 아래 상대 경로
-}
-type Fetched struct {
-	Bytes     []byte
-	Canonical string // 최신 주소를 따라간 정본 경로. 고정 주소면 path 그대로
+	Fetch(ctx context.Context, path string) ([]byte, error) // path는 .well-known/geul/ 아래 상대 경로
 }
 ```
 
+- 해석기는 최신 주소(`<문서 ID>.geul`, 302)를 쓰지 않는다. 버전 목록을 받아 버전을 고르고 그 정본 주소를 받는다. 그래서 `Dir`과 `HTTP`가 같은 순서로 동작하고, 받은 내용은 언제나 목록의 내용 해시로 검증된다.
+
 | 구현 | 출처 항목 | 내용 |
 |---|---|---|
-| `Dir` | `file://<디렉터리>` | 로컬 디렉터리의 `.well-known/geul/`. 덤프·미러·캐시가 모두 이 구조다. 최신 주소는 버전 목록 중 마지막으로 정한다. |
-| `HTTP` | `https://<기준>` | 기준 주소의 `.well-known/geul/`. 최신 주소의 302를 따라가 정본 경로를 돌려준다. 평문 `http://`는 `Insecure` 패턴에만. |
-| `Registry` | `registry` | geul.org 등록부에서 Issuer의 기준 주소를 받아 `HTTP`로 받는다. 등록부에 없는 Issuer는 404로 다룬다. |
+| `Dir` | `file://<디렉터리>` | 로컬 디렉터리의 `.well-known/geul/`. 덤프·미러·캐시가 모두 이 구조다. 버전 목록 경로(`…/`)는 그 디렉터리의 `versions` 파일이다. `Publish`로 문서를 공표(버전 배정·저장·목록 추가)한다. |
+| `HTTP` | `https://<기준>` | 기준 주소의 `.well-known/geul/`. 평문 `http://`는 `GEULINSECURE`가 생기기 전까지 받지 않는다. |
+| `Registry` | `registry` | geul.org 등록부에서 Issuer의 기준 주소를 받아 `HTTP`로 받는다. 등록부 API가 정해지기 전까지 모든 조회가 '없음'이다. |
 | `Memory` | (테스트) | 경로 → 바이트 맵. |
 
 - 오류 분류: `404`·`410`은 "없음"(다음 출처로), 그 밖은 "고장"(구분자가 `|`일 때만 다음 출처로). `Dir`의 파일 없음은 "없음"이다.
@@ -103,32 +103,33 @@ type Fetched struct {
 Key 하나를 받는 순서(GEUL-ORG 위치 해석 순서).
 
 1. **작업공간**: `replace`가 맞으면 그 대상, `use` 문서의 `DOC-NAME`이 맞으면 그 파일. 결과 Node에 `Replaced`를 표시한다.
-2. **캐시(`Dir`)**: 버전을 고정한 Key와 `v/` 경로만. 불변 주소라서 먼저 본다.
+2. **캐시(`Dir`)**: 버전을 고정한 Key와 `h/` 경로만. 불변 주소라서 먼저 본다.
 3. **출처 목록**: `Proxy`를 차례로. `Private`에 맞으면 `https://geul.org` 항목과 `registry`를 건너뛴다. `off`에서 멈춘다.
 4. **버전 로그**: 최신을 받았으면 `Log`로 확인한다. `NoLog`에 맞거나 `Log`가 nil이면 건너뛴다. 로그에 닿지 못하면 실패다.
 
 - 16 WORD Issuer는 등록부가 없어 `registry`가 404를 준다. 출처 목록이나 작업공간으로 찾는다.
-- 받은 정본은 캐시에 `<Issuer>/<문서 ID>/<버전 ID>.geul`과 `v/<버전 ID>.geul`로 넣는다. 작업공간 문서는 캐시에 넣지 않는다.
+- 받은 정본은 캐시에 `<Issuer>/<문서 ID>/<버전 ID>.geul`과 `h/<내용 해시>.geul`로 넣는다. 작업공간 문서는 캐시에 넣지 않는다.
 
 ## 버전 선택
 
 같은 문서(Issuer + 문서 ID)는 한 그래프 안에서 한 버전으로만 연결한다. 한 문서를 서로 다른 버전으로 동시에 읽으면 같은 LOCAL ID가 다른 대상을 가리킬 수 있기 때문이다.
 
 1. 작업공간의 `use`·`replace`가 맞으면 그것.
-2. `IMPORT-DOC-*`이 버전을 고정했으면 그 버전. 여러 IMPORT가 다른 버전을 고정하면 가장 나중 버전(Go 최소 버전 선택).
+2. `IMPORT-DOC-*`이 버전을 고정했으면 그 버전. 여러 IMPORT가 다른 버전을 고정하면 가장 높은 버전 ID(Go 최소 버전 선택).
 3. 고정이 없으면 잠금 기록의 버전.
-4. 잠금도 없으면 최신을 받고(버전 로그로 확인), 받은 버전 ID를 잠금에 남긴다.
+4. 잠금도 없으면 최신을 받고(버전 로그로 확인), 받은 버전 ID와 내용 해시를 잠금에 남긴다.
 
 - `EXTERNAL-ISSUER-*`는 명세상 "최신을 따른다". 이 패키지에서는 4번 규칙 안의 "최신"으로 다룬다. 같은 문서를 IMPORT로도 가져왔다면 IMPORT의 버전을 쓴다. 잠금 덕분에 지시선언도 재현된다.
 - 지시선언이 가리키는 문서의 IMPORT는 그 문서의 대상을 실제로 따라갈 때만 내려간다(지연 해석).
 
 ## 검증
 
-- **버전 ID**: 여는 레코드(`DOC-*`)부터 `END` 직전까지의 SHA-256이다. 검증 클래스(`100`) Meta는 계산에서 빼고, 여는 레코드의 Length와 폭은 뺀 길이에 맞춰 다시 계산한다(ISSUER 서명 절).
-- 버전을 고정한 Key는 받은 바이트의 버전 ID가 Key와 같아야 한다. 다르면 거부한다.
+- **내용 해시**: 여는 레코드(`DOC-*`)부터 `END` 직전까지의 SHA-256이다. 검증 클래스(`100`) Meta는 계산에서 빼고, 여는 레코드의 Length와 폭은 뺀 길이에 맞춰 다시 계산한다(ISSUER 서명 절).
+- **버전 ID → 내용 해시 대응**: 잠금 기록에 있으면 그것을 쓴다. 없으면 받은 출처의 버전 목록에서 얻고 `Log`로 확인한 뒤 잠금에 남긴다(Go `go.sum`). `NoLog`에 맞거나 `Log`가 nil이면 출처의 버전 목록을 믿고 잠금에 남기며 경고한다.
+- 받은 바이트의 내용 해시가 대응과 같아야 한다. 다르면 거부한다. 잠금과 버전 목록이 다르면 거부한다(같은 버전 ID, 다른 내용).
 - 받은 문서의 `DOC-NAME`은 Key의 Issuer·문서 ID와 같아야 한다.
 - 작업공간에서 로컬 파일로 대체한 문서는 고정 버전과 달라도 쓰고 경고한다. `Replaced`로 표시하며 잠금 기록은 바꾸지 않는다.
-- 최신을 받은 Key는 계산한 버전 ID를 잠금 기록에 남기고 경고한다. 다음 해석부터는 잠금의 버전으로 고정된다.
+- 최신을 받은 Key는 받은 버전 ID와 계산한 내용 해시를 잠금 기록에 남기고 경고한다. 다음 해석부터는 잠금의 버전으로 고정된다.
 - 서명 검증(검증 클래스 Meta, Issuer 키)은 이 패키지 밖이다. 검증기를 주입할 수 있게만 둔다.
 
 ## 해석 결과
@@ -142,7 +143,8 @@ type Graph struct {
 }
 type Node struct {
 	Key        Key
-	Version    []core.Word         // 실제로 받은 버전 ID
+	Version    uint32              // 실제로 받은 버전 ID
+	Hash       [32]byte            // 계산한 내용 해시
 	Doc        inspect.Document
 	Imports    map[uint64]*Node    // IMPORT ID → 의존 문서
 	Replaced   string              // 작업공간에서 대체됐으면 대체 대상(파일 경로 또는 Key), 아니면 ""
@@ -153,7 +155,7 @@ type Node struct {
 func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error)
 ```
 
-- 재귀로 내려간다. 같은 버전 ID는 한 번만 받고 공유한다. 순환은 버전 ID 경로로 찾아 거부한다.
+- 재귀로 내려간다. 같은 문서(DocKey)는 한 번만 받고 공유한다. 순환은 DocKey 경로로 찾아 거부한다.
 - `Target`은 Reference 하나를 대상 레코드로 바꾼다. 참조가 놓인 문서(`from`)가 기준이다.
   - `LOCAL` → `from` 문서의 Edge Id(LOCAL) 색인.
   - `EXTERNAL-POINTER-*` = IMPORT ID + LOCAL ID → `from.Imports[IMPORT ID]`의 색인.
@@ -165,19 +167,43 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 
 - 문서는 HEAD의 `IMPORT-DOC-*`으로 의존 문서를 적는다(Go `require`).
 - 공표 정의는 추가만 하고 바꾸지 않으므로 새 버전은 이전 버전을 포함한다. Go의 major 버전 구분이 필요 없다.
-- 같은 문서를 여러 버전으로 요구하면 가장 나중 버전 하나를 고른다(Go 최소 버전 선택). 순서는 미결정의 리비전 표기를 따른다.
+- 같은 문서를 여러 버전으로 요구하면 가장 높은 버전 ID 하나를 고른다(Go 최소 버전 선택). 버전 ID가 순번이라 정수 비교로 고른다.
 - 버전 ID로 고정한 가져오기는 재현된다. 버전 ID가 0이면 잠금 기록이 재현을 맡는다.
 
-## 구현 순서
+## 구현 상태
 
-1. `Path(Key)`와 ID hex 표기(정규형).
-2. `core` 버전 ID 계산. 아직 없다(`core` README "아직 없는 것").
-3. `Pattern`, `ConfigFromEnv`, 작업공간 파일 읽기.
-4. `Memory`, `Dir` Source.
-5. `Resolver`: 위치 해석 순서(작업공간 → 캐시 → 출처 목록), 오류 분류와 `,`/`|` 처리, `Private` 건너뛰기, 버전 검증, `DOC-NAME` 대조, 재귀, 상한, 순환 검출, 잠금 기록.
-6. `core`에 지시·지시선언 Reference 디코드(Issuer·문서 ID·IMPORT ID·LOCAL ID 분리). 지금은 LOCAL만 있다.
-7. 참조 수집(독립 Reference + `inspect.Layout`의 내장 Reference)과 `Target`.
-8. `HTTP` Source(302 추적). `Registry`와 버전 로그 확인은 그 API·형식이 정해진 뒤.
+| 됨 | 파일 |
+|---|---|
+| Key, DocKey, 주소(`versionPath`, `listPath`, `hashPath`, `FormatVersion`) | `key*.go`, `doc_key.go`, `*_path.go`, `format_version.go` |
+| 버전 목록(임시 텍스트 형식, 아래) | `version_entry.go`, `parse_version_*.go`, `format_version_list.go`, `pick_version.go` |
+| Source: `Memory`, `Dir`(+`Publish`), `HTTP`, `Registry`(빈 구현) | `memory*.go`, `dir*.go`, `http*.go`, `registry*.go` |
+| 설정: `ConfigFromEnv`(GEULPROXY 기본 `https://geul.org,registry`, GEULPRIVATE), `Pattern` | `config*.go`, `parse_entry.go`, `parse_proxy.go`, `*pattern*.go` |
+| `Resolver.Fetch`: 출처 순서, `,`/`\|`, Private 건너뛰기, `off`, 검증 실패는 즉시 중단 | `resolver_fetch.go`, `fetch_from.go`, `verify_doc.go` |
+| `Resolver.Resolve`: IMPORT-DOC 재귀, 최소 버전 선택, 문서당 Node 하나 | `resolver_resolve.go`, `resolver_collect.go`, `keep_highest.go`, `link_imports.go` |
+| 내용 해시 | `core/content_hash.go` |
+
+버전 목록 임시 형식(GEUL-ORG가 서명 목록 형식을 정하기 전까지):
+
+```
+0x00000001 0x<내용 해시 64자리>
+0x00000002 0x<내용 해시 64자리> deprecated
+```
+
+아직 없는 것:
+
+1. 잠금 기록, 작업공간(`geul.work`), 캐시(받은 문서를 `Dir`에 저장), `GEULLOG`·`GEULNOLOG`·`GEULINSECURE`.
+2. 상한(깊이·문서 수·크기). 순환은 같은 Key를 한 번만 받으므로 끝나며, 거부하지 않는다.
+3. `core`에 지시·지시선언 Reference 디코드(Issuer·문서 ID·IMPORT ID·LOCAL ID 분리). 지금은 LOCAL만 있다.
+4. 참조 수집(독립 Reference + `inspect.Layout`의 내장 Reference), `EXTERNAL-ISSUER-*` 해석, `Target`.
+5. 버전 목록 서명 확인, `Registry` 조회(그 API·형식이 정해진 뒤).
+
+## 임시 공표 위치
+
+geul.org가 서비스되기 전까지 명세 저장소의 `draft/t002/.well-known/geul/`을 공표 트리로 쓴다. `GEULPROXY=file://<geul-dev>/draft/t002,off`로 가리킨다. 기본값은 그대로 `https://geul.org`다.
+
+- 지금 있는 문서는 해석 시험용 견본이다. Issuer `0x0000`, 문서 `0xffff000000000001`(A v1·v2), `…0002`(B, A v1 고정), `…0003`(C, B 최신·A v2 고정).
+- `TestResolverResolveDraft`가 이 트리를 읽는다. 이 모듈만 따로 받은 경우에는 건너뛴다.
+- 공표는 `resolve.Dir{Root: "<geul-dev>/draft/t002"}.Publish(bytes)`로 한다.
 
 ## 범위 밖
 
@@ -187,10 +213,9 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 ## 미결정
 
 - 지시선언의 "최신"을 잠금으로 고정하는 이 패키지의 해석이 명세 의도와 맞는지. 맞다면 ISSUER의 가져오기 절에 잠금을 적는다.
-- 잠금 기록의 형식과 위치. 작업공간 파일 옆에 둘지, 사용자 설정 파일의 위치와 함께 정한다. 텍스트 한 줄 `<Issuer>/<문서 ID> <버전 ID>`(Go `go.sum`)로 둘지, GEUL 문서로 둘지.
-- 리비전 표기. `IMPORT-DOC`에 정수 리비전을 함께 적을지, 계보 `PARENT` 체인으로 순서를 정할지.
+- 잠금 기록의 형식과 위치. 작업공간 파일 옆에 둘지, 사용자 설정 파일의 위치와 함께 정한다. 텍스트 한 줄 `<Issuer>/<문서 ID> <버전 ID> <내용 해시>`(Go `go.sum`)로 둘지, GEUL 문서로 둘지.
 - geul.org 등록부 조회 API(Issuer ID → 기준 주소).
 - 위치 제공 Issuer를 HEAD에 적는 Meta(서명키 조회처와 같은 방식).
-- Issuer·문서 이름 레이블의 제공 방식. ID는 사람이 읽지 못한다.
+- Issuer·문서 이름 레이블과 alias, 도메인 이름 주소(GEUL-ORG 도메인 이름)를 Key로 바꾸는 입력을 받을지.
 - 텍스트 표현과 콘텐츠 협상(`Accept`에 따라 바이너리, 텍스트, HTML 보기).
 - 덤프 주기와 형식.
