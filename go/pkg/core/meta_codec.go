@@ -21,6 +21,10 @@ const (
 	MetaProfile uint8 = 0x11
 	// MetaDocName names this document: Issuer + 4-word document ID.
 	MetaDocName uint8 = 0x12
+	// MetaEffectiveFrom declares when this version takes effect (시행일).
+	MetaEffectiveFrom uint8 = 0x13
+	// MetaEffectiveUntil declares when this version stops being in effect (한시법).
+	MetaEffectiveUntil uint8 = 0x14
 	// MetaDefaultLanguage declares the default language.
 	MetaDefaultLanguage uint8 = 0x16
 	// MetaImportDoc1Word imports a 1-word Issuer's document under an IMPORT ID.

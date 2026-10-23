@@ -14,6 +14,10 @@ const (
 	// CodecUnsignedDecimal is a signed 32-bit exponent E plus a minimal-word
 	// unsigned coefficient C, value C×10^E.
 	CodecUnsignedDecimal uint8 = 0x11
+	// CodecGregorianDate is a fixed 2-word signed int32 day count from 1970-01-01.
+	CodecGregorianDate uint8 = 0x20
+	// CodecPosixSeconds is a fixed 4-word signed int64 second count from the Unix epoch.
+	CodecPosixSeconds uint8 = 0x22
 	// CodecUTF8TextEven is valid UTF-8 without implied normalization (even bytes).
 	CodecUTF8TextEven uint8 = 0x40
 	// CodecLanguageBCP47Even is a canonical BCP 47 language tag (even bytes).

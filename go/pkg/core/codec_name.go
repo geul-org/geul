@@ -6,7 +6,7 @@ package core
 var metaNames = map[uint8]string{
 	MetaDoc1Word: "DOC-1WORD", MetaDoc2Word: "DOC-2WORD", MetaDoc4Word: "DOC-4WORD",
 	MetaBody: "BODY", MetaEnd: "END", MetaSpecVersion: "SPEC-VERSION", MetaProfile: "PROFILE",
-	MetaDocName: "DOC-NAME", MetaDefaultLanguage: "DEFAULT-LANGUAGE",
+	MetaDocName: "DOC-NAME", MetaEffectiveFrom: "EFFECTIVE-FROM", MetaEffectiveUntil: "EFFECTIVE-UNTIL", MetaDefaultLanguage: "DEFAULT-LANGUAGE",
 	MetaImportDoc1Word: "IMPORT-DOC-1WORD", MetaImportDoc2Word: "IMPORT-DOC-2WORD",
 	MetaImportDoc4Word: "IMPORT-DOC-4WORD", MetaImportDoc16Word: "IMPORT-DOC-16WORD",
 }

@@ -8,8 +8,11 @@ func TestCodecName(t *testing.T) {
 	if got := CodecName(KindMeta, MetaImportDoc4Word); got != "IMPORT-DOC-4WORD" {
 		t.Fatalf("meta: %q", got)
 	}
-	if got := CodecName(KindMeta, 0x13); got != "" {
-		t.Fatalf("removed ID-WIDTH: %q", got)
+	if got := CodecName(KindMeta, MetaEffectiveFrom); got != "EFFECTIVE-FROM" {
+		t.Fatalf("effective-from: %q", got)
+	}
+	if got := CodecName(KindMeta, 0x15); got != "" {
+		t.Fatalf("reserved: %q", got)
 	}
 	if got := CodecName(KindValue, CodecUTF8TextEven|1); got != "UTF8-TEXT" {
 		t.Fatalf("value: %q", got)
