@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what TestGenericParts — an Edge's leading LOCAL id, a Meta's Value, a bare payload and an empty payload
+//ff:what TestGenericParts — an Edge's leading LOCAL id, embedded records after it, a Meta's Value, a raw Meta, a bare payload and an empty payload
 package inspect
 
 import (
@@ -16,7 +16,9 @@ func TestGenericParts(t *testing.T) {
 	}{
 		{Entry{Record: core.Record{Kind: core.KindEdge, Payload: []core.Word{0x00C0, 1, 9}}}, []string{"ID", "payload"}},
 		{Entry{Record: core.Record{Kind: core.KindMeta, Payload: []core.Word{0x0882, 1}}, Data: Value{}}, []string{"value"}},
-		{Entry{Record: core.Record{Kind: core.KindEdge, Payload: []core.Word{0x0882, 1}}}, []string{"payload"}},
+		{Entry{Record: core.Record{Kind: core.KindEdge, Payload: []core.Word{0x0882, 1}}}, []string{"UNSIGNED-INTEGER"}},
+		{Entry{Record: core.Record{Kind: core.KindEdge, Payload: []core.Word{0x00C0, 1, 0x00C0, 7, 0x0940, 0x6d61, 0x696e}}}, []string{"ID", "LOCAL", "UTF8-TEXT"}},
+		{Entry{Record: core.Record{Kind: core.KindMeta, Payload: []core.Word{0x0002}}, Data: Value{}}, []string{"payload"}},
 		{Entry{Record: core.Record{Kind: core.KindMeta}}, nil},
 	}
 	for i, c := range cases {
