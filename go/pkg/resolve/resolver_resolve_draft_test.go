@@ -1,5 +1,5 @@
 //ff:func feature=resolve type=resolver control=sequence
-//ff:what TestResolverResolveDraft — the draft/t002/.well-known/geul samples resolve through a custom GEULPROXY file:// source
+//ff:what TestResolverResolveDraft — the draft/t002/.well-known/geul samples resolve through a custom GEULPROXY file:// source, A v1 and A v2 side by side
 package resolve
 
 import (
@@ -28,8 +28,8 @@ func TestResolverResolveDraft(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	a := g.Docs[sampleKey(1, 0).DocKey()]
-	if len(g.Docs) != 3 || a.Version != 2 || a.Source != "file://"+root {
+	a := g.Docs[NodeKey{DocKey: sampleKey(1, 0).DocKey(), Version: 2}]
+	if len(g.Docs) != 4 || a == nil || a.Source != "file://"+root {
 		t.Fatalf("got %+v", g.Docs)
 	}
 }

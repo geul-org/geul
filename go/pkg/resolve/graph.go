@@ -1,11 +1,11 @@
 //ff:type feature=resolve type=model
-//ff:what Graph — a root document and every document it depends on, one Node per document
+//ff:what Graph — a root document and every 판본 it depends on, one Node per (document, version)
 package resolve
 
-// Graph is a resolved dependency graph. Docs has one Node per document: every
-// import of the same document, whatever version it pinned, shares the Node of
-// the selected version.
+// Graph is a resolved dependency graph. Docs has one Node per (document,
+// version). New versions promise no compatibility, so imports are never merged
+// onto one version: each import is bound to the version it asked for.
 type Graph struct {
 	Root *Node
-	Docs map[DocKey]*Node
+	Docs map[NodeKey]*Node
 }

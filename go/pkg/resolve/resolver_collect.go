@@ -1,36 +1,29 @@
 //ff:func feature=resolve type=resolver control=iteration dimension=1
-//ff:what Resolver.collect — fetch every Key reachable from the roots and keep the highest version per document
+//ff:what Resolver.collect — fetch every 판본 reachable from the roots, one Node per (document, version)
 package resolve
 
-import (
-	"context"
-	"fmt"
-)
+import "context"
 
-// collect walks the requirement graph breadth first. Each distinct Key is
-// fetched once, the imports of every fetched version are followed (as Go's
-// minimal version selection reads every go.mod it meets), and the highest
-// version of each document is selected. Cycles end because Keys repeat.
-func (r *Resolver) collect(ctx context.Context, roots []Key) (map[DocKey]*Node, error) {
-	sel := map[DocKey]*Node{}
-	seen := map[string]bool{}
+// collect walks the import graph breadth first. Each import is bound to the
+// version it asks for; nothing is merged onto a common version. A Key already
+// bound is not fetched again, and cycles end because bound Keys are skipped.
+func (r *Resolver) collect(ctx context.Context, roots []Key) (selection, error) {
+	sel := selection{nodes: map[NodeKey]*Node{}, latest: map[DocKey]*Node{}}
 	queue := roots
 	for len(queue) > 0 {
 		k := queue[0]
 		queue = queue[1:]
-		id := fmt.Sprintf("%v@%d", k.DocKey(), k.Version)
-		if seen[id] {
+		if sel.of(k) != nil {
 			continue
 		}
-		seen[id] = true
-		n, err := r.Fetch(ctx, k)
+		n, err := r.resolveKey(ctx, k)
 		if err != nil {
-			return nil, err
+			return selection{}, err
 		}
+		n = sel.add(k, n)
 		for _, ik := range importKeys(n.Doc) {
 			queue = append(queue, ik)
 		}
-		keepHighest(sel, n)
 	}
 	return sel, nil
 }

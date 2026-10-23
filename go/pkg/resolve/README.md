@@ -179,7 +179,8 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 | Source: `Memory`, `Dir`(+`Publish`), `HTTP`, `Registry`(빈 구현) | `memory*.go`, `dir*.go`, `http*.go`, `registry*.go` |
 | 설정: `ConfigFromEnv`(GEULPROXY 기본 `https://geul.org,registry`, GEULPRIVATE), `Pattern` | `config*.go`, `parse_entry.go`, `parse_proxy.go`, `*pattern*.go` |
 | `Resolver.Fetch`: 출처 순서, `,`/`\|`, Private 건너뛰기, `off`, 검증 실패는 즉시 중단 | `resolver_fetch.go`, `fetch_from.go`, `verify_doc.go` |
-| `Resolver.Resolve`: IMPORT-DOC 재귀. **명세 변경으로 고칠 것**: 지금은 최소 버전 선택·문서당 Node 하나로 구현되어 있다. (문서, 버전)마다 Node를 두고 IMPORT를 고정 판본에 바인딩하도록 바꾼다. `asOf` 해석도 없다. | `resolver_resolve.go`, `resolver_collect.go`, `keep_highest.go`, `link_imports.go` |
+| `Resolver.Resolve`: IMPORT-DOC 재귀, 각 IMPORT를 자기 판본에 바인딩, (문서, 버전)마다 Node 하나 | `resolver_resolve.go`, `resolver_collect.go`, `selection*.go`, `node_key.go`, `link_imports.go` |
+| `Resolver.AsOf`: 최신(버전 0) IMPORT를 그 시점에 시행 중인 판본에 바인딩(`EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`) | `resolver_resolve_key.go`, `fetch_as_of.go`, `effective_*.go`, `meta_time.go`, `core/decode_time_value.go` |
 | 내용 해시 | `core/content_hash.go` |
 
 버전 목록 임시 형식(GEUL-ORG가 서명 목록 형식을 정하기 전까지):
@@ -192,10 +193,11 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 아직 없는 것:
 
 1. 잠금 기록, 작업공간(`geul.work`), 캐시(받은 문서를 `Dir`에 저장), `GEULLOG`·`GEULNOLOG`·`GEULINSECURE`.
-2. 상한(깊이·문서 수·크기). 순환은 같은 Key를 한 번만 받으므로 끝나며, 거부하지 않는다.
-3. `core`에 지시·지시선언 Reference 디코드(Issuer·문서 ID·IMPORT ID·LOCAL ID 분리). 지금은 LOCAL만 있다.
-4. 참조 수집(독립 Reference + `inspect.Layout`의 내장 Reference), `EXTERNAL-ISSUER-*` 해석, `Target`.
-5. 버전 목록 서명 확인, `Registry` 조회(그 API·형식이 정해진 뒤).
+2. 조문별 시행일 `RECORD-EFFECTIVE`(근거 Edge 디코드 필요). 시행일 없는 판본은 처음부터 시행 중으로 본다(임시 목록에 공표 시각이 없다).
+3. 상한(깊이·문서 수·크기). 순환은 같은 Key를 한 번만 받으므로 끝나며, 거부하지 않는다.
+4. `core`에 지시·지시선언 Reference 디코드(Issuer·문서 ID·IMPORT ID·LOCAL ID 분리). 지금은 LOCAL만 있다.
+5. 참조 수집(독립 Reference + `inspect.Layout`의 내장 Reference), `EXTERNAL-ISSUER-*` 해석, `Target`.
+6. 버전 목록 서명 확인, `Registry` 조회(그 API·형식이 정해진 뒤).
 
 ## 임시 공표 위치
 
