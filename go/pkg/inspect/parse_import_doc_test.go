@@ -19,7 +19,7 @@ func TestParseImportDoc(t *testing.T) {
 		t.Fatalf("pinned: %+v %v", d, ok)
 	}
 	bad := []core.Record{
-		{Codec: core.MetaDocName, Payload: latest},
+		{Codec: core.MetaDocID, Payload: latest},
 		{Codec: core.MetaImportDoc4Word, Payload: latest},
 		{Codec: core.MetaImportDoc1Word, Payload: append([]core.Word{0}, latest...)},
 	}

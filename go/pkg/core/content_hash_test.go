@@ -8,7 +8,7 @@ import (
 )
 
 func TestContentHash(t *testing.T) {
-	name, _ := EncodeRecord(Record{Kind: KindMeta, Codec: MetaDocName, Payload: []Word{0, 0, 0, 0, 1}})
+	name, _ := EncodeRecord(Record{Kind: KindMeta, Codec: MetaDocID, Payload: []Word{0, 0, 0, 0, 1}})
 	sig, _ := EncodeRecord(Record{Kind: KindMeta, Codec: 0x41, Payload: []Word{7, 7, 7}})
 	val, _ := EncodeRecord(EncodeUintValue(5))
 	plain := WrapDocument(append(append(append([]Word{}, name...), 0x180E), append(val, 0x180F)...))

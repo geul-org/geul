@@ -61,7 +61,7 @@
 
 | 규칙 | 내용 |
 |---|---|
-| E1 | Payload 첫 요소가 LOCAL Reference(Quantifier `000`)다. 그 LOCAL ID가 Edge Id다. |
+| E1 | Payload 첫 요소가 LOCAL Reference(Quantifier `000`)다. 그 LOCAL ID가 Edge Id이며 `0`이 아니다(`0`은 문서 자신). |
 | E2 | Edge Id는 문서 안에서 중복되지 않는다. |
 | E3 | 서술·실행·TOULMIN 직접 코드의 Reserved 구간은 예약이다. |
 | E4 | core 내장 Codec(`PUBLICATION`·`DEPRECATION`·`TOMBSTONE`)은 레이아웃이 맞다(Edge Id 뒤 22·6·7 WORD). |
@@ -71,7 +71,7 @@
 | 규칙 | 내용 |
 |---|---|
 | M1 | 표에 없는 직접 코드는 예약이다. Meta에는 ISSUER 코드가 없다. |
-| M2 | `DOC-NAME`은 하나이고 Issuer 폭이 1/2/4/16이다. |
+| M2 | `DOC-ID`는 하나이고 Issuer 폭이 1/2/4/16이다. |
 | M3 | `IMPORT-DOC-*`: Issuer 폭이 Codec과 맞고, 버전 ID가 2 WORD이며, IMPORT ID가 최소 폭이고 문서 안에서 중복되지 않는다. |
 | M4 | `SPEC-VERSION`·`PROFILE`·`DEFAULT-LANGUAGE`은 각각 하나다. `SPEC-VERSION`의 Payload는 내장 Value 없이 가장 짧은 폭의 unsigned 정수다(t002 = `0x0002`). 나머지는 내장 Value가 해당 형식이다. |
 | M5 | `EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`은 각각 하나이고 GREGORIAN-DATE 또는 POSIX-TIMESTAMP-SECONDS다. 둘 다 있으면 FROM이 UNTIL보다 앞선다. |
@@ -79,14 +79,15 @@
 
 ### P 버전 목록 문서 (edge/PUBLICATION)
 
-`DOC-NAME`의 문서 ID가 0인 문서에 적용한다.
+`DOC-ID`의 문서 ID가 0인 문서에 적용한다.
 
 | 규칙 | 내용 |
 |---|---|
-| P1 | `IMPORT-DOC-*`이 없고, BODY에는 `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`만 있다. |
+| P1 | `IMPORT-DOC-*`이 없고, BODY에는 `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`·`BIND`만 있다. |
 | P2 | Edge Id는 1부터 이어지는 순번이다. |
 | P3 | 문서 ID마다 PUBLICATION의 버전 ID가 1부터 빠짐없이 오름차순이고, 같은 내용 해시를 다시 공표하지 않는다. |
 | P4 | DEPRECATION·TOMBSTONE은 앞에 나온 PUBLICATION을 가리킨다. |
+| P5 | `BIND`(문서 이름): Subject는 `EXTERNAL-ISSUER-*`(목록의 Issuer, 문서 ID, `0`)이고, 그 문서는 앞에 공표되었으며, 이름은 소문자 ASCII 슬러그이고, 다른 문서에 이미 묶인 이름이 아니다. |
 
 - 1층은 서명을 확인하지 않는다. 서명 검증과 `PARENT` 사슬 확인은 resolve와 검증기(ISSUER 서명 절)의 일이다.
 

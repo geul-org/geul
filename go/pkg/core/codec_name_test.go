@@ -20,8 +20,14 @@ func TestCodecName(t *testing.T) {
 	if got := CodecName(KindEdge, CodecIssuer2Word); got != "ISSUER-2WORD" {
 		t.Fatalf("issuer: %q", got)
 	}
-	if got := CodecName(KindEdge, 0x40); got != "SYMBOL-DECLARE" {
+	if got := CodecName(KindEdge, 0x41); got != "FUNCTION-DECLARE" {
 		t.Fatalf("execution edge: %q", got)
+	}
+	if got := CodecName(KindEdge, EdgeBind); got != "BIND" {
+		t.Fatalf("bind: %q", got)
+	}
+	if got := CodecName(KindEdge, 0x40); got != "" {
+		t.Fatalf("removed SYMBOL-DECLARE: %q", got)
 	}
 	if got := CodecName(KindEdge, 0x60); got != "" {
 		t.Fatalf("profile edge: %q", got)

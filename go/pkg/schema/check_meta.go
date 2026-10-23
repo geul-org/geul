@@ -12,8 +12,8 @@ import (
 func checkMeta(r rec) []Fact {
 	c := r.R.Codec
 	switch {
-	case c == core.MetaDocName:
-		return checkDocName(r)
+	case c == core.MetaDocID:
+		return checkDocID(r)
 	case core.ImportIssuerWidth(c) > 0:
 		return checkImportDoc(r)
 	case c == core.MetaSpecVersion:

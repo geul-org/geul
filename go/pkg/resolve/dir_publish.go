@@ -10,7 +10,7 @@ import (
 )
 
 // Publish stores the document b in the local tree as the publisher does
-// (GEUL-ORG 공표 주소): it names the document by its DOC-NAME, gives it the next
+// (GEUL-ORG 공표 주소): it names the document by its DOC-ID, gives it the next
 // version ID, writes `<Issuer>/<문서 ID>/<버전 ID>.geul` and `h/<내용 해시>.geul`,
 // and appends the entry to the version list. Publishing content already in the
 // list returns that entry and writes nothing.
@@ -24,9 +24,9 @@ func (d Dir) Publish(b []byte) (VersionEntry, error) {
 		return VersionEntry{}, err
 	}
 	doc, _ := inspect.Decode(b)
-	name, ok := docNameOf(doc)
+	name, ok := docIDOf(doc)
 	if !ok {
-		return VersionEntry{}, errors.New("geul/resolve: publishing needs a DOC-NAME")
+		return VersionEntry{}, errors.New("geul/resolve: publishing needs a DOC-ID")
 	}
 	k := Key{Issuer: name.Issuer, Doc: name.Doc}.DocKey()
 	list, err := d.readList(k)

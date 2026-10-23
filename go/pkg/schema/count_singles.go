@@ -10,7 +10,7 @@ import (
 
 // singleRule maps Meta codecs that may appear once to the rule they belong to.
 var singleRule = map[uint8]string{
-	core.MetaDocName: "M2", core.MetaSpecVersion: "M4", core.MetaProfile: "M4", core.MetaDefaultLanguage: "M4",
+	core.MetaDocID: "M2", core.MetaSpecVersion: "M4", core.MetaProfile: "M4", core.MetaDefaultLanguage: "M4",
 	core.MetaEffectiveFrom: "M5", core.MetaEffectiveUntil: "M5",
 }
 

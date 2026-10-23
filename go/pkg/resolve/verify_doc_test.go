@@ -1,5 +1,5 @@
 //ff:func feature=resolve type=rule control=iteration dimension=1
-//ff:what TestVerifyDoc — matching hash and DOC-NAME pass; odd bytes, malformed, wrong hash and wrong name fail with ErrVerify
+//ff:what TestVerifyDoc — matching hash and DOC-ID pass; odd bytes, malformed, wrong hash and wrong name fail with ErrVerify
 package resolve
 
 import (

@@ -1,0 +1,12 @@
+//ff:type feature=inspect type=model
+//ff:what DocID — Meta DOC-ID: the Issuer and the 4-word document ID
+package inspect
+
+import "github.com/geul-org/geul/go/pkg/core"
+
+// DocID is Meta DOC-ID: the Issuer (1, 2, 4 or 16 words) and the 4-word
+// document ID it issued.
+type DocID struct {
+	Issuer []core.Word
+	Doc    []core.Word
+}

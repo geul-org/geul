@@ -8,7 +8,7 @@ import (
 )
 
 func TestStripValidation(t *testing.T) {
-	name, _ := EncodeRecord(Record{Kind: KindMeta, Codec: MetaDocName, Payload: []Word{0, 0, 0, 0, 1}})
+	name, _ := EncodeRecord(Record{Kind: KindMeta, Codec: MetaDocID, Payload: []Word{0, 0, 0, 0, 1}})
 	verdict, _ := EncodeRecord(Record{Kind: KindMeta, Codec: 0x44, Payload: []Word{1}})
 	in := append(append(append([]Word{}, name...), verdict...), 0x180E, 0x180F)
 	want := append(append([]Word{}, name...), 0x180E, 0x180F)

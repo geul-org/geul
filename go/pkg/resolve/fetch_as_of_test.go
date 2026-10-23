@@ -32,7 +32,7 @@ func TestFetchAsOf(t *testing.T) {
 	}
 	bad := Dir{Root: t.TempDir()}
 	enc := func(r core.Record) []core.Word { ws, _ := core.EncodeRecord(r); return ws }
-	in := enc(core.Record{Kind: core.KindMeta, Codec: core.MetaDocName, Payload: []core.Word{0, 0xffff, 0, 0, 5}})
+	in := enc(core.Record{Kind: core.KindMeta, Codec: core.MetaDocID, Payload: []core.Word{0, 0xffff, 0, 0, 5}})
 	in = append(in, enc(core.Record{Kind: core.KindMeta, Codec: core.MetaEffectiveFrom, Payload: enc(core.EncodeUintValue(1))})...)
 	if _, err := bad.Publish(core.PutWords(core.WrapDocument(append(in, 0x180E, 0x180F)))); err != nil {
 		t.Fatal(err)

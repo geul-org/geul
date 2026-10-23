@@ -102,7 +102,7 @@ type Source interface {
 
 Key 하나를 받는 순서(GEUL-ORG 위치 해석 순서).
 
-1. **작업공간**: `replace`가 맞으면 그 대상, `use` 문서의 `DOC-NAME`이 맞으면 그 파일. 결과 Node에 `Replaced`를 표시한다.
+1. **작업공간**: `replace`가 맞으면 그 대상, `use` 문서의 `DOC-ID`가 맞으면 그 파일. 결과 Node에 `Replaced`를 표시한다.
 2. **캐시(`Dir`)**: 버전을 고정한 Key와 `h/` 경로만. 불변 주소라서 먼저 본다.
 3. **출처 목록**: `Proxy`를 차례로. `Private`에 맞으면 `https://geul.org` 항목과 `registry`를 건너뛴다. `off`에서 멈춘다.
 4. **버전 로그**: 최신을 받았으면 `Log`로 확인한다. `NoLog`에 맞거나 `Log`가 nil이면 건너뛴다. 로그에 닿지 못하면 실패다.
@@ -128,7 +128,7 @@ Key 하나를 받는 순서(GEUL-ORG 위치 해석 순서).
 - **내용 해시**: 여는 레코드(`DOC-*`)부터 `END` 직전까지의 SHA-256이다. 검증 클래스(`100`) Meta는 계산에서 빼고, 여는 레코드의 Length와 폭은 뺀 길이에 맞춰 다시 계산한다(ISSUER 서명 절).
 - **버전 ID → 내용 해시 대응**: 잠금 기록에 있으면 그것을 쓴다. 없으면 받은 출처의 버전 목록에서 얻고 `Log`로 확인한 뒤 잠금에 남긴다(Go `go.sum`). `NoLog`에 맞거나 `Log`가 nil이면 출처의 버전 목록을 믿고 잠금에 남기며 경고한다.
 - 받은 바이트의 내용 해시가 대응과 같아야 한다. 다르면 거부한다. 잠금과 버전 목록이 다르면 거부한다(같은 버전 ID, 다른 내용).
-- 받은 문서의 `DOC-NAME`은 Key의 Issuer·문서 ID와 같아야 한다.
+- 받은 문서의 `DOC-ID`는 Key의 Issuer·문서 ID와 같아야 한다.
 - 작업공간에서 로컬 파일로 대체한 문서는 고정 버전과 달라도 쓰고 경고한다. `Replaced`로 표시하며 잠금 기록은 바꾸지 않는다.
 - 최신을 받은 Key는 받은 버전 ID와 계산한 내용 해시를 잠금 기록에 남기고 경고한다. 다음 해석부터는 잠금의 버전으로 고정된다.
 - 서명 검증(검증 클래스 Meta, Issuer 키)은 이 패키지 밖이다. 검증기를 주입할 수 있게만 둔다.
@@ -197,6 +197,7 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 3. 상한(깊이·문서 수·크기). 순환은 같은 Key를 한 번만 받으므로 끝나며, 거부하지 않는다.
 4. `core`에 지시·지시선언 Reference 디코드(Issuer·문서 ID·IMPORT ID·LOCAL ID 분리). 지금은 LOCAL만 있다.
 5. 참조 수집(독립 Reference + `inspect.Layout`의 내장 Reference), `EXTERNAL-ISSUER-*` 해석, `Target`.
+- 문서 이름 주소(`/<Issuer>/<문서 이름>/…`, 버전 목록의 `BIND`). 임시 텍스트 목록에는 이름이 없어 목록 문서(`versions.geul`)로 바꾼 뒤 구현한다.
 6. 버전 목록 서명 확인, `Registry` 조회(그 API·형식이 정해진 뒤).
 
 ## 임시 공표 위치

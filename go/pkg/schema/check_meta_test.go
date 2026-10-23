@@ -15,7 +15,7 @@ func TestCheckMeta(t *testing.T) {
 		r    rec
 		want string
 	}{
-		{raw(core.MetaDocName, 1), "M2"},
+		{raw(core.MetaDocID, 1), "M2"},
 		{raw(core.MetaImportDoc2Word, 1), "M3"},
 		{raw(core.MetaSpecVersion), "M4"},
 		{raw(core.MetaProfile), "M4"},

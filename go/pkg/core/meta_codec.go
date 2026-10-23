@@ -19,8 +19,8 @@ const (
 	MetaSpecVersion uint8 = 0x10
 	// MetaProfile declares the applied profile.
 	MetaProfile uint8 = 0x11
-	// MetaDocName names this document: Issuer + 4-word document ID.
-	MetaDocName uint8 = 0x12
+	// MetaDocID identifies this document: Issuer + 4-word document ID (formerly DOC-NAME).
+	MetaDocID uint8 = 0x12
 	// MetaEffectiveFrom declares when this version takes effect (시행일).
 	MetaEffectiveFrom uint8 = 0x13
 	// MetaEffectiveUntil declares when this version stops being in effect (한시법).
