@@ -1,12 +1,152 @@
 # schema
 
-문서가 스키마에 맞는지 검사한다. 위반은 Fact(Where, Expected, Actual)로 낸다.
+`.geul` 바이트열이 형식에 맞는지 검사한다. 위반은 Fact(Rule, Where, Expected, Actual)로 낸다.
+규칙의 출처는 명세 `README`(TAG, Length), `OVERVIEW`(Kind별 규칙), `docs/edge`·`docs/value`(Codec 상세), `GEUL-ORG`·`edge/PUBLICATION`(버전 목록)이다.
 
-| 층 | 내용 |
+## 층
+
+| 층 | 근거 | 조회 | 상태 |
+|---|---|---|---|
+| 1. 0층 형식 | 명세와 core 내장 규칙만 | 없음 | 지금 구현 대상 |
+| 2. Codec 규격 | 받은 Codec 규격(직접 코드 상세, ISSUER 형식 레이아웃) | Codec을 인자로 받는다 | 이후 |
+| 3. 의미 | 격틀, 선택 제약, 클래스 계층(P279), 공리 | 스키마 문서를 resolve로 받는다 | 이후 |
+
+- 1층은 코덱북 없이 어떤 디코더든 확인할 수 있는 것만 본다(GEUL-ORG 0층). 모르는 Codec의 Payload는 열지 않고 Length로 건너뛴다.
+- 2층은 Codec 규격을 받아 그 Codec의 Payload 레이아웃까지 본다. 처음에는 이 라이브러리에 내장한 규격(TOULMIN, `docs/value`의 직접 코드 형식, `docs/edge`의 서술 Edge)을 쓰고, 나중에는 Codec 규격 문서를 받아 쓴다.
+- 3층은 기존 설계 그대로다. 격틀은 Defeasible이며 관용 표현, 비유, 허구는 예외(EXCEPT)로 허용한다. 스키마도 GEUL 문서로 공표하고 IMPORT로 가져오며, `0x0000` 핵심 스키마는 엔진에 내장한다.
+
+## 1층 규칙
+
+### F 프레이밍 (README)
+
+| 규칙 | 내용 |
 |---|---|
-| 형식 | ISSUER 형식 번호의 Value·Edge 레이아웃 |
-| 의미 | 격틀, 선택 제약, 클래스 계층(P279), 공리 |
+| F1 | 바이트 수가 짝수다(WORD 정렬). |
+| F2 | Length가 레코드의 전체 WORD 수와 같고, 레코드가 입력 안에 들어간다. |
+| F3 | 1~14 WORD는 직접 길이, 15~65535는 `1110`, 그 위는 `1111`이다. 더 넓은 표현은 비정규로 거부한다. |
+| F4 | 2^32−1 WORD를 넘지 않는다. |
+| F5 | Codec이 ISSUER-1/2/4/16WORD(Value·Edge)면 Codec 확장 TAG에 그 폭의 Issuer와 형식 번호 1 WORD가 있다. |
 
-- 판정은 Pass, Fail, Review다. 판정할 근거가 없으면 Review로 남긴다.
-- 격틀은 Defeasible이다. 관용 표현, 비유, 허구는 예외(EXCEPT)로 허용한다.
-- 스키마도 GEUL 문서로 공표하고 IMPORT로 가져온다. `0x0000` 핵심 스키마는 엔진에 내장한다.
+### D 문서 구조 (OVERVIEW 구조)
+
+| 규칙 | 내용 |
+|---|---|
+| D1 | 첫 레코드가 `DOC-1WORD/2WORD/4WORD`이고, 그 길이가 입력 전체와 같으며, 값이 들어가는 가장 좁은 폭이다. |
+| D2 | `END`가 마지막 레코드다. 뒤에 아무것도 없다. |
+| D3 | HEAD에는 Meta만, BODY에는 Meta가 아닌 레코드만 둔다. `BODY`는 한 번만 둔다. |
+| D4 | `BODY`·`END`는 Payload가 없는 1 WORD다. 문서 안에 `DOC-*`가 다시 나오지 않는다. |
+
+### R Reference (OVERVIEW Reference)
+
+| 규칙 | 내용 |
+|---|---|
+| R1 | Codec `1100`~`1111`, Quantifier `101`~`111`은 예약이다. |
+| R2 | 대상 ID는 가장 짧은 폭이다. 값 0은 `0x0000` 1 WORD이고, 그 밖에는 선행 `0x0000` WORD가 없다. |
+| R3 | `EXTERNAL-POINTER-*`: IMPORT ID가 들어가는 가장 좁은 Codec이고, 그 IMPORT ID를 배정한 `IMPORT-DOC-*`이 HEAD에 있다. |
+| R4 | `EXTERNAL-ISSUER-*`: Issuer 폭이 Codec과 맞고, 문서 ID 4 WORD 뒤에 대상 ID가 1 WORD 이상 있다. |
+
+### V Value (OVERVIEW Value)
+
+| 규칙 | 내용 |
+|---|---|
+| V1 | 직접 코드의 Reserved 구간은 예약이다. |
+| V2 | 고정 폭 직접 코드는 Payload 폭이 맞다. BOOL 1(`0x0000`·`0x0001`만), BINARY-FLOAT 1/2/4/8, GREGORIAN-DATE 2, CIVIL-TIME-NANOSECONDS 4(`[0, 86400×10^9)`), POSIX-TIMESTAMP-SECONDS 4, DURATION-SECONDS 4, LANGUAGE-SHORT-CODE 1, UUID 8, SHA-256-DIGEST 16. |
+| V3 | SIGNED-INTEGER·UNSIGNED-INTEGER와 DECIMAL의 coefficient는 최소 WORD다. DECIMAL은 exponent 2 WORD + coefficient 1 WORD 이상이다. |
+| V4 | 홀짝 코드 쌍(텍스트, URI, 언어 태그)에서 홀수 코드는 Payload가 1 WORD 이상이고 마지막 하위 byte가 `0x00`이다. |
+| V5 | UTF8-TEXT는 well-formed UTF-8이고 선두 BOM이 없다. UTF8-NFC-TEXT는 NFC다. URI·URI-RELATIVE-REF·LANGUAGE-BCP47-CODE는 ASCII이고 빈 문자열이 아니다. |
+
+- ISSUER 형식 Value는 1층에서 Issuer·형식 번호의 존재(F5)만 본다. 레이아웃은 2층이다.
+
+### E Edge (OVERVIEW Edge)
+
+| 규칙 | 내용 |
+|---|---|
+| E1 | Payload 첫 요소가 LOCAL Reference(Quantifier `000`)다. 그 LOCAL ID가 Edge Id다. |
+| E2 | Edge Id는 문서 안에서 중복되지 않는다. |
+| E3 | 서술·실행·TOULMIN 직접 코드의 Reserved 구간은 예약이다. |
+| E4 | core 내장 Codec(`PUBLICATION`·`DEPRECATION`·`TOMBSTONE`)은 레이아웃이 맞다(Edge Id 뒤 22·6·7 WORD). |
+
+### M Meta (OVERVIEW Meta)
+
+| 규칙 | 내용 |
+|---|---|
+| M1 | 표에 없는 직접 코드는 예약이다. Meta에는 ISSUER 코드가 없다. |
+| M2 | `DOC-NAME`은 하나이고 Issuer 폭이 1/2/4/16이다. |
+| M3 | `IMPORT-DOC-*`: Issuer 폭이 Codec과 맞고, 버전 ID가 2 WORD이며, IMPORT ID가 최소 폭이고 문서 안에서 중복되지 않는다. |
+| M4 | `SPEC-VERSION`·`PROFILE`·`DEFAULT-LANGUAGE`은 각각 하나이고, 내장 Value가 해당 형식이다. |
+| M5 | `EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`은 각각 하나이고 GREGORIAN-DATE 또는 POSIX-TIMESTAMP-SECONDS다. 둘 다 있으면 FROM이 UNTIL보다 앞선다. |
+| M6 | Meta Payload에 내장한 Value 레코드는 V 규칙을 통과한다. |
+
+### P 버전 목록 문서 (edge/PUBLICATION)
+
+`DOC-NAME`의 문서 ID가 0인 문서에 적용한다.
+
+| 규칙 | 내용 |
+|---|---|
+| P1 | `IMPORT-DOC-*`이 없고, BODY에는 `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`만 있다. |
+| P2 | Edge Id는 1부터 이어지는 순번이다. |
+| P3 | 문서 ID마다 PUBLICATION의 버전 ID가 1부터 빠짐없이 오름차순이고, 같은 내용 해시를 다시 공표하지 않는다. |
+| P4 | DEPRECATION·TOMBSTONE은 앞에 나온 PUBLICATION을 가리킨다. 삭제된 버전을 다시 공표하지 않는다. |
+| P5 | `PARENT`가 있으면 SHA-256-DIGEST Value 하나다. |
+
+- 1층은 서명을 확인하지 않는다. 서명 검증과 `PARENT` 사슬 확인은 resolve와 검증기(ISSUER 서명 절)의 일이다.
+
+## 결과
+
+```go
+type Severity int // Error, Warn
+
+type Where struct {
+	Word   int    // 문서 처음부터의 WORD 오프셋
+	Record int    // 레코드 순번 (0 = DOC-*)
+	Part   string // 레코드 안의 위치 ("Length", "Edge Id", "Payload[3]" …)
+}
+
+type Fact struct {
+	Rule     string // "F3", "R2" …
+	Severity Severity
+	Where    Where
+	Expected string
+	Actual   string
+}
+
+type Report struct {
+	Facts   []Fact
+	Verdict Verdict // Pass, Fail, Review
+}
+
+func Check(b []byte, opt Options) Report
+
+type Options struct {
+	Strict bool    // 예약 코드를 Warn이 아니라 Error로
+	Codecs []Codec // 2층. 비면 1층만
+}
+```
+
+- Error가 하나라도 있으면 Fail, Warn만 있으면 Review, 없으면 Pass다.
+- 예약 코드는 기본이 Warn이다. 더 새로운 명세로 쓴 문서일 수 있기 때문이다. `Strict`이면 Error다.
+
+## 원칙
+
+- 조회하지 않는다. 네트워크·파일 I/O가 없다.
+- 첫 위반에서 멈추지 않고 모은다. 레코드의 Length를 읽을 수 있으면 다음 레코드로 건너뛰어 계속 검사한다. Length를 믿을 수 없으면(F2) 거기서 멈춘다.
+- core의 디코드 함수를 재사용하되, core는 첫 오류에서 멈추므로 문서 순회는 schema가 직접 한다.
+- 규칙 ID는 이 README의 표와 1:1이다. 규칙을 바꾸면 표를 먼저 고친다.
+- 2층 Codec은 인터페이스로 받는다. 대략 `Match(r core.Record) bool`과 `Check(r core.Record, at Where) []Fact`다.
+
+## 구현 순서
+
+1. Fact·Where·Report·Verdict, 레코드 순회(F1~F5, D1~D4).
+2. R, M(M1~M4), E1~E3.
+3. V1~V4, M5·M6.
+4. V5(UTF-8, ASCII; NFC는 미결정 참고).
+5. E4, P1~P5.
+6. 2층: Codec 인터페이스와 내장 규격(TOULMIN, `docs/value`, `docs/edge`).
+7. 3층: 격틀, 선택 제약.
+
+## 미결정
+
+- NFC 검사. 표준 라이브러리에 정규화가 없어 `golang.org/x/text`가 필요하다. 외부 의존을 허용할지, NFC는 2층으로 미룰지.
+- URI·LANGUAGE-BCP47-CODE 문법 검사의 엄격도(RFC 3986 전체 문법, IANA 레지스트리 대조 여부).
+- Codec 규격 문서의 형식. 2층이 받을 Codec 규격을 GEUL 문서로 어떻게 표현할지.
+- 서술 Edge(REFERENCE-NODE 등)의 레이아웃을 1층에 둘지 2층에 둘지. 지금은 core 내장 Codec만 1층이다.
