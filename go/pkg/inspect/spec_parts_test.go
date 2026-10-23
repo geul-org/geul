@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=sequence
-//ff:what TestSpecParts — a declared record splits into Edge Id and fields; no spec, a short or long payload do not fit
+//ff:what TestSpecParts — a declared record splits into Edge Id and fields, a rest field before fixed ones; no spec, a short or long payload do not fit
 package inspect
 
 import (
@@ -14,6 +14,13 @@ func TestSpecParts(t *testing.T) {
 	ps, ok := specParts(Entry{Record: r, Spec: fs})
 	if !ok || len(ps) != 4 || ps[0].Name != "ID" || ps[3].Name != "reason" || ps[3].Enum != "license" {
 		t.Fatalf("got %+v %v", ps, ok)
+	}
+	doc := core.Record{Kind: core.KindMeta, Codec: core.MetaDocID, Payload: []core.Word{0, 0x20, 0xffff, 0, 0, 1}}
+	if ps, ok := specParts(Entry{Record: doc, Spec: []codecspec.Field{{Name: "issuer", Width: 0xFFFF}, {Name: "doc", Width: 4}}}); !ok || len(ps[0].Words) != 2 || len(ps[1].Words) != 4 {
+		t.Fatalf("rest first: %+v %v", ps, ok)
+	}
+	if _, ok := specParts(Entry{Record: doc, Spec: []codecspec.Field{{Width: 0xFFFF}, {}}}); ok {
+		t.Fatal("record after rest: want false")
 	}
 	if _, ok := specParts(Entry{Record: r}); ok {
 		t.Fatal("no spec: want false")

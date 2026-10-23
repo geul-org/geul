@@ -5,12 +5,14 @@ package inspect
 import "github.com/geul-org/geul/go/pkg/core"
 
 // walker cuts ws into Parts from pos. sw is the SPAN width in words being
-// tried. bad turns true once a field does not fit the remaining words; the
+// tried. tail is the width of the fixed raw fields after a codec spec's rest
+// field. bad turns true once a field does not fit the remaining words; the
 // layout is then rejected.
 type walker struct {
-	ws  []core.Word
-	pos int
-	sw  int
-	out []Part
-	bad bool
+	ws   []core.Word
+	pos  int
+	sw   int
+	tail int
+	out  []Part
+	bad  bool
 }

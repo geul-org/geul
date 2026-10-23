@@ -7,12 +7,18 @@ import (
 	"github.com/geul-org/geul/go/pkg/core"
 )
 
-// field takes f at the cursor. A raw field is f.Width words noted with the
+// field takes f at the cursor. A rest field takes every word left but the
+// tail fixed fields after it, and adds no part when that is none. A raw field
+// is f.Width words noted with the
 // ENUM name of that code; a record field is one record, which must have the
 // expected Kind·Codec when f declares one, noted with its decoded Value.
 func (w *walker) field(f codecspec.Field) {
 	n := len(w.out)
 	switch {
+	case f.Width == int(core.FieldRest) && w.pos+w.tail == len(w.ws):
+		return
+	case f.Width == int(core.FieldRest):
+		w.words(f.Name, len(w.ws)-w.pos-w.tail)
 	case f.Width > 0:
 		w.words(f.Name, f.Width)
 	default:
