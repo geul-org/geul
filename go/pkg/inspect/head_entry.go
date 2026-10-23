@@ -4,13 +4,16 @@ package inspect
 
 import "github.com/geul-org/geul/go/pkg/core"
 
-// headEntry interprets a HEAD Meta record. SPEC-VERSION, PROFILE and
-// DEFAULT-LANGUAGE carry one Value, DOC-NAME and IMPORT-DOC-* their ids. Any
+// headEntry interprets a HEAD Meta record. SPEC-VERSION is a bare unsigned
+// integer, shown as an UNSIGNED-INTEGER Value; PROFILE and DEFAULT-LANGUAGE
+// carry one Value; DOC-NAME and IMPORT-DOC-* their ids. Any
 // other Meta, or a known one whose payload does not fit its form, keeps Data nil.
 func headEntry(r core.Record) Entry {
 	e := newEntry(r)
 	switch r.Codec {
-	case core.MetaSpecVersion, core.MetaProfile, core.MetaDefaultLanguage:
+	case core.MetaSpecVersion:
+		e.Data = asData(specVersionValue(r))
+	case core.MetaProfile, core.MetaDefaultLanguage:
 		e.Data = asData(metaValue(r))
 	case core.MetaDocName:
 		e.Data = asData(parseDocName(r))

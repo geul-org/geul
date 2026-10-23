@@ -22,7 +22,7 @@ func sampleDoc(t *testing.T) []byte {
 	}
 	raw := func(r core.Record) []core.Word { ws, _ := core.EncodeRecord(r); return ws }
 	var in []core.Word
-	in = append(in, meta(core.MetaSpecVersion, core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("geul-t002")))...)
+	in = append(in, raw(core.EncodeSpecVersion(core.SpecVersion))...)
 	in = append(in, meta(core.MetaProfile, core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("tangeul-1.0")))...)
 	in = append(in, meta(core.MetaDefaultLanguage, core.EncodeBytesValue(core.CodecLanguageBCP47Even, []byte("ko")))...)
 	in = append(in, raw(core.Record{Kind: core.KindMeta, Codec: core.MetaDocName, Payload: []core.Word{1, 0, 0, 0, 5}})...)

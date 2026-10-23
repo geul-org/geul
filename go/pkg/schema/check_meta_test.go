@@ -18,6 +18,7 @@ func TestCheckMeta(t *testing.T) {
 		{raw(core.MetaDocName, 1), "M2"},
 		{raw(core.MetaImportDoc2Word, 1), "M3"},
 		{raw(core.MetaSpecVersion), "M4"},
+		{raw(core.MetaProfile), "M4"},
 		{raw(core.MetaDefaultLanguage), "M4"},
 		{raw(core.MetaEffectiveFrom), "M5"},
 		{raw(metaParent), "M6"},

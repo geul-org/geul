@@ -11,7 +11,7 @@ func TestStructure(t *testing.T) {
 	if _, fs := structure(nil, 0); rulesOf(fs) != "D1" {
 		t.Fatalf("empty: %+v", fs)
 	}
-	ws, _ := core.ReadWords(docOf([]core.Record{metaOf(core.MetaSpecVersion, core.EncodeBytesValue(0x40, []byte("x")))}, []core.Record{core.EncodeUintValue(1)}))
+	ws, _ := core.ReadWords(docOf([]core.Record{core.EncodeSpecVersion(core.SpecVersion)}, []core.Record{core.EncodeUintValue(1)}))
 	recs, _ := frame(ws)
 	parts, fs := structure(recs, len(ws))
 	if fs != nil || len(parts.Head) != 1 || len(parts.Body) != 1 {

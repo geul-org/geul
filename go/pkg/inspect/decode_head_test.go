@@ -13,11 +13,12 @@ func TestDecodeHead(t *testing.T) {
 	head := []core.Record{
 		{Kind: core.KindMeta, Codec: core.MetaImportDoc1Word, Payload: []core.Word{3, 1, 0, 0, 0, 2, 0, 0}},
 		{Kind: core.KindMeta, Codec: core.MetaProfile, Payload: vw},
-		{Kind: core.KindMeta, Codec: core.MetaSpecVersion, Payload: vw},
+		core.EncodeSpecVersion(core.SpecVersion),
 	}
 	entries, profile := decodeHead(head)
 	imp, ok := entries[0].Data.(ImportDoc)
-	if len(entries) != 3 || !ok || imp.ID != 3 || profile != "p-1.0" {
+	sv, _ := entries[2].Data.(Value)
+	if len(entries) != 3 || !ok || imp.ID != 3 || profile != "p-1.0" || sv.Uint != 2 {
 		t.Fatalf("got %+v %q", entries, profile)
 	}
 }

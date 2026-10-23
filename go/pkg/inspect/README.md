@@ -15,7 +15,7 @@ d, err := inspect.Decode(b) // Document{Head, Body, Profile, Toulmin}
 
 | Data | 레코드 |
 |---|---|
-| `Value` | HEAD의 SPEC-VERSION·PROFILE·DEFAULT-LANGUAGE, BODY의 독립 Value |
+| `Value` | HEAD의 SPEC-VERSION(UNSIGNED-INTEGER로 표시)·PROFILE·DEFAULT-LANGUAGE, BODY의 독립 Value |
 | `DocName`, `ImportDoc` | DOC-NAME, IMPORT-DOC-* (버전 ID 2 WORD, 0이면 최신) |
 | `Source`, `toulmin.TextPacket`, `ControlPacket`, `NodePacket`, `EdgePacket` | PROFILE이 `tangeul-1.x`일 때의 TOULMIN 레코드 |
 

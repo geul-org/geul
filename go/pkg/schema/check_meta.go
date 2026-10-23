@@ -16,7 +16,9 @@ func checkMeta(r rec) []Fact {
 		return checkDocName(r)
 	case core.ImportIssuerWidth(c) > 0:
 		return checkImportDoc(r)
-	case c == core.MetaSpecVersion || c == core.MetaProfile:
+	case c == core.MetaSpecVersion:
+		return checkSpecVersion(r)
+	case c == core.MetaProfile:
 		return checkEmbedded(r, "M4", "UTF8-TEXT", isUTF8Text)
 	case c == core.MetaDefaultLanguage:
 		return checkEmbedded(r, "M4", "LANGUAGE-BCP47-CODE 또는 LANGUAGE-SHORT-CODE", isLanguage)

@@ -73,7 +73,7 @@
 | M1 | 표에 없는 직접 코드는 예약이다. Meta에는 ISSUER 코드가 없다. |
 | M2 | `DOC-NAME`은 하나이고 Issuer 폭이 1/2/4/16이다. |
 | M3 | `IMPORT-DOC-*`: Issuer 폭이 Codec과 맞고, 버전 ID가 2 WORD이며, IMPORT ID가 최소 폭이고 문서 안에서 중복되지 않는다. |
-| M4 | `SPEC-VERSION`·`PROFILE`·`DEFAULT-LANGUAGE`은 각각 하나이고, 내장 Value가 해당 형식이다. |
+| M4 | `SPEC-VERSION`·`PROFILE`·`DEFAULT-LANGUAGE`은 각각 하나다. `SPEC-VERSION`의 Payload는 내장 Value 없이 가장 짧은 폭의 unsigned 정수다(t002 = `0x0002`). 나머지는 내장 Value가 해당 형식이다. |
 | M5 | `EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`은 각각 하나이고 GREGORIAN-DATE 또는 POSIX-TIMESTAMP-SECONDS다. 둘 다 있으면 FROM이 UNTIL보다 앞선다. |
 | M6 | `PARENT`는 SHA-256-DIGEST Value 하나다. M4~M6이 검사하는 Meta의 내장 Value는 V 규칙도 통과한다. 그 밖의 Meta Payload는 2층이다. |
 

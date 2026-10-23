@@ -2,8 +2,11 @@
 //ff:what version stamp — GEUL spec version, TANGEUL profile name and codebook version constants
 package toulmin
 
+import "github.com/geul-org/geul/go/pkg/core"
+
 // The version stamp a TANGEUL document declares in its HEAD (GEUL t002 TOULMIN
-// 문서): Meta SPEC-VERSION carries SpecVersion and Meta PROFILE carries
+// 문서): Meta SPEC-VERSION carries SpecVersion (core.SpecVersion, a bare
+// unsigned integer) and Meta PROFILE carries
 // "<ProfileName>-<major>.<minor>". A reader rejects a different SpecVersion or
 // an unknown codebook major; minor drift is tolerated (additive changes only).
 //
@@ -12,7 +15,7 @@ package toulmin
 // bit layout changed, so old readers must not accept the new files.
 const (
 	// SpecVersion is the GEUL specification this build writes and reads.
-	SpecVersion = "geul-t002"
+	SpecVersion = core.SpecVersion
 	// ProfileName names the TANGEUL profile in Meta PROFILE.
 	ProfileName = "tangeul"
 
