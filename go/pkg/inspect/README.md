@@ -1,6 +1,6 @@
 # inspect
 
-GEUL 문서(`.geul`)를 해석된 문서 모델로 읽는다. 문서를 보여 주는 도구(뷰어 ve, 텍스트 표현 geulmd)가 같은 해석을 쓰도록 한 곳에 둔다.
+GEUL 문서(`.geul`)를 해석된 문서 모델로 읽는다. 문서를 보여 주는 도구(뷰어 ve 등)가 같은 해석을 쓰도록 한 곳에 둔다.
 
 ```go
 d, err := inspect.Decode(b) // Document{Head, Body, Profile, Toulmin}
