@@ -112,12 +112,13 @@ Key 하나를 받는 순서(GEUL-ORG 위치 해석 순서).
 
 ## 버전 선택
 
-같은 문서(Issuer + 문서 ID)는 한 그래프 안에서 한 버전으로만 연결한다. 한 문서를 서로 다른 버전으로 동시에 읽으면 같은 LOCAL ID가 다른 대상을 가리킬 수 있기 때문이다.
+각 `IMPORT-DOC-*`은 자기가 고정한 판본에 바인딩된다. 새 버전은 호환을 약속하지 않으므로(OVERVIEW 계보 개정) 그래프 전체에서 버전을 하나로 합치지 않는다. 같은 문서의 여러 판본이 한 그래프에 함께 있을 수 있고, Node는 (문서, 버전)마다 하나다.
 
 1. 작업공간의 `use`·`replace`가 맞으면 그것.
-2. `IMPORT-DOC-*`이 버전을 고정했으면 그 버전. 여러 IMPORT가 다른 버전을 고정하면 가장 높은 버전 ID(Go 최소 버전 선택).
+2. `IMPORT-DOC-*`이 버전을 고정했으면 그 버전.
 3. 고정이 없으면 잠금 기록의 버전.
 4. 잠금도 없으면 최신을 받고(버전 로그로 확인), 받은 버전 ID와 내용 해시를 잠금에 남긴다.
+5. 시점 T를 정한 해석(`asOf`)이면 최신 대신 T에 시행 중인 판본을 고른다(`EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`, 조문별 `RECORD-EFFECTIVE`).
 
 - `EXTERNAL-ISSUER-*`는 명세상 "최신을 따른다". 이 패키지에서는 4번 규칙 안의 "최신"으로 다룬다. 같은 문서를 IMPORT로도 가져왔다면 IMPORT의 버전을 쓴다. 잠금 덕분에 지시선언도 재현된다.
 - 지시선언이 가리키는 문서의 IMPORT는 그 문서의 대상을 실제로 따라갈 때만 내려간다(지연 해석).
@@ -166,8 +167,7 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 ## 의존성 해석
 
 - 문서는 HEAD의 `IMPORT-DOC-*`으로 의존 문서를 적는다(Go `require`).
-- 공표 정의는 추가만 하고 바꾸지 않으므로 새 버전은 이전 버전을 포함한다. Go의 major 버전 구분이 필요 없다.
-- 같은 문서를 여러 버전으로 요구하면 가장 높은 버전 ID 하나를 고른다(Go 최소 버전 선택). 버전 ID가 순번이라 정수 비교로 고른다.
+- 새 버전은 호환을 약속하지 않는다. 같은 문서를 여러 버전으로 요구하면 각 판본을 따로 받아 각 IMPORT에 바인딩한다. 최소 버전 선택은 쓰지 않는다.
 - 버전 ID로 고정한 가져오기는 재현된다. 버전 ID가 0이면 잠금 기록이 재현을 맡는다.
 
 ## 구현 상태
@@ -179,7 +179,7 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 | Source: `Memory`, `Dir`(+`Publish`), `HTTP`, `Registry`(빈 구현) | `memory*.go`, `dir*.go`, `http*.go`, `registry*.go` |
 | 설정: `ConfigFromEnv`(GEULPROXY 기본 `https://geul.org,registry`, GEULPRIVATE), `Pattern` | `config*.go`, `parse_entry.go`, `parse_proxy.go`, `*pattern*.go` |
 | `Resolver.Fetch`: 출처 순서, `,`/`\|`, Private 건너뛰기, `off`, 검증 실패는 즉시 중단 | `resolver_fetch.go`, `fetch_from.go`, `verify_doc.go` |
-| `Resolver.Resolve`: IMPORT-DOC 재귀, 최소 버전 선택, 문서당 Node 하나 | `resolver_resolve.go`, `resolver_collect.go`, `keep_highest.go`, `link_imports.go` |
+| `Resolver.Resolve`: IMPORT-DOC 재귀. **명세 변경으로 고칠 것**: 지금은 최소 버전 선택·문서당 Node 하나로 구현되어 있다. (문서, 버전)마다 Node를 두고 IMPORT를 고정 판본에 바인딩하도록 바꾼다. `asOf` 해석도 없다. | `resolver_resolve.go`, `resolver_collect.go`, `keep_highest.go`, `link_imports.go` |
 | 내용 해시 | `core/content_hash.go` |
 
 버전 목록 임시 형식(GEUL-ORG가 서명 목록 형식을 정하기 전까지):
