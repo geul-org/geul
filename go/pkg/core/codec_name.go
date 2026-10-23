@@ -2,13 +2,19 @@
 //ff:what CodecName — the spec name of a Reference, Meta, Value, OVERVIEW Edge or ISSUER codec; "" otherwise
 package core
 
-// metaNames maps the Meta codecs this package defines to their spec names.
+// metaNames maps the Meta codecs (GEUL t002 OVERVIEW Meta, docs/meta) to their spec names.
 var metaNames = map[uint8]string{
 	MetaDoc1Word: "DOC-1WORD", MetaDoc2Word: "DOC-2WORD", MetaDoc4Word: "DOC-4WORD",
 	MetaBody: "BODY", MetaEnd: "END", MetaSpecVersion: "SPEC-VERSION", MetaProfile: "PROFILE",
 	MetaDocID: "DOC-ID", MetaEffectiveFrom: "EFFECTIVE-FROM", MetaEffectiveUntil: "EFFECTIVE-UNTIL", MetaDefaultLanguage: "DEFAULT-LANGUAGE",
 	MetaImportDoc1Word: "IMPORT-DOC-1WORD", MetaImportDoc2Word: "IMPORT-DOC-2WORD",
 	MetaImportDoc4Word: "IMPORT-DOC-4WORD", MetaImportDoc16Word: "IMPORT-DOC-16WORD",
+	0x20: "AUTHOR", 0x21: "CO-AUTHOR", 0x22: "CREATED-AT", 0x23: "MODIFIED-AT", 0x24: "RECORDED-BY",
+	0x25: "RECORDED-AT", 0x26: "SOURCE", 0x27: "SOURCE-SPAN", 0x28: "ACQUIRED-AT",
+	0x30: "PARENT", 0x31: "DERIVED-FROM", 0x32: "GENERATED-BY", 0x33: "TRANSFORMED-BY", 0x34: "CHERRY-PICKED-FROM",
+	0x35: "REVERTS", 0x36: "REPLACES", 0x37: "SQUASHED-FROM", 0x38: "MESSAGE", 0x39: "TAG",
+	0x40: "ISSUER-KEY", 0x41: "SIGNATURE", 0x42: "SIGNED-OFF", 0x43: "CONFIDENCE", 0x44: "VERDICT",
+	0x50: "LICENSE", 0x51: "ACCESS", 0x52: "PRIVACY", 0x53: "RETENTION", 0x54: "CONSENT", 0x55: "USAGE",
 }
 
 // refNames maps the 4-bit Reference codecs (CCCC) to their spec names.
@@ -35,12 +41,15 @@ var edgeNames = map[uint8]string{
 	0x54: "WHILE", 0x55: "FOREACH", 0x56: "JUMP", 0x57: "RETURN", 0x58: "RAISE", 0x59: "TRY",
 }
 
-// valueNames maps the direct Value codecs this package defines to their spec
+// valueNames maps the direct Value codecs (GEUL t002 docs/value) to their spec
 // names. The odd member of an even/odd byte-string pair shares the name.
 var valueNames = map[uint8]string{
-	CodecUnsignedInteger: "UNSIGNED-INTEGER", CodecSignedDecimal: "SIGNED-DECIMAL",
-	CodecUnsignedDecimal: "UNSIGNED-DECIMAL", CodecUTF8TextEven: "UTF8-TEXT", CodecUTF8TextEven | 1: "UTF8-TEXT",
-	CodecLanguageBCP47Even: "LANGUAGE-BCP47-CODE", CodecLanguageBCP47Even | 1: "LANGUAGE-BCP47-CODE",
+	0x00: "BOOL", 0x01: "SIGNED-INTEGER", CodecUnsignedInteger: "UNSIGNED-INTEGER", 0x03: "BINARY-FLOAT",
+	CodecSignedDecimal: "SIGNED-DECIMAL", CodecUnsignedDecimal: "UNSIGNED-DECIMAL",
+	CodecGregorianDate: "GREGORIAN-DATE", 0x21: "CIVIL-TIME-NANOSECONDS", CodecPosixSeconds: "POSIX-TIMESTAMP-SECONDS", 0x23: "DURATION-SECONDS",
+	CodecUTF8TextEven: "UTF8-TEXT", CodecUTF8TextEven | 1: "UTF8-TEXT", 0x42: "UTF8-NFC-TEXT", 0x43: "UTF8-NFC-TEXT",
+	0x44: "URI", 0x45: "URI", CodecLanguageBCP47Even: "LANGUAGE-BCP47-CODE", CodecLanguageBCP47Even | 1: "LANGUAGE-BCP47-CODE",
+	0x48: "LANGUAGE-SHORT-CODE", 0x60: "UUID", CodecSHA256Digest: "SHA-256-DIGEST",
 }
 
 // issuerNames maps the ISSUER codecs of the Value and Edge kinds to their names.

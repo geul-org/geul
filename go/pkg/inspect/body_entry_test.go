@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=sequence
-//ff:what TestBodyEntry — Values, profile gating, non-TOULMIN records, unnamed codecs and the lossless check
+//ff:what TestBodyEntry — Values, version list records, profile gating, non-TOULMIN records, unnamed codecs and the lossless check
 package inspect
 
 import (
@@ -13,6 +13,13 @@ func TestBodyEntry(t *testing.T) {
 	w := toulmin.Wire{Span: 1}
 	if e := bodyEntry(core.EncodeUintValue(2), false, &w); e.Data != (Value{Codec: core.CodecUnsignedInteger, Uint: 2}) {
 		t.Fatalf("value: %+v", e)
+	}
+	pub := core.Publication{Codec: core.EdgeDeprecation, EdgeID: 3, Doc: []core.Word{0, 0, 0, 1}, Version: 1}
+	if e := bodyEntry(core.EncodePublication(pub), false, &w); e.ID != 3 || e.Data.(core.Publication).Version != 1 {
+		t.Fatalf("publication: %+v", e)
+	}
+	if e := bodyEntry(core.Record{Kind: core.KindEdge, Codec: core.EdgePublication}, false, &w); e.Data != nil {
+		t.Fatalf("bad publication: %+v", e)
 	}
 	link, _ := toulmin.EncodeEdge(toulmin.EdgePacket{ID: 5, Prop: toulmin.PropAttacks, Src: 1, DstTID: 2}, w)
 	r, _, _ := core.DecodeRecord(link)

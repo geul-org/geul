@@ -11,13 +11,17 @@ import (
 // version whose EFFECTIVE-FROM is not after at. If that version's
 // EFFECTIVE-UNTIL has passed, nothing is in effect and the result is
 // ErrNotFound; older versions do not revive. Deprecation is ignored: a superseded
-// version still applies to its own period.
+// version still applies to its own period. Deleted versions are not served and
+// are passed over.
 func fetchAsOf(ctx context.Context, e Entry, k Key, at time.Time) (*Node, error) {
 	list, err := sourceList(ctx, e, k.DocKey())
 	if err != nil {
 		return nil, err
 	}
 	for i := len(list) - 1; i >= 0; i-- {
+		if list[i].Deleted {
+			continue
+		}
 		n, err := fetchVersion(ctx, e, k, list[i])
 		if err != nil {
 			return nil, err

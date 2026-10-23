@@ -18,6 +18,8 @@ const (
 	CodecGregorianDate uint8 = 0x20
 	// CodecPosixSeconds is a fixed 4-word signed int64 second count from the Unix epoch.
 	CodecPosixSeconds uint8 = 0x22
+	// CodecSHA256Digest is a fixed 16-word SHA-256 digest.
+	CodecSHA256Digest uint8 = 0x61
 	// CodecUTF8TextEven is valid UTF-8 without implied normalization (even bytes).
 	CodecUTF8TextEven uint8 = 0x40
 	// CodecLanguageBCP47Even is a canonical BCP 47 language tag (even bytes).

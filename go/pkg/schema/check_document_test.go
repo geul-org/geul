@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=sequence
-//ff:what TestCheckDocument — document-wide rules, version list rules only for document ID 0
+//ff:what TestCheckDocument — document-wide rules; version list rules only for a list document
 package schema
 
 import (
@@ -8,14 +8,13 @@ import (
 )
 
 func TestCheckDocument(t *testing.T) {
-	name := func(doc core.Word) rec {
-		return recOf(core.Record{Kind: core.KindMeta, Codec: core.MetaDocID, Payload: []core.Word{0, 0, 0, 0, doc}})
-	}
+	id := recOf(core.Record{Kind: core.KindMeta, Codec: core.MetaDocID, Payload: []core.Word{0, 0, 0, 0, 5}})
 	body := []rec{recOf(edgeOf(0, 1)), recOf(edgeOf(0, 1))}
-	if fs := checkDocument(docParts{Head: []rec{name(5)}, Body: body}); rulesOf(fs) != "E2" {
+	if fs := checkDocument(docParts{Head: []rec{id}, Body: body}); rulesOf(fs) != "E2" {
 		t.Fatalf("plain: %+v", fs)
 	}
-	if fs := checkDocument(docParts{Head: []rec{name(0)}, Body: body}); rulesOf(fs) != "E2,P1,P2,P1" {
+	list := []rec{recOf(edgeOf(core.EdgePublication, 1, append([]core.Word{0xffff, 0, 0, 2, 0, 1}, make([]core.Word, 16)...)...)), recOf(edgeOf(0, 1))}
+	if fs := checkDocument(docParts{Body: list}); rulesOf(fs) != "E2,P2,P1" {
 		t.Fatalf("list: %+v", fs)
 	}
 }

@@ -79,15 +79,15 @@
 
 ### P 버전 목록 문서 (edge/PUBLICATION)
 
-`DOC-ID`의 문서 ID가 0인 문서에 적용한다.
+`DOC-ID`가 없고 BODY가 `PUBLICATION`으로 시작하는 문서(`<Issuer>/<문서 ID>/versions.geul`)에 적용한다. 목록이 다루는 문서는 첫 `PUBLICATION`의 문서 ID다.
 
 | 규칙 | 내용 |
 |---|---|
-| P1 | `IMPORT-DOC-*`이 없고, BODY에는 `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`·`BIND`만 있다. |
+| P1 | `IMPORT-DOC-*`이 없고, BODY에는 그 문서의 `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`과 `BIND`만 있다. |
 | P2 | Edge Id는 1부터 이어지는 순번이다. |
 | P3 | 문서 ID마다 PUBLICATION의 버전 ID가 1부터 빠짐없이 오름차순이고, 같은 내용 해시를 다시 공표하지 않는다. |
 | P4 | DEPRECATION·TOMBSTONE은 앞에 나온 PUBLICATION을 가리킨다. |
-| P5 | `BIND`(문서 이름): Subject는 `EXTERNAL-ISSUER-*`(목록의 Issuer, 문서 ID, `0`)이고, 그 문서는 앞에 공표되었으며, 이름은 소문자 ASCII 슬러그이고, 다른 문서에 이미 묶인 이름이 아니다. |
+| P5 | `BIND`(문서 이름): Subject는 `EXTERNAL-ISSUER-*`(Issuer, 그 문서 ID, `0`)이고, 그 문서는 앞에 공표되었으며, 이름은 소문자 ASCII 슬러그다. Issuer 안 이름의 유일성은 목록 하나로 확인할 수 없어 1층 밖이다. |
 
 - 1층은 서명을 확인하지 않는다. 서명 검증과 `PARENT` 사슬 확인은 resolve와 검증기(ISSUER 서명 절)의 일이다.
 

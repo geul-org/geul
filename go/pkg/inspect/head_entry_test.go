@@ -10,8 +10,10 @@ import (
 
 func TestHeadEntry(t *testing.T) {
 	lw, _ := core.EncodeRecord(core.EncodeBytesValue(core.CodecLanguageBCP47Even, []byte("en")))
+	at, _ := core.EncodeRecord(core.EncodePosixSeconds(5))
 	typed := []core.Record{
 		{Kind: core.KindMeta, Codec: core.MetaDefaultLanguage, Payload: lw},
+		{Kind: core.KindMeta, Codec: 0x25, Payload: at},
 		{Kind: core.KindMeta, Codec: core.MetaDocID, Payload: []core.Word{1, 0, 0, 0, 2}},
 		{Kind: core.KindMeta, Codec: core.MetaImportDoc2Word, Payload: []core.Word{4, 1, 1, 0, 0, 0, 2, 0, 0}},
 	}
@@ -23,7 +25,7 @@ func TestHeadEntry(t *testing.T) {
 	if e := headEntry(core.Record{Kind: core.KindMeta, Codec: core.MetaSpecVersion}); e.Data != nil || e.Name != "SPEC-VERSION" {
 		t.Fatalf("malformed: %+v", e)
 	}
-	if e := headEntry(core.Record{Kind: core.KindMeta, Codec: 0x20, Payload: []core.Word{1}}); e.Data != nil || e.Name != "" {
+	if e := headEntry(core.Record{Kind: core.KindMeta, Codec: 0x29, Payload: []core.Word{1}}); e.Data != nil || e.Name != "" {
 		t.Fatalf("unknown: %+v", e)
 	}
 }

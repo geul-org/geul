@@ -7,7 +7,7 @@ func checkDocument(parts docParts) []Fact {
 	fs := countSingles(parts.Head)
 	fs = append(fs, checkEffectiveOrder(parts.Head)...)
 	fs = append(fs, edgeIDDups(parts.Body)...)
-	if isVersionList(parts.Head) {
+	if isVersionList(parts) {
 		fs = append(fs, checkVersionList(parts)...)
 	}
 	return fs

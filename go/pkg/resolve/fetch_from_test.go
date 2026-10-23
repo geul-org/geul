@@ -28,7 +28,7 @@ func TestFetchFrom(t *testing.T) {
 	if _, err := fetchFrom(ctx, Entry{Source: m}, sampleKey(1, 0)); !errors.Is(err, ErrVerify) {
 		t.Fatalf("bad list: %v", err)
 	}
-	m[listPath(k)] = []byte(formatVersionList([]VersionEntry{{Version: 1}}))
+	m[listPath(k)] = listDocOf(1, VersionEntry{Version: 1})
 	if _, err := fetchFrom(ctx, Entry{Source: m}, sampleKey(1, 0)); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("no file: %v", err)
 	}

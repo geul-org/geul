@@ -17,6 +17,12 @@ func TestCodecName(t *testing.T) {
 	if got := CodecName(KindValue, CodecUTF8TextEven|1); got != "UTF8-TEXT" {
 		t.Fatalf("value: %q", got)
 	}
+	if got := CodecName(KindValue, CodecPosixSeconds); got != "POSIX-TIMESTAMP-SECONDS" {
+		t.Fatalf("time value: %q", got)
+	}
+	if got := CodecName(KindValue, 0x24); got != "" {
+		t.Fatalf("reserved value: %q", got)
+	}
 	if got := CodecName(KindEdge, CodecIssuer2Word); got != "ISSUER-2WORD" {
 		t.Fatalf("issuer: %q", got)
 	}

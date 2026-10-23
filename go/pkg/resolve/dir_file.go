@@ -2,15 +2,9 @@
 //ff:what Dir.file — the local file a `.well-known/geul/` path maps to
 package resolve
 
-import (
-	"path/filepath"
-	"strings"
-)
+import "path/filepath"
 
-// file maps path to its file under Root; a version list path gets the list file.
+// file maps path to its file under Root.
 func (d Dir) file(path string) string {
-	if strings.HasSuffix(path, "/") {
-		path += listFile
-	}
 	return filepath.Join(d.Root, filepath.FromSlash(wellKnown), filepath.FromSlash(path))
 }

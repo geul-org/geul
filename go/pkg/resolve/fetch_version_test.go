@@ -11,7 +11,8 @@ import (
 func TestFetchVersion(t *testing.T) {
 	ctx := context.Background()
 	tree := sampleTree(t)
-	list, _ := tree.readList(sampleKey(1, 0).DocKey())
+	lg, _ := tree.readList(sampleKey(1, 0).DocKey())
+	list := lg.Entries
 	e := Entry{Name: "tree", Source: tree}
 	if n, err := fetchVersion(ctx, e, sampleKey(1, 0), list[0]); err != nil || n.Version != 1 || n.Source != "tree" {
 		t.Fatalf("ok: %+v %v", n, err)

@@ -1,26 +1,36 @@
 //ff:func feature=resolve type=resolver control=sequence
-//ff:what TestDirPublish — sequential versions, idempotent republish, list and hash files written; bad, unnamed, exhausted and unwritable inputs fail
+//ff:what TestDirPublish — sequential versions, PARENT chain, idempotent republish, list and hash files written; bad, unnamed, exhausted and broken-list inputs fail
 package resolve
 
 import (
 	"context"
-	"github.com/geul-org/geul/go/pkg/core"
 	"math"
 	"testing"
+
+	"github.com/geul-org/geul/go/pkg/core"
+	"github.com/geul-org/geul/go/pkg/inspect"
 )
 
 func TestDirPublish(t *testing.T) {
 	d := sampleTree(t)
 	k := sampleKey(1, 0).DocKey()
-	list, err := d.readList(k)
-	if err != nil || len(list) != 2 || list[0].Version != 1 || list[1].Version != 2 {
-		t.Fatalf("list: %+v %v", list, err)
+	lg, err := d.readList(k)
+	if err != nil || len(lg.Entries) != 2 || lg.Entries[0].Version != 1 || lg.Entries[1].Version != 2 {
+		t.Fatalf("list: %+v %v", lg, err)
+	}
+	b, _ := d.Fetch(context.Background(), listPath(k))
+	list, _ := inspect.Decode(b)
+	if list.Head[1].Name != "PARENT" {
+		t.Fatalf("second list has no PARENT: %+v", list.Head)
 	}
 	if e, err := d.Publish(sampleDoc(1, "A v1")); err != nil || e.Version != 1 {
 		t.Fatalf("republish: %+v %v", e, err)
 	}
-	if b, err := d.Fetch(context.Background(), hashPath(list[1].Hash)); err != nil || len(b) == 0 {
+	if b, err := d.Fetch(context.Background(), hashPath(lg.Entries[1].Hash)); err != nil || len(b) == 0 {
 		t.Fatalf("hash path: %v", err)
+	}
+	if b, err := d.Fetch(context.Background(), hashPath(lg.Hash)); err != nil || len(b) == 0 {
+		t.Fatalf("list kept under h/: %v", err)
 	}
 	if _, err := d.Publish([]byte{1}); err == nil {
 		t.Fatal("odd bytes: want error")
@@ -31,8 +41,7 @@ func TestDirPublish(t *testing.T) {
 	if _, err := d.Publish(core.PutWords(core.WrapDocument([]core.Word{0x180E, 0x180F}))); err == nil {
 		t.Fatal("unnamed: want error")
 	}
-	full := sampleKey(4, 0).DocKey()
-	if err := d.write(listPath(full), []byte(formatVersionList([]VersionEntry{{Version: math.MaxUint32}}))); err != nil {
+	if err := d.write(listPath(sampleKey(4, 0).DocKey()), listDocOf(4, VersionEntry{Version: math.MaxUint32})); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := d.Publish(sampleDoc(4, "x")); err == nil {

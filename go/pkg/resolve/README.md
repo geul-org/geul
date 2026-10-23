@@ -48,7 +48,7 @@ ID는 소문자 `0x` + 소문자 hex, 자릿수 = 폭 × 4로 적는다. 앞의 
 | 버전 고정 | `<Issuer>/<문서 ID>/<버전 ID>.geul` | 불변, 정본. 영구 캐시 |
 | 최신 | `<Issuer>/<문서 ID>.geul` | 가변. 서버는 302로 정본 주소에 보낸다 |
 | 내용 해시만 | `h/<내용 해시>.geul` | 불변 |
-| 버전 목록 | `<Issuer>/<문서 ID>/` | 가변, GEUL Issuer 서명 |
+| 버전 목록 | `<Issuer>/<문서 ID>/versions.geul` | 가변, 공표처 서명 (edge/PUBLICATION) |
 
 예: `IMPORT-DOC-1WORD #1 0x0001 0x…0002 (버전 0)` → `geul.org/.well-known/geul/0x0001/0x0000000000000002.geul`
 
@@ -91,7 +91,7 @@ type Source interface {
 
 | 구현 | 출처 항목 | 내용 |
 |---|---|---|
-| `Dir` | `file://<디렉터리>` | 로컬 디렉터리의 `.well-known/geul/`. 덤프·미러·캐시가 모두 이 구조다. 버전 목록 경로(`…/`)는 그 디렉터리의 `versions` 파일이다. `Publish`로 문서를 공표(버전 배정·저장·목록 추가)한다. |
+| `Dir` | `file://<디렉터리>` | 로컬 디렉터리의 `.well-known/geul/`. 덤프·미러·캐시가 모두 이 구조다. `Publish`로 문서를 공표한다: 버전 배정, 문서와 `h/` 사본 저장, 새 목록 문서(`PUBLICATION` 덧붙임, `PARENT` = 직전 목록) 저장, 직전 목록은 `h/`에 남는다. |
 | `HTTP` | `https://<기준>` | 기준 주소의 `.well-known/geul/`. 평문 `http://`는 `GEULINSECURE`가 생기기 전까지 받지 않는다. |
 | `Registry` | `registry` | geul.org 등록부에서 Issuer의 기준 주소를 받아 `HTTP`로 받는다. 등록부 API가 정해지기 전까지 모든 조회가 '없음'이다. |
 | `Memory` | (테스트) | 경로 → 바이트 맵. |
@@ -175,7 +175,7 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 | 됨 | 파일 |
 |---|---|
 | Key, DocKey, 주소(`versionPath`, `listPath`, `hashPath`, `FormatVersion`) | `key*.go`, `doc_key.go`, `*_path.go`, `format_version.go` |
-| 버전 목록(임시 텍스트 형식, 아래) | `version_entry.go`, `parse_version_*.go`, `format_version_list.go`, `pick_version.go` |
+| 버전 목록 문서(edge/PUBLICATION): 읽기·쓰기, DEPRECATION·TOMBSTONE 반영 | `version_entry.go`, `version_log.go`, `decode_version_list.go`, `encode_version_list.go`, `apply_list_record.go`, `add_publication.go`, `mark_version.go`, `pick_version.go` |
 | Source: `Memory`, `Dir`(+`Publish`), `HTTP`, `Registry`(빈 구현) | `memory*.go`, `dir*.go`, `http*.go`, `registry*.go` |
 | 설정: `ConfigFromEnv`(GEULPROXY 기본 `https://geul.org,registry`, GEULPRIVATE), `Pattern` | `config*.go`, `parse_entry.go`, `parse_proxy.go`, `*pattern*.go` |
 | `Resolver.Fetch`: 출처 순서, `,`/`\|`, Private 건너뛰기, `off`, 검증 실패는 즉시 중단 | `resolver_fetch.go`, `fetch_from.go`, `verify_doc.go` |
@@ -183,22 +183,15 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 | `Resolver.AsOf`: 최신(버전 0) IMPORT를 그 시점에 시행 중인 판본에 바인딩(`EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`) | `resolver_resolve_key.go`, `fetch_as_of.go`, `effective_*.go`, `meta_time.go`, `core/decode_time_value.go` |
 | 내용 해시 | `core/content_hash.go` |
 
-버전 목록 임시 형식(GEUL-ORG가 서명 목록 형식을 정하기 전까지):
-
-```
-0x00000001 0x<내용 해시 64자리>
-0x00000002 0x<내용 해시 64자리> deprecated
-```
-
 아직 없는 것:
 
 1. 잠금 기록, 작업공간(`geul.work`), 캐시(받은 문서를 `Dir`에 저장), `GEULLOG`·`GEULNOLOG`·`GEULINSECURE`.
-2. 조문별 시행일 `RECORD-EFFECTIVE`(근거 Edge 디코드 필요). 시행일 없는 판본은 처음부터 시행 중으로 본다(임시 목록에 공표 시각이 없다).
+2. 조문별 시행일 `RECORD-EFFECTIVE`(근거 Edge 디코드 필요). 시행일 없는 판본은 처음부터 시행 중으로 본다(공표 시각 `RECORDED-AT`은 아직 쓰지 않는다).
 3. 상한(깊이·문서 수·크기). 순환은 같은 Key를 한 번만 받으므로 끝나며, 거부하지 않는다.
 4. `core`에 지시·지시선언 Reference 디코드(Issuer·문서 ID·IMPORT ID·LOCAL ID 분리). 지금은 LOCAL만 있다.
 5. 참조 수집(독립 Reference + `inspect.Layout`의 내장 Reference), `EXTERNAL-ISSUER-*` 해석, `Target`.
-- 문서 이름 주소(`/<Issuer>/<문서 이름>/…`, 버전 목록의 `BIND`). 임시 텍스트 목록에는 이름이 없어 목록 문서(`versions.geul`)로 바꾼 뒤 구현한다.
-6. 버전 목록 서명 확인, `Registry` 조회(그 API·형식이 정해진 뒤).
+- 문서 이름 주소(`/<Issuer>/<문서 이름>/…`, 버전 목록의 `BIND`). 목록이 문서마다 있어 Issuer 단위 이름 색인이 정해진 뒤 구현한다.
+6. 버전 목록 서명·`PARENT` 사슬 확인, `Registry` 조회(그 API·형식이 정해진 뒤).
 
 ## 임시 공표 위치
 

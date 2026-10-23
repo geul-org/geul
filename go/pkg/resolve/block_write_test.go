@@ -5,7 +5,6 @@ package resolve
 import (
 	"os"
 	"path/filepath"
-	"strings"
 	"testing"
 )
 
@@ -20,7 +19,7 @@ func blockWrite(t *testing.T, d Dir, path string) {
 	}
 	var err error
 	switch {
-	case strings.HasSuffix(path, "/"):
+	case isListPath(path):
 		err = os.Symlink(filepath.Join(d.Root, "no", "such"), f)
 	default:
 		err = os.MkdirAll(f, 0o755)

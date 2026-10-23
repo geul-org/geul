@@ -4,7 +4,6 @@ package resolve
 
 // Dir is a local directory laid out like the public address space:
 // `<Root>/.well-known/geul/<path>`. Dumps, mirrors and caches share the layout.
-// A version list path (ending in `/`) is the `versions` file in that directory.
 type Dir struct {
 	Root string
 }

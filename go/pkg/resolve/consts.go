@@ -7,6 +7,6 @@ const (
 	geulOrg = "https://geul.org"
 	// wellKnown is the path every source serves documents under (RFC 8615).
 	wellKnown = ".well-known/geul"
-	// listFile is the file a Dir keeps a version list in, for the `<Issuer>/<문서 ID>/` path.
-	listFile = "versions"
+	// listFile is a document's version list document (edge/PUBLICATION).
+	listFile = "versions.geul"
 )

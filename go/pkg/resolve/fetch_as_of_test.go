@@ -1,5 +1,5 @@
 //ff:func feature=resolve type=resolver control=iteration dimension=1
-//ff:what TestFetchAsOf — the version in effect at each instant; before the first, after a sunset, and broken sources fail
+//ff:what TestFetchAsOf — the version in effect at each instant; before the first, after a sunset, deleted versions skipped, and broken sources fail
 package resolve
 
 import (
@@ -26,9 +26,13 @@ func TestFetchAsOf(t *testing.T) {
 	if _, err := fetchAsOf(ctx, Entry{Source: Memory{}}, k, day(150)); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("no list: %v", err)
 	}
-	m := Memory{listPath(k.DocKey()): []byte(formatVersionList([]VersionEntry{{Version: 1}}))}
+	m := Memory{listPath(k.DocKey()): listDocOf(5, VersionEntry{Version: 1})}
 	if _, err := fetchAsOf(ctx, Entry{Source: m}, k, day(150)); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("no file: %v", err)
+	}
+	gone := Memory{listPath(k.DocKey()): listDocOf(5, VersionEntry{Version: 1, Deleted: true}), versionPath(k.DocKey(), 1): []byte("junk")}
+	if _, err := fetchAsOf(ctx, Entry{Source: gone}, k, day(150)); !errors.Is(err, ErrNotFound) {
+		t.Fatalf("deleted not skipped: %v", err)
 	}
 	bad := Dir{Root: t.TempDir()}
 	enc := func(r core.Record) []core.Word { ws, _ := core.EncodeRecord(r); return ws }
