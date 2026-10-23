@@ -10,12 +10,12 @@ import (
 )
 
 // renderImportDoc renders Meta IMPORT-DOC-*: the IMPORT ID, the Issuer (its
-// width names the codec), the 4-word document ID and, when pinned, the 16-word
-// version ID. An unpinned import follows the latest version.
+// width names the codec), the 4-word document ID and, when pinned, the 2-word
+// version ID. An unpinned import (version 0) follows the latest version.
 func renderImportDoc(v inspect.ImportDoc) string {
 	s := "IMPORT-DOC #" + strconv.FormatUint(v.ID, 10) + " " + core.FormatID(v.Issuer) + " " + core.FormatID(v.Doc)
-	if v.Version != nil {
-		s += " v=" + core.FormatID(v.Version)
+	if v.Version != 0 {
+		s += " v=" + core.FormatID([]core.Word{core.Word(v.Version >> 16), core.Word(v.Version)})
 	}
 	return s
 }

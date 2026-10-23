@@ -11,7 +11,7 @@ import (
 func TestDecodeHead(t *testing.T) {
 	vw, _ := core.EncodeRecord(core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("p-1.0")))
 	head := []core.Record{
-		{Kind: core.KindMeta, Codec: core.MetaImportDoc1Word, Payload: append([]core.Word{3, 1, 0, 0, 0, 2}, make([]core.Word, 16)...)},
+		{Kind: core.KindMeta, Codec: core.MetaImportDoc1Word, Payload: []core.Word{3, 1, 0, 0, 0, 2, 0, 0}},
 		{Kind: core.KindMeta, Codec: core.MetaProfile, Payload: vw},
 		{Kind: core.KindMeta, Codec: core.MetaSpecVersion, Payload: vw},
 	}

@@ -9,14 +9,13 @@ import (
 )
 
 func TestParseImportDoc(t *testing.T) {
-	latest := append([]core.Word{3, 1, 0, 0, 0, 2}, make([]core.Word, 16)...)
+	latest := []core.Word{3, 1, 0, 0, 0, 2, 0, 0}
 	d, ok := parseImportDoc(core.Record{Codec: core.MetaImportDoc1Word, Payload: latest})
-	if !ok || d.ID != 3 || len(d.Issuer) != 1 || d.Doc[3] != 2 || d.Version != nil {
+	if !ok || d.ID != 3 || len(d.Issuer) != 1 || d.Doc[3] != 2 || d.Version != 0 {
 		t.Fatalf("latest: %+v %v", d, ok)
 	}
-	pinned := append([]core.Word{1, 3, 1, 0, 0, 0, 2}, make([]core.Word, 16)...)
-	pinned[len(pinned)-1] = 9
-	if d, ok := parseImportDoc(core.Record{Codec: core.MetaImportDoc1Word, Payload: pinned}); !ok || d.ID != 0x10003 || len(d.Version) != 16 {
+	pinned := []core.Word{1, 3, 1, 0, 0, 0, 2, 1, 9}
+	if d, ok := parseImportDoc(core.Record{Codec: core.MetaImportDoc1Word, Payload: pinned}); !ok || d.ID != 0x10003 || d.Version != 0x10009 {
 		t.Fatalf("pinned: %+v %v", d, ok)
 	}
 	bad := []core.Record{

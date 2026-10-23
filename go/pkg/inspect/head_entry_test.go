@@ -13,7 +13,7 @@ func TestHeadEntry(t *testing.T) {
 	typed := []core.Record{
 		{Kind: core.KindMeta, Codec: core.MetaDefaultLanguage, Payload: lw},
 		{Kind: core.KindMeta, Codec: core.MetaDocName, Payload: []core.Word{1, 0, 0, 0, 2}},
-		{Kind: core.KindMeta, Codec: core.MetaImportDoc2Word, Payload: append([]core.Word{4, 1, 1, 0, 0, 0, 2}, make([]core.Word, 16)...)},
+		{Kind: core.KindMeta, Codec: core.MetaImportDoc2Word, Payload: []core.Word{4, 1, 1, 0, 0, 0, 2, 0, 0}},
 	}
 	for _, r := range typed {
 		if e := headEntry(r); e.Data == nil || e.Name == "" {

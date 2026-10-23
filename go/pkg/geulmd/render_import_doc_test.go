@@ -15,9 +15,8 @@ func TestRenderImportDoc(t *testing.T) {
 	if got := renderImportDoc(v); got != "IMPORT-DOC #3 0x0001 0x0000000000000002" {
 		t.Fatalf("plain: %q", got)
 	}
-	v.Version = make([]core.Word, 16)
-	v.Version[15] = 1
-	if got := renderImportDoc(v); !strings.HasSuffix(got, " v=0x"+strings.Repeat("0", 63)+"1") {
+	v.Version = 0x10002
+	if got := renderImportDoc(v); !strings.HasSuffix(got, " v=0x00010002") {
 		t.Fatalf("pinned: %q", got)
 	}
 }
