@@ -17,13 +17,13 @@ pkg/resolve/           IMPORT 의존성 해석 (Resolver 주입)
 pkg/schema/            형식 검증 (0층 → Codec 규격 → 격틀)
 ```
 
-- GEUL과 다른 표현 사이의 코덱(`geulgson`, `geulnl`, `gsongeul`, `wikigeul`, `nlgeul`)은 이 라이브러리가 아니라 TANGEUL 문서로 작성한다(geul-dev `draft/t002/codec/`). 이 라이브러리는 코덱 문서가 부르는 호스트 함수와 그 문서를 실행하는 기반을 제공한다.
+- GEUL과 다른 표현 사이의 코덱(`geulnl`, `wikigeul`, `nlgeul`)은 이 라이브러리가 아니라 TANGEUL 문서로 작성한다(geul-dev `draft/t002/codec/`). 이 라이브러리는 코덱 문서가 부르는 호스트 함수와 그 문서를 실행하는 기반을 제공한다.
 
 ## 흐름
 
 ```
 .geul 바이트 → core → Doc ─┬→ schema  (Fact)
-                ↑          └→ 코덱 문서(TANGEUL) 실행 → GSON·자연어 등
+                ↑          └→ 코덱 문서(TANGEUL) 실행 → 자연어 등
      resolve: IMPORT-DOC-* → 아카이브 → 외부 Doc 연결
 
 코덱 문서(TANGEUL) 실행 → core 빌더 → 정규형 바이트 → 버전 ID
@@ -45,7 +45,7 @@ pkg/schema/            형식 검증 (0층 → Codec 규격 → 격틀)
 
 ## 단계
 
-1. core 읽기·쓰기와 원형 GSON 왕복
+1. core 읽기·쓰기 왕복
 2. 정규형과 버전 ID
 3. 파일 Resolver와 IMPORT
 4. schema 격틀 검사와 Fact. 모호함 지적 데모
