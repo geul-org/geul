@@ -8,8 +8,9 @@ import (
 )
 
 // DecodeBind reads a BIND Edge (GEUL t002 docs/edge/BIND): the LOCAL Edge Id,
-// exactly one Reference record (the Subject) and exactly one UTF8-TEXT Value
-// (the name), with nothing after it.
+// the Subject — one Reference record, or a lone TAG WORD standing for a codec
+// (CodecSubject) — and exactly one UTF8-TEXT Value (the name), with nothing
+// after it.
 func DecodeBind(r Record) (Bind, error) {
 	if r.Kind != KindEdge || r.Codec != EdgeBind {
 		return Bind{}, fmt.Errorf("geul/core: not a BIND Edge (kind %d codec 0x%02X)", r.Kind, r.Codec)
@@ -23,8 +24,8 @@ func DecodeBind(r Record) (Bind, error) {
 		return Bind{}, err
 	}
 	subj, m, err := DecodeRecord(r.Payload[n:])
-	if err != nil || subj.Kind != KindReference {
-		return Bind{}, errors.New("geul/core: BIND Subject must be one Reference record")
+	if _, isCodec := CodecSubject(subj); err != nil || subj.Kind != KindReference && !isCodec {
+		return Bind{}, errors.New("geul/core: BIND Subject must be one Reference record or a codec TAG WORD")
 	}
 	name, k, err := DecodeRecord(r.Payload[n+m:])
 	if err != nil || n+m+k != len(r.Payload) {

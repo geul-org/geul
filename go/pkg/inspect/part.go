@@ -7,10 +7,13 @@ import "github.com/geul-org/geul/go/pkg/core"
 // Part is one field of a record's encoding, in word order. Head marks the TAG
 // WORD and its extensions (Length, Issuer, format number); every other part is
 // payload. Record marks an embedded record (a LOCAL Reference or a Value), whose
-// first word is its own TAG WORD.
+// first word is its own TAG WORD. A part laid out by codec spec carries the
+// ENUM name of a raw code in Enum and the decoded Value of a record in Data.
 type Part struct {
 	Name   string
 	Words  []core.Word
 	Head   bool
 	Record bool
+	Enum   string
+	Data   any
 }

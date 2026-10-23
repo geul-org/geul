@@ -1,5 +1,5 @@
 //ff:func feature=core type=decoder control=iteration dimension=1
-//ff:what TestDecodeBind — a BIND decodes; wrong codec, bad Edge Id, non-Reference Subject, missing or trailing name and a non-text name fail
+//ff:what TestDecodeBind — a BIND decodes, with a Reference or a codec TAG Subject; wrong codec, bad Edge Id, other Subjects, missing or trailing name and a non-text name fail
 package core
 
 import "testing"
@@ -17,6 +17,9 @@ func TestDecodeBind(t *testing.T) {
 	b, err := DecodeBind(Record{Kind: KindEdge, Codec: EdgeBind, Payload: cat(id, subj, name)})
 	if err != nil || b.EdgeID != 3 || b.Subject.Payload[0] != 7 || string(b.Name) != "main" {
 		t.Fatalf("got %+v %v", b, err)
+	}
+	if b, err := DecodeBind(Record{Kind: KindEdge, Codec: EdgeBind, Payload: cat(id, []Word{0x1018}, name)}); err != nil || b.Subject.Codec != EdgePublication {
+		t.Fatalf("codec subject: %+v %v", b, err)
 	}
 	bad := [][]Word{
 		nil,

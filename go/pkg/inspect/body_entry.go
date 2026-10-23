@@ -10,8 +10,7 @@ import (
 )
 
 // bodyEntry interprets a BODY record. A standalone Value of a known codec
-// carries its Value; a version list record (PUBLICATION, DEPRECATION,
-// TOMBSTONE) outside TANGEUL its core.Publication and Edge Id. Under the TANGEUL profile (tg) an Edge record takes its
+// carries its Value. Under the TANGEUL profile (tg) an Edge record takes its
 // TOULMIN name and, when it decodes and re-encodes to the same words, its
 // packet, Edge Id and references. Everything else stays bare.
 func bodyEntry(r core.Record, tg bool, w *toulmin.Wire) Entry {
@@ -20,11 +19,6 @@ func bodyEntry(r core.Record, tg bool, w *toulmin.Wire) Entry {
 	switch {
 	case r.Kind == core.KindValue:
 		e.Data = asData(parseValue(r))
-		return e
-	case !tg && r.Kind == core.KindEdge && r.Codec >= core.EdgePublication && r.Codec <= core.EdgeTombstone:
-		if p, err := core.DecodePublication(r); err == nil {
-			e.Data, e.ID = p, p.EdgeID
-		}
 		return e
 	case !tg || err != nil:
 		return e

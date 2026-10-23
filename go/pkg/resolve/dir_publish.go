@@ -4,7 +4,6 @@ package resolve
 
 import (
 	"errors"
-	"time"
 
 	"github.com/geul-org/geul/go/pkg/core"
 	"github.com/geul-org/geul/go/pkg/inspect"
@@ -31,26 +30,5 @@ func (d Dir) Publish(b []byte) (VersionEntry, error) {
 	if !ok {
 		return VersionEntry{}, errors.New("geul/resolve: publishing needs a DOC-ID")
 	}
-	k := Key{Issuer: id.Issuer, Doc: id.Doc}.DocKey()
-	lg, err := d.readList(k)
-	if err != nil {
-		return VersionEntry{}, err
-	}
-	if e, ok := findHash(lg.Entries, h); ok {
-		return e, nil
-	}
-	v, ok := nextVersion(lg.Entries)
-	if !ok {
-		return VersionEntry{}, errors.New("geul/resolve: version IDs used up; publish under a new document ID")
-	}
-	rec := core.EncodePublication(core.Publication{Codec: core.EdgePublication, EdgeID: uint64(len(lg.Records)) + 1, Doc: id.Doc, Version: v, Hash: h})
-	var parent *[32]byte
-	if lg.Present {
-		parent = &lg.Hash
-	}
-	list := encodeVersionList(append(lg.Records, rec), parent, time.Now().Unix())
-	if err := d.writeAll(map[string][]byte{versionPath(k, v): b, hashPath(h): b, hashPath(listHash(list)): list, listPath(k): list}); err != nil {
-		return VersionEntry{}, err
-	}
-	return VersionEntry{Version: v, Hash: h}, nil
+	return d.publishAt(Key{Issuer: id.Issuer, Doc: id.Doc}.DocKey(), id.Doc, b, h)
 }

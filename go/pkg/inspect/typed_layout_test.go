@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what TestTypedLayout — each version list or TOULMIN record content walks its whole payload; other content has no typed layout
+//ff:what TestTypedLayout — each TOULMIN record content walks its whole payload; other content has no typed layout
 package inspect
 
 import (
@@ -15,7 +15,6 @@ func TestTypedLayout(t *testing.T) {
 	ctl, _ := toulmin.EncodeControl(toulmin.ControlPacket{ID: 3, Code: toulmin.ControlCaseEnd, Arg: 1}, testWire)
 	node, _ := toulmin.EncodeNode(toulmin.NodePacket{TID: 4, Type: toulmin.NodeCase}, testWire)
 	edge, _ := toulmin.EncodeEdge(toulmin.EdgePacket{ID: 5, Prop: toulmin.PropAttacks, Src: 1, DstTID: 4}, testWire)
-	dep, _ := core.EncodeRecord(core.EncodePublication(core.Publication{Codec: core.EdgeDeprecation, EdgeID: 1, Doc: []core.Word{0, 0, 0, 1}, Version: 1}))
 	cases := []struct {
 		ws   []core.Word
 		data any
@@ -25,7 +24,6 @@ func TestTypedLayout(t *testing.T) {
 		{ctl, toulmin.ControlPacket{ID: 3, Code: toulmin.ControlCaseEnd, Arg: 1}},
 		{node, toulmin.NodePacket{TID: 4, Type: toulmin.NodeCase}},
 		{edge, toulmin.EdgePacket{ID: 5, Prop: toulmin.PropAttacks, Src: 1, DstTID: 4}},
-		{dep, core.Publication{Codec: core.EdgeDeprecation}},
 	}
 	for i, c := range cases {
 		r, _, _ := core.DecodeRecord(c.ws)

@@ -7,9 +7,10 @@ import (
 	"errors"
 )
 
-// readList reads the version list of k; a document never published has none
+// readList reads the version list at k's address, whose records name the
+// document ID doc (canonical hex); a document never published has none
 // (Present false).
-func (d Dir) readList(k DocKey) (versionLog, error) {
+func (d Dir) readList(k DocKey, doc string) (versionLog, error) {
 	b, err := d.Fetch(context.Background(), listPath(k))
 	if errors.Is(err, ErrNotFound) {
 		return versionLog{}, nil
@@ -17,5 +18,5 @@ func (d Dir) readList(k DocKey) (versionLog, error) {
 	if err != nil {
 		return versionLog{}, err
 	}
-	return decodeVersionList(b, k)
+	return decodeVersionList(b, doc)
 }

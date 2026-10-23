@@ -14,7 +14,7 @@ import (
 func TestDirPublish(t *testing.T) {
 	d := sampleTree(t)
 	k := sampleKey(1, 0).DocKey()
-	lg, err := d.readList(k)
+	lg, err := d.readList(k, k.Doc)
 	if err != nil || len(lg.Entries) != 2 || lg.Entries[0].Version != 1 || lg.Entries[1].Version != 2 {
 		t.Fatalf("list: %+v %v", lg, err)
 	}

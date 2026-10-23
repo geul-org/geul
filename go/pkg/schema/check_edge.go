@@ -2,14 +2,10 @@
 //ff:what checkEdge — E1, E3 and E4 for one Edge record
 package schema
 
-import (
-	"fmt"
-
-	"github.com/geul-org/geul/go/pkg/core"
-)
+import "fmt"
 
 // checkEdge applies E1 (leading LOCAL Edge Id, not 0), E3 (reserved codec) and E4
-// (layout of the core-embedded version list codecs).
+// (layout of the core-embedded codecs).
 func checkEdge(r rec) []Fact {
 	var fs []Fact
 	if id, ok := edgeID(r); !ok {
@@ -20,10 +16,8 @@ func checkEdge(r rec) []Fact {
 	if !edgeDefined(r.R.Codec) {
 		fs = append(fs, factAt("E3", Warn, r, "Codec", "배정된 Edge 코드", fmt.Sprintf("0x%02X (예약)", r.R.Codec)))
 	}
-	if r.R.Codec >= core.EdgePublication && r.R.Codec <= core.EdgeTombstone {
-		if _, err := core.DecodePublication(r.R); err != nil {
-			fs = append(fs, factAt("E4", Error, r, "Payload", "edge/PUBLICATION 레이아웃", err.Error()))
-		}
+	if want, err := builtinLayout(r.R); err != nil {
+		fs = append(fs, factAt("E4", Error, r, "Payload", want, err.Error()))
 	}
 	return fs
 }

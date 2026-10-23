@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=sequence
-//ff:what TestPayloadParts — the fitting SPAN width is found; content without a fitting typed layout falls back to generic parts
+//ff:what TestPayloadParts — a codec spec lays out first; the fitting SPAN width is found; content without a fitting typed layout falls back to generic parts
 package inspect
 
 import (
@@ -20,5 +20,9 @@ func TestPayloadParts(t *testing.T) {
 	r.Payload = r.Payload[:len(r.Payload)-1]
 	if parts := payloadParts(Entry{Record: r, Data: p}); len(parts) != 2 || parts[1].Name != "payload" {
 		t.Fatalf("no fitting width: %+v", parts)
+	}
+	tomb := core.EncodePublication(core.Publication{Codec: core.EdgeTombstone, EdgeID: 3, Doc: []core.Word{0, 0, 0, 1}, Version: 1, Reason: 1})
+	if parts := payloadParts(Entry{Record: tomb, Spec: tombstoneSpec()[0x101A]}); len(parts) != 4 || parts[3].Enum != "license" {
+		t.Fatalf("spec: %+v", parts)
 	}
 }

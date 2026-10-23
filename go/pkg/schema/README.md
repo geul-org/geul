@@ -64,7 +64,7 @@
 | E1 | Payload 첫 요소가 LOCAL Reference(Quantifier `000`)다. 그 LOCAL ID가 Edge Id이며 `0`이 아니다(`0`은 문서 자신). |
 | E2 | Edge Id는 문서 안에서 중복되지 않는다. |
 | E3 | 서술·실행·TOULMIN 직접 코드의 Reserved 구간은 예약이다. |
-| E4 | core 내장 Codec(`PUBLICATION`·`DEPRECATION`·`TOMBSTONE`)은 레이아웃이 맞다(Edge Id 뒤 22·6·7 WORD). |
+| E4 | core 내장 Codec은 레이아웃이 맞다. `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`(Edge Id 뒤 22·6·7 WORD), `DECLARE`·`FIELD`·`ENUM`(edge/DECLARE·FIELD·ENUM). |
 
 ### M Meta (OVERVIEW Meta)
 

@@ -6,7 +6,7 @@ package schema
 // tables) or an ISSUER code.
 func edgeDefined(c uint8) bool {
 	switch {
-	case c <= 0x05, c >= 0x08 && c <= 0x0B, c >= 0x10 && c <= 0x12, c >= 0x18 && c <= 0x1A:
+	case c <= 0x05, c >= 0x08 && c <= 0x0B, c >= 0x10 && c <= 0x12, c >= 0x18 && c <= 0x1D:
 		return true
 	case c >= 0x20 && c <= 0x26, c >= 0x41 && c <= 0x59:
 		return true
