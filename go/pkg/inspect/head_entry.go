@@ -5,20 +5,17 @@ package inspect
 import "github.com/geul-org/geul/go/pkg/core"
 
 // headEntry interprets a HEAD Meta record. SPEC-VERSION, PROFILE and
-// DEFAULT-LANGUAGE carry one Value, ID-WIDTH its Widths, DOC-NAME and
-// IMPORT-DOC their ids. Any other Meta, or a known one whose payload does not
-// fit its form, keeps Data nil.
-func headEntry(r core.Record, w Widths) Entry {
+// DEFAULT-LANGUAGE carry one Value, DOC-NAME and IMPORT-DOC-* their ids. Any
+// other Meta, or a known one whose payload does not fit its form, keeps Data nil.
+func headEntry(r core.Record) Entry {
 	e := newEntry(r)
 	switch r.Codec {
 	case core.MetaSpecVersion, core.MetaProfile, core.MetaDefaultLanguage:
 		e.Data = asData(metaValue(r))
-	case core.MetaIDWidth:
-		e.Data = asData(parseWidths(r))
 	case core.MetaDocName:
 		e.Data = asData(parseDocName(r))
-	case core.MetaImportDoc:
-		e.Data = asData(parseImportDoc(r, w.Import))
+	case core.MetaImportDoc1Word, core.MetaImportDoc2Word, core.MetaImportDoc4Word, core.MetaImportDoc16Word:
+		e.Data = asData(parseImportDoc(r))
 	}
 	return e
 }

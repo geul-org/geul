@@ -10,10 +10,10 @@ import (
 )
 
 // TestControlRoundTrip checks each framing control survives encode/decode at 1-
-// and 2-word widths, including a case REF that needs the 2-word width.
+// and 2-word SPAN widths, including a case REF past one word.
 func TestControlRoundTrip(t *testing.T) {
 	s := Span{Off: 9, Len: 3}
-	wide := Wire{ID: 2, Span: 2}
+	wide := Wire{Span: 2}
 	cases := []struct {
 		w  Wire
 		in ControlPacket

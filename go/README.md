@@ -25,7 +25,7 @@ pkg/schema/            스키마 적합 검사 (형식, 격틀)
 ```
 .geul 바이트 → core → Doc ─┬→ schema  (Fact)
                 ↑          └→ 코덱 문서(TANGEUL) 실행 → GSON·자연어 등
-     resolve: IMPORT-DOC → 아카이브 → 외부 Doc 연결
+     resolve: IMPORT-DOC-* → 아카이브 → 외부 Doc 연결
 
 코덱 문서(TANGEUL) 실행 → core 빌더 → 정규형 바이트 → 버전 ID
 ```

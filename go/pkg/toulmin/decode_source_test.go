@@ -17,14 +17,14 @@ func TestDecodeSource(t *testing.T) {
 		{Kind: core.KindValue},
 		{Kind: core.KindEdge, Codec: core.CodecIssuer1Word, Issuer: []core.Word{0}, Format: FormatText},
 		src(),
-		src(1),
-		src(1, 0x0001),
-		src(1, 0),
-		src(1, 0, 0x0882, 1),
-		src(1, 0, 0x0840, 0),
+		src(0x00C0, 1),
+		src(0x00C0, 1, 0x0001),
+		src(0x00C0, 1, 0),
+		src(0x00C0, 1, 0, 0x0882, 1),
+		src(0x00C0, 1, 0, 0x0840, 0),
 	}
 	for i, r := range bad {
-		if _, _, err := DecodeSource(r, 1); err == nil {
+		if _, _, err := DecodeSource(r); err == nil {
 			t.Fatalf("bad %d: want error", i)
 		}
 	}

@@ -20,7 +20,7 @@ func decodeControlArg(ws []core.Word, pos *int, p *ControlPacket, w Wire) error 
 		p.Arg = uint64(sec)
 		return err
 	default:
-		t, err := TakeID(ws, pos, w.ID)
+		t, err := TakeID(ws, pos)
 		p.Arg = uint64(t)
 		return err
 	}

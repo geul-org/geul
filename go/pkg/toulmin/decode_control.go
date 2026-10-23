@@ -22,7 +22,7 @@ func DecodeControl(r core.Record, w Wire) (ControlPacket, error) {
 	}
 	ws, pos := r.Payload, 0
 	p := ControlPacket{Code: code}
-	if p.ID, err = TakeID(ws, &pos, w.ID); err != nil {
+	if p.ID, err = TakeID(ws, &pos); err != nil {
 		return ControlPacket{}, err
 	}
 	if err := decodeControlArg(ws, &pos, &p, w); err != nil {

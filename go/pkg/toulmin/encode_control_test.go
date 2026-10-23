@@ -1,5 +1,5 @@
 //ff:func feature=toulmin type=encoder control=iteration dimension=1
-//ff:what TestEncodeControl — SECTION golden plus retired-control, ID, PROSE, section-code and REF errors
+//ff:what TestEncodeControl — SECTION golden plus retired-control, PROSE and section-code errors
 package toulmin
 
 import (
@@ -13,16 +13,14 @@ import (
 // 0xC002, Edge Id, section code) and checks every error.
 func TestEncodeControl(t *testing.T) {
 	got, err := EncodeControl(ControlPacket{ID: 3, Code: ControlSection, Arg: 5}, testWire)
-	if want := []core.Word{0x127C, 0, 0xC002, 3, 5}; err != nil || !reflect.DeepEqual(got, want) {
+	if want := []core.Word{0x12FC, 0, 0xC002, 0x00C0, 3, 5}; err != nil || !reflect.DeepEqual(got, want) {
 		t.Fatalf("section: %04X %v want %04X", got, err, want)
 	}
 	bad := []ControlPacket{
 		{Code: 0},
-		{Code: ControlSection, ID: 0x10000},
 		{Code: ControlProse},
 		{Code: ControlProse, Span: &Span{Off: 0x10000}},
 		{Code: ControlSection, Arg: 0x10000},
-		{Code: ControlCaseBegin, Arg: 0x10000},
 	}
 	for i, p := range bad {
 		if _, err := EncodeControl(p, testWire); err == nil {

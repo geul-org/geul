@@ -1,5 +1,5 @@
 //ff:func feature=toulmin type=encoder control=sequence
-//ff:what TestPutID — appends a width-word field; overflow fails
+//ff:what TestPutID — appends a LOCAL Reference record in minimal words
 package toulmin
 
 import (
@@ -10,10 +10,10 @@ import (
 )
 
 func TestPutID(t *testing.T) {
-	if got, err := PutID([]core.Word{9}, 0x10001, 2); err != nil || !reflect.DeepEqual(got, []core.Word{9, 1, 1}) {
-		t.Fatalf("got %v %v", got, err)
+	if got := PutID([]core.Word{9}, 3); !reflect.DeepEqual(got, []core.Word{9, 0x00C0, 3}) {
+		t.Fatalf("got %04X", got)
 	}
-	if _, err := PutID(nil, 0x10000, 1); err == nil {
-		t.Fatal("overflow: want error")
+	if got := PutID(nil, 0x10001); !reflect.DeepEqual(got, []core.Word{0x0140, 1, 1}) {
+		t.Fatalf("got %04X", got)
 	}
 }

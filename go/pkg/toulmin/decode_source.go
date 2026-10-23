@@ -9,9 +9,8 @@ import (
 )
 
 // DecodeSource decodes r as the SOURCE record and returns its text plus the
-// SPAN width it declares for every other record. idWidth is the document's Edge
-// Id width. The width word's low 14 bits are reserved and must be 0.
-func DecodeSource(r core.Record, idWidth int) (TextPacket, int, error) {
+// SPAN width it declares for every other record. The width word's low 14 bits are reserved and must be 0.
+func DecodeSource(r core.Record) (TextPacket, int, error) {
 	ref, err := RecordRef(r)
 	if err != nil {
 		return TextPacket{}, 0, err
@@ -20,7 +19,7 @@ func DecodeSource(r core.Record, idWidth int) (TextPacket, int, error) {
 		return TextPacket{}, 0, errors.New("geul/toulmin: record is not the SOURCE")
 	}
 	ws, pos := r.Payload, 0
-	id, err := TakeID(ws, &pos, idWidth)
+	id, err := TakeID(ws, &pos)
 	if err != nil {
 		return TextPacket{}, 0, err
 	}

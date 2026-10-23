@@ -14,12 +14,12 @@ import (
 func TestSourceRoundTrip(t *testing.T) {
 	for _, sw := range []int{1, 2, 4, 8} {
 		in := TextPacket{TID: 1, Bytes: []byte("# doc\n")}
-		ws, err := EncodeSource(in, Wire{ID: 1, Span: sw})
+		ws, err := EncodeSource(in, Wire{Span: sw})
 		if err != nil {
 			t.Fatal(err)
 		}
 		r, _, _ := core.DecodeRecord(ws)
-		got, gotW, err := DecodeSource(r, 1)
+		got, gotW, err := DecodeSource(r)
 		if err != nil || gotW != sw || got.TID != 1 || !bytes.Equal(got.Bytes, in.Bytes) {
 			t.Fatalf("span width %d: got %+v %d %v", sw, got, gotW, err)
 		}

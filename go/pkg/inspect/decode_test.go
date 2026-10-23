@@ -13,7 +13,7 @@ func TestDecode(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(d.Head) != 7 || len(d.Body) != 8 || d.Profile != "tangeul-1.0" || !d.Toulmin || d.Widths != (Widths{1, 1, 1}) {
+	if len(d.Head) != 6 || len(d.Body) != 8 || d.Profile != "tangeul-1.0" || !d.Toulmin {
 		t.Fatalf("got %+v", d)
 	}
 	if _, ok := d.Body[3].Data.(toulmin.NodePacket); !ok || d.Body[3].Name != "CASE-DECLARE" || d.Body[4].ID != 12 {

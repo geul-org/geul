@@ -13,9 +13,9 @@ func TestRender(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := []string{
-		"```geul\nSPEC-VERSION \"geul-t002\"\nPROFILE \"tangeul-1.0\"\nID-WIDTH edge=1 var=1 import=1\nDEFAULT-LANGUAGE lang\"ko\"\nDOC-NAME 0x0001 0x0000000000000005\nIMPORT-DOC #1 0x0001 0x0000000000000002\nRECORD META 0x2a : 0x0007\n```\n",
+		"```geul\nSPEC-VERSION \"geul-t002\"\nPROFILE \"tangeul-1.0\"\nDEFAULT-LANGUAGE lang\"ko\"\nDOC-NAME 0x0001 0x0000000000000005\nIMPORT-DOC #1 0x0001 0x0000000000000002\nRECORD META 0x2a : 0x0007\n```\n",
 		"SOURCE #9 span=1 \"# t\\n\"", "TEXT #10 \"n\"", "SECTION #11 5", "CASE-DECLARE #1 role=0 level=0 @0+4",
-		"LABEL #12 #1 -> #10 @0+4", "RECORD EDGE 0x61 : 0x000d 0x0000", "VALUE uint(5)", "RECORD VALUE 0x03 : 0x3c00",
+		"LABEL #12 #1 -> #10 @0+4", "RECORD EDGE 0x61 : 0x00c0 0x000d 0x0000", "VALUE uint(5)", "RECORD VALUE 0x03 : 0x3c00",
 	}
 	for _, w := range want {
 		if !strings.Contains(out, w) {

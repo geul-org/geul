@@ -1,12 +1,13 @@
 //ff:type feature=inspect type=model
-//ff:what ImportDoc — Meta IMPORT-DOC: IMPORT ID, Issuer, document ID and optional pinned version ID
+//ff:what ImportDoc — Meta IMPORT-DOC-*: IMPORT ID, Issuer, document ID and pinned version ID
 package inspect
 
 import "github.com/geul-org/geul/go/pkg/core"
 
-// ImportDoc is Meta IMPORT-DOC (GEUL t002 OVERVIEW IMPORT): the IMPORT ID this
+// ImportDoc is Meta IMPORT-DOC-* (GEUL t002 OVERVIEW IMPORT): the IMPORT ID this
 // document uses for the imported one, its Issuer and 4-word document ID, and
-// the 16-word version ID when the import is pinned (nil otherwise).
+// the 16-word version ID it is pinned to. Version is nil when the wire version
+// is all zero, which means the latest version.
 type ImportDoc struct {
 	ID      uint64
 	Issuer  []core.Word

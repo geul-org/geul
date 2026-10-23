@@ -1,13 +1,32 @@
 //ff:func feature=core type=helper control=selection
-//ff:what CodecName — the spec name of a Meta, Value or ISSUER codec this package knows; "" otherwise
+//ff:what CodecName — the spec name of a Reference, Meta, Value, execution Edge or ISSUER codec; "" otherwise
 package core
 
 // metaNames maps the Meta codecs this package defines to their spec names.
 var metaNames = map[uint8]string{
 	MetaDoc1Word: "DOC-1WORD", MetaDoc2Word: "DOC-2WORD", MetaDoc4Word: "DOC-4WORD",
 	MetaBody: "BODY", MetaEnd: "END", MetaSpecVersion: "SPEC-VERSION", MetaProfile: "PROFILE",
-	MetaDocName: "DOC-NAME", MetaIDWidth: "ID-WIDTH", MetaDefaultLanguage: "DEFAULT-LANGUAGE",
-	MetaImportDoc: "IMPORT-DOC",
+	MetaDocName: "DOC-NAME", MetaDefaultLanguage: "DEFAULT-LANGUAGE",
+	MetaImportDoc1Word: "IMPORT-DOC-1WORD", MetaImportDoc2Word: "IMPORT-DOC-2WORD",
+	MetaImportDoc4Word: "IMPORT-DOC-4WORD", MetaImportDoc16Word: "IMPORT-DOC-16WORD",
+}
+
+// refNames maps the 4-bit Reference codecs (CCCC) to their spec names.
+var refNames = map[uint8]string{
+	RefExternalPointer1Word: "EXTERNAL-POINTER-1WORD", RefExternalPointer2Word: "EXTERNAL-POINTER-2WORD",
+	RefExternalPointer4Word: "EXTERNAL-POINTER-4WORD", RefExternalPointer8Word: "EXTERNAL-POINTER-8WORD",
+	RefExternalIssuer1Word: "EXTERNAL-ISSUER-1WORD", RefExternalIssuer2Word: "EXTERNAL-ISSUER-2WORD",
+	RefExternalIssuer4Word: "EXTERNAL-ISSUER-4WORD", RefExternalIssuer16Word: "EXTERNAL-ISSUER-16WORD",
+	RefLocal: "LOCAL", RefGeul: "GEUL", RefWikidataQID: "WIKIDATA-QID", RefWikidataPID: "WIKIDATA-PID",
+}
+
+// edgeNames maps the execution-family direct Edge codecs (GEUL t002 OVERVIEW
+// 실행) to their spec names. Profile families such as TOULMIN name their own.
+var edgeNames = map[uint8]string{
+	0x40: "SYMBOL-DECLARE", 0x41: "FUNCTION-DECLARE", 0x42: "TYPE-DECLARE",
+	0x48: "CONST", 0x49: "UNARY", 0x4A: "BINARY", 0x4B: "CALL", 0x4C: "MEMBER", 0x4D: "INDEX",
+	0x4E: "CONSTRUCT", 0x4F: "CONDITIONAL", 0x50: "BLOCK", 0x51: "ASSIGN", 0x52: "IF", 0x53: "SWITCH",
+	0x54: "WHILE", 0x55: "FOREACH", 0x56: "JUMP", 0x57: "RETURN", 0x58: "RAISE", 0x59: "TRY",
 }
 
 // valueNames maps the direct Value codecs this package defines to their spec
@@ -25,10 +44,13 @@ var issuerNames = map[uint8]string{
 }
 
 // CodecName returns the spec name of codec under kind k (GEUL t002 OVERVIEW):
-// a Meta code, a direct Value code or an ISSUER code. Codes defined by a
-// profile (such as the TOULMIN Edge codes) and unknown codes return "".
+// a Reference code (named by CCCC, ignoring the Quantifier), a Meta code, a
+// direct Value code, an execution Edge code or an ISSUER code. Codes defined by
+// a profile (such as the TOULMIN Edge codes) and unknown codes return "".
 func CodecName(k Kind, codec uint8) string {
 	switch {
+	case k == KindReference:
+		return refNames[codec>>3]
 	case k == KindMeta:
 		return metaNames[codec]
 	case IssuerWidth(k, codec) > 0:
@@ -36,6 +58,6 @@ func CodecName(k Kind, codec uint8) string {
 	case k == KindValue:
 		return valueNames[codec]
 	default:
-		return ""
+		return edgeNames[codec]
 	}
 }

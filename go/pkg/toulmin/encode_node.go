@@ -19,11 +19,7 @@ func EncodeNode(p NodePacket, w Wire) ([]core.Word, error) {
 		objKind = p.Claim.Kind
 	}
 	header := core.Word(uint16(p.Role)<<14 | uint16(p.Level)<<9 | uint16(objKind)<<7 | uint16(p.Flags))
-	body, err := PutID(nil, p.TID, w.ID)
-	if err != nil {
-		return nil, err
-	}
-	body, err = encodeNodeSlots(append(body, header), p, w)
+	body, err := encodeNodeSlots(append(PutID(nil, p.TID), header), p, w)
 	if err != nil {
 		return nil, err
 	}

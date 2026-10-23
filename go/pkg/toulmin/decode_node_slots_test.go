@@ -11,13 +11,13 @@ import (
 func TestDecodeNodeSlots(t *testing.T) {
 	all := NodeFlagFunc | NodeFlagQual | NodeFlagCheck | NodeFlagClaim | NodeFlagVerdict | NodeFlagWith | NodeFlagGrounds
 	ws := []core.Word{
-		3, 0x7400, // FuncRef
+		0x00C0, 3, 0x7400, // FuncRef
 		0x0990, 0xFFFF, 0xFFFF, 8, // qualifier 0.8
-		9,          // checking REF
-		4, 7, 8, 1, // Claim
+		0x00C0, 9, // checking REF
+		0x00C0, 4, 7, 0x00C0, 8, 1, // Claim
 		0x0990, 0, 0, 1, // verdict 1
-		1, 5, // with [5]
-		1, 6, // grounds [6]
+		0x0882, 1, 0x00C0, 5, // with [5]
+		0x0882, 1, 0x00C0, 6, // grounds [6]
 	}
 	p, pos := NodePacket{Flags: all}, 0
 	if err := decodeNodeSlots(ws, &pos, &p, ObjTID, testWire); err != nil || pos != len(ws) || *p.Check != 9 || p.Claim.Mode != 1 || len(p.With) != 1 || len(p.Grounds) != 1 {

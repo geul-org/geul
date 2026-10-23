@@ -1,5 +1,5 @@
 //ff:func feature=toulmin type=encoder control=sequence
-//ff:what TestEncodeWith — count then REFs; a failing item before the last and at the end both error
+//ff:what TestEncodeWith — UNSIGNED-INTEGER count then one LOCAL REF per item; empty list is the count alone
 package toulmin
 
 import (
@@ -10,13 +10,11 @@ import (
 )
 
 func TestEncodeWith(t *testing.T) {
-	if got, err := encodeWith(nil, []TID{5, 6}, testWire); err != nil || !reflect.DeepEqual(got, []core.Word{2, 5, 6}) {
-		t.Fatalf("got %v %v", got, err)
+	want := []core.Word{0x0882, 2, 0x00C0, 5, 0x00C0, 6}
+	if got := encodeWith(nil, []TID{5, 6}); !reflect.DeepEqual(got, want) {
+		t.Fatalf("got %04X", got)
 	}
-	if _, err := encodeWith(nil, []TID{0x10000, 1}, testWire); err == nil {
-		t.Fatal("bad first item: want error")
-	}
-	if _, err := encodeWith(nil, []TID{0x10000}, testWire); err == nil {
-		t.Fatal("bad last item: want error")
+	if got := encodeWith([]core.Word{9}, nil); !reflect.DeepEqual(got, []core.Word{9, 0x0882, 0}) {
+		t.Fatalf("empty: %04X", got)
 	}
 }

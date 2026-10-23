@@ -1,5 +1,5 @@
 //ff:func feature=toulmin type=encoder control=sequence
-//ff:what TestEncodeFuncRef — Alias REF then VerbCode; an alias past the width fails
+//ff:what TestEncodeFuncRef — Alias LOCAL REF then VerbCode
 package toulmin
 
 import (
@@ -10,10 +10,7 @@ import (
 )
 
 func TestEncodeFuncRef(t *testing.T) {
-	if got, err := encodeFuncRef(nil, FuncRef{Alias: 2, Verb: 0x7400}, testWire); err != nil || !reflect.DeepEqual(got, []core.Word{2, 0x7400}) {
-		t.Fatalf("got %04X %v", got, err)
-	}
-	if _, err := encodeFuncRef(nil, FuncRef{Alias: 0x10000}, testWire); err == nil {
-		t.Fatal("alias past width: want error")
+	if got := encodeFuncRef(nil, FuncRef{Alias: 2, Verb: 0x7400}); !reflect.DeepEqual(got, []core.Word{0x00C0, 2, 0x7400}) {
+		t.Fatalf("got %04X", got)
 	}
 }

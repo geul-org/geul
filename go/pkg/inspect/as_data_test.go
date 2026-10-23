@@ -5,10 +5,10 @@ package inspect
 import "testing"
 
 func TestAsData(t *testing.T) {
-	if got := asData(Widths{Edge: 2}, true); got != (Widths{Edge: 2}) {
+	if got := asData(DocName{Doc: nil}, true); got == nil {
 		t.Fatalf("ok: %v", got)
 	}
-	if got := asData(Widths{Edge: 2}, false); got != nil {
+	if got := asData(DocName{}, false); got != nil {
 		t.Fatalf("not ok: %v", got)
 	}
 }

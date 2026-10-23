@@ -1,5 +1,5 @@
 //ff:func feature=toulmin type=decoder control=iteration dimension=1
-//ff:what decodeWith — read the F_WITH count and TEXT REFs at *pos
+//ff:what decodeWith — read the F_WITH count Value and TEXT REFs at *pos
 package toulmin
 
 import (
@@ -8,20 +8,26 @@ import (
 	"github.com/geul-org/geul/go/pkg/core"
 )
 
-// decodeWith reads the `with` list at ws[*pos]: the count at Edge Id width, then
-// that many TEXT REFs. A count larger than the remaining payload could hold is
-// rejected before allocating.
-func decodeWith(ws []core.Word, pos *int, w Wire) ([]TID, error) {
-	n, err := TakeID(ws, pos, w.ID)
+// decodeWith reads the `with` list at ws[*pos]: the UNSIGNED-INTEGER count, then
+// that many TEXT REFs. Each REF is at least 2 words, so a count larger than the
+// remaining payload could hold is rejected before allocating.
+func decodeWith(ws []core.Word, pos *int) ([]TID, error) {
+	v, err := TakeValue(ws, pos)
 	if err != nil {
 		return nil, err
 	}
-	if uint64(n) > uint64(len(ws)-*pos)/uint64(w.ID) {
+	n, err := core.DecodeUintValue(v)
+	if err != nil {
+		return nil, err
+	}
+	if n > uint64(len(ws)-*pos)/2 {
 		return nil, errors.New("geul/toulmin: F_WITH list longer than the payload")
 	}
 	out := make([]TID, n)
 	for i := range out {
-		out[i], _ = TakeID(ws, pos, w.ID)
+		if out[i], err = TakeID(ws, pos); err != nil {
+			return nil, err
+		}
 	}
 	return out, nil
 }

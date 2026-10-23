@@ -22,13 +22,7 @@ func EncodeEdge(p EdgePacket, w Wire) ([]core.Word, error) {
 	if once {
 		flags &^= EdgeFlagOnce
 	}
-	body, err := PutID(nil, p.ID, w.ID)
-	if err == nil {
-		body, err = PutID(body, p.Src, w.ID)
-	}
-	if err == nil {
-		body, err = encodeEdgeDst(body, p, w)
-	}
+	body, err := encodeEdgeDst(PutID(PutID(nil, p.ID), p.Src), p, w)
 	if err != nil {
 		return nil, err
 	}

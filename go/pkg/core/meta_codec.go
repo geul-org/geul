@@ -21,10 +21,15 @@ const (
 	MetaProfile uint8 = 0x11
 	// MetaDocName names this document: Issuer + 4-word document ID.
 	MetaDocName uint8 = 0x12
-	// MetaIDWidth declares the Edge Id / Variable ID / IMPORT ID widths.
-	MetaIDWidth uint8 = 0x13
 	// MetaDefaultLanguage declares the default language.
 	MetaDefaultLanguage uint8 = 0x16
-	// MetaImportDoc imports another document under an IMPORT ID.
-	MetaImportDoc uint8 = 0x60
+	// MetaImportDoc1Word imports a 1-word Issuer's document under an IMPORT ID.
+	// The low 2 bits of the IMPORT-DOC codes give the Issuer width.
+	MetaImportDoc1Word uint8 = 0x60
+	// MetaImportDoc2Word imports a 2-word Issuer's document.
+	MetaImportDoc2Word uint8 = 0x61
+	// MetaImportDoc4Word imports a 4-word Issuer's document.
+	MetaImportDoc4Word uint8 = 0x62
+	// MetaImportDoc16Word imports a 16-word Issuer's document.
+	MetaImportDoc16Word uint8 = 0x63
 )

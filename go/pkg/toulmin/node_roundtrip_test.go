@@ -1,5 +1,5 @@
 //ff:func feature=toulmin type=helper control=iteration dimension=1
-//ff:what TestNodeRoundTrip — NODE records round-trip every slot combination at 1- and 2-word widths
+//ff:what TestNodeRoundTrip — NODE records round-trip every slot combination at 1- and 2-word SPAN widths
 package toulmin
 
 import (
@@ -12,7 +12,7 @@ import (
 // TestNodeRoundTrip encodes NODE records with every flag-gated field (FuncRef,
 // qualifier, checking REF, each Claim object kind, verdict, with list) under
 // rule and non-rule codecs and checks DecodeNode restores them exactly, at the
-// narrow widths and at 2-word Edge Id / SPAN widths.
+// narrow SPAN width and at a 2-word SPAN width.
 func TestNodeRoundTrip(t *testing.T) {
 	q, v := VFix(8000), VFix(-2500)
 	chk := TID(9)
@@ -27,7 +27,7 @@ func TestNodeRoundTrip(t *testing.T) {
 		{TID: 4, Type: NodeField, Flags: NodeFlagClaim, Claim: &Claim{Kind: ObjSpan, ObjSpan: Span{Off: 1, Len: 2}}},
 		{TID: 5, Type: NodeRule, Role: RoleExcept, Flags: NodeFlagWith, With: []TID{}},
 	}
-	wires := []Wire{testWire, {ID: 2, Span: 2}}
+	wires := []Wire{testWire, {Span: 2}}
 	for k := 0; k < len(wires)*len(cases); k++ {
 		w, i := wires[k/len(cases)], k%len(cases)
 		in := cases[i]

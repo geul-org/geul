@@ -12,14 +12,11 @@ import (
 // (a REF, an UNSIGNED-INTEGER Value or a SPAN by c.Kind) and the mode word. The
 // kind itself goes into the NODE header word. An unknown Kind is an error.
 func encodeClaim(out []core.Word, c Claim, w Wire) ([]core.Word, error) {
-	out, err := PutID(out, c.Subject, w.ID)
-	if err != nil {
-		return nil, err
-	}
-	out = append(out, core.Word(c.Predicate))
+	var err error
+	out = append(PutID(out, c.Subject), core.Word(c.Predicate))
 	switch c.Kind {
 	case ObjTID:
-		out, err = PutID(out, c.ObjTID, w.ID)
+		out = PutID(out, c.ObjTID)
 	case ObjNum:
 		out, err = PutValue(out, core.EncodeUintValue(uint64(c.ObjNum)))
 	case ObjSpan:

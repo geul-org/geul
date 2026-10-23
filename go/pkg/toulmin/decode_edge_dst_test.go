@@ -10,11 +10,11 @@ import (
 
 func TestDecodeEdgeDst(t *testing.T) {
 	p, pos := EdgePacket{Prop: PropDo}, 0
-	if err := decodeEdgeDst([]core.Word{3, 9}, &pos, &p, testWire); err != nil || p.DstFunc == nil || p.DstFunc.Verb != 9 {
+	if err := decodeEdgeDst([]core.Word{0x00C0, 3, 9}, &pos, &p, testWire); err != nil || p.DstFunc == nil || p.DstFunc.Verb != 9 {
 		t.Fatalf("func: %v %+v", err, p)
 	}
 	p, pos = EdgePacket{Prop: PropAttacks}, 0
-	if err := decodeEdgeDst([]core.Word{4}, &pos, &p, testWire); err != nil || p.DstTID != 4 {
+	if err := decodeEdgeDst([]core.Word{0x00C0, 4}, &pos, &p, testWire); err != nil || p.DstTID != 4 {
 		t.Fatalf("ref: %v %+v", err, p)
 	}
 	for _, prop := range []PropCode{0x0FFF, PropProvenance} {

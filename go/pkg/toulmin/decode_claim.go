@@ -7,7 +7,7 @@ import "github.com/geul-org/geul/go/pkg/core"
 // decodeClaim reads a Claim block at ws[*pos] (subject REF, predicate word,
 // object of kind, mode word) and advances *pos. kind comes from the NODE header.
 func decodeClaim(ws []core.Word, pos *int, kind ObjKind, w Wire) (Claim, error) {
-	subject, err := TakeID(ws, pos, w.ID)
+	subject, err := TakeID(ws, pos)
 	if err != nil {
 		return Claim{}, err
 	}

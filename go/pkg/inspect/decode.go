@@ -20,7 +20,7 @@ func Decode(b []byte) (Document, error) {
 	if err != nil {
 		return Document{}, err
 	}
-	head, widths, profile := decodeHead(d.Head)
+	head, profile := decodeHead(d.Head)
 	tg := toulmin.CheckProfile(profile) == nil
-	return Document{Head: head, Body: decodeBody(d.Body, widths.Edge, tg), Widths: widths, Profile: profile, Toulmin: tg}, nil
+	return Document{Head: head, Body: decodeBody(d.Body, tg), Profile: profile, Toulmin: tg}, nil
 }

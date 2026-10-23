@@ -1,12 +1,15 @@
 //ff:func feature=core type=helper control=sequence
-//ff:what TestCodecName — Meta, Value, ISSUER and unknown codecs
+//ff:what TestCodecName — Reference, Meta, Value, execution Edge, ISSUER and unknown codecs
 package core
 
 import "testing"
 
 func TestCodecName(t *testing.T) {
-	if got := CodecName(KindMeta, MetaIDWidth); got != "ID-WIDTH" {
+	if got := CodecName(KindMeta, MetaImportDoc4Word); got != "IMPORT-DOC-4WORD" {
 		t.Fatalf("meta: %q", got)
+	}
+	if got := CodecName(KindMeta, 0x13); got != "" {
+		t.Fatalf("removed ID-WIDTH: %q", got)
 	}
 	if got := CodecName(KindValue, CodecUTF8TextEven|1); got != "UTF8-TEXT" {
 		t.Fatalf("value: %q", got)
@@ -14,10 +17,16 @@ func TestCodecName(t *testing.T) {
 	if got := CodecName(KindEdge, CodecIssuer2Word); got != "ISSUER-2WORD" {
 		t.Fatalf("issuer: %q", got)
 	}
+	if got := CodecName(KindEdge, 0x40); got != "SYMBOL-DECLARE" {
+		t.Fatalf("execution edge: %q", got)
+	}
 	if got := CodecName(KindEdge, 0x60); got != "" {
 		t.Fatalf("profile edge: %q", got)
 	}
-	if got := CodecName(KindReference, 0x01); got != "" {
+	if got := CodecName(KindReference, RefLocal<<3|4); got != "LOCAL" {
 		t.Fatalf("reference: %q", got)
+	}
+	if got := CodecName(KindReference, 0x7F); got != "" {
+		t.Fatalf("reserved reference: %q", got)
 	}
 }

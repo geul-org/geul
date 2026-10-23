@@ -20,7 +20,7 @@ func decodeNodeSlots(ws []core.Word, pos *int, p *NodePacket, objKind ObjKind, w
 	}
 	if err == nil && p.Flags&NodeFlagCheck != 0 {
 		var t TID
-		t, err = TakeID(ws, pos, w.ID)
+		t, err = TakeID(ws, pos)
 		p.Check = &t
 	}
 	if err == nil && p.Flags&NodeFlagClaim != 0 {
@@ -32,10 +32,10 @@ func decodeNodeSlots(ws []core.Word, pos *int, p *NodePacket, objKind ObjKind, w
 		p.Verdict, err = TakeVFix(ws, pos)
 	}
 	if err == nil && p.Flags&NodeFlagWith != 0 {
-		p.With, err = decodeWith(ws, pos, w)
+		p.With, err = decodeWith(ws, pos)
 	}
 	if err == nil && p.Flags&NodeFlagGrounds != 0 {
-		p.Grounds, err = decodeWith(ws, pos, w)
+		p.Grounds, err = decodeWith(ws, pos)
 	}
 	return err
 }

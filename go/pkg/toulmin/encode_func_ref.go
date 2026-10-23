@@ -4,12 +4,8 @@ package toulmin
 
 import "github.com/geul-org/geul/go/pkg/core"
 
-// encodeFuncRef appends f to out: the Alias REF at the Edge Id width, then the
+// encodeFuncRef appends f to out: the Alias REF (a LOCAL Reference), then the
 // VerbCode word. Label is not written — it rides as a TEXT + LABEL pair.
-func encodeFuncRef(out []core.Word, f FuncRef, w Wire) ([]core.Word, error) {
-	out, err := PutID(out, f.Alias, w.ID)
-	if err != nil {
-		return nil, err
-	}
-	return append(out, core.Word(f.Verb)), nil
+func encodeFuncRef(out []core.Word, f FuncRef) []core.Word {
+	return append(PutID(out, f.Alias), core.Word(f.Verb))
 }

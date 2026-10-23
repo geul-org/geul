@@ -17,7 +17,7 @@ func encodeNodeSlots(out []core.Word, p NodePacket, w Wire) ([]core.Word, error)
 		if p.Func == nil {
 			return nil, errors.New("geul/toulmin: F_FUNC set but Func is nil")
 		}
-		out, err = encodeFuncRef(out, *p.Func, w)
+		out = encodeFuncRef(out, *p.Func)
 	}
 	if err == nil && p.Flags&NodeFlagQual != 0 {
 		if p.Qual == nil {
@@ -29,7 +29,7 @@ func encodeNodeSlots(out []core.Word, p NodePacket, w Wire) ([]core.Word, error)
 		if p.Check == nil {
 			return nil, errors.New("geul/toulmin: F_CHECK set but Check is nil")
 		}
-		out, err = PutID(out, *p.Check, w.ID)
+		out = PutID(out, *p.Check)
 	}
 	if err == nil && p.Flags&NodeFlagClaim != 0 {
 		if p.Claim == nil {
@@ -43,11 +43,14 @@ func encodeNodeSlots(out []core.Word, p NodePacket, w Wire) ([]core.Word, error)
 		}
 		out, err = PutValue(out, EncodeVFixValue(*p.Verdict))
 	}
-	if err == nil && p.Flags&NodeFlagWith != 0 {
-		out, err = encodeWith(out, p.With, w)
+	if err != nil {
+		return nil, err
 	}
-	if err == nil && p.Flags&NodeFlagGrounds != 0 {
-		out, err = encodeWith(out, p.Grounds, w)
+	if p.Flags&NodeFlagWith != 0 {
+		out = encodeWith(out, p.With)
 	}
-	return out, err
+	if p.Flags&NodeFlagGrounds != 0 {
+		out = encodeWith(out, p.Grounds)
+	}
+	return out, nil
 }

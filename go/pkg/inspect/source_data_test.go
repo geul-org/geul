@@ -10,8 +10,8 @@ import (
 )
 
 func TestSourceData(t *testing.T) {
-	w := toulmin.Wire{ID: 1, Span: 1}
-	src, _ := toulmin.EncodeSource(toulmin.TextPacket{TID: 7, Bytes: []byte("ab")}, toulmin.Wire{ID: 1, Span: 4})
+	w := toulmin.Wire{Span: 1}
+	src, _ := toulmin.EncodeSource(toulmin.TextPacket{TID: 7, Bytes: []byte("ab")}, toulmin.Wire{Span: 4})
 	r, _, _ := core.DecodeRecord(src)
 	data, enc, err := sourceData(r, &w)
 	s, ok := data.(Source)

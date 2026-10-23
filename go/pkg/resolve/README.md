@@ -1,6 +1,6 @@
 # resolve
 
-`IMPORT-DOC`이 가리키는 문서를 찾아 연결한다.
+`IMPORT-DOC-*`이 가리키는 문서를 찾아 연결한다.
 
 ## Resolver
 

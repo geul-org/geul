@@ -5,10 +5,10 @@ package toulmin
 import "testing"
 
 func TestEncodeEdgeDst(t *testing.T) {
-	if got, err := encodeEdgeDst(nil, EdgePacket{Prop: PropDo, DstFunc: &FuncRef{Alias: 3, Verb: 9}}, testWire); err != nil || len(got) != 2 {
+	if got, err := encodeEdgeDst(nil, EdgePacket{Prop: PropDo, DstFunc: &FuncRef{Alias: 3, Verb: 9}}, testWire); err != nil || len(got) != 3 {
 		t.Fatalf("func: %v %v", got, err)
 	}
-	if got, err := encodeEdgeDst(nil, EdgePacket{Prop: PropLabel, DstTID: 4}, testWire); err != nil || got[0] != 4 {
+	if got, err := encodeEdgeDst(nil, EdgePacket{Prop: PropLabel, DstTID: 4}, testWire); err != nil || got[1] != 4 {
 		t.Fatalf("ref: %v %v", got, err)
 	}
 	for _, p := range []EdgePacket{{Prop: PropDo}, {Prop: 0x0FFF}, {Prop: PropProvenance}} {

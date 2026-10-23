@@ -23,8 +23,8 @@ func DecodeEdge(r core.Record, w Wire) (EdgePacket, error) {
 	}
 	ws, pos := r.Payload, 0
 	p := EdgePacket{Prop: prop}
-	if p.ID, err = TakeID(ws, &pos, w.ID); err == nil {
-		p.Src, err = TakeID(ws, &pos, w.ID)
+	if p.ID, err = TakeID(ws, &pos); err == nil {
+		p.Src, err = TakeID(ws, &pos)
 	}
 	if err == nil {
 		err = decodeEdgeDst(ws, &pos, &p, w)

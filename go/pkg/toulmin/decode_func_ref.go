@@ -7,7 +7,7 @@ import "github.com/geul-org/geul/go/pkg/core"
 // decodeFuncRef reads a FuncRef at ws[*pos] (Alias REF then VerbCode) and
 // advances *pos. Label stays empty — the stream restores it from the LABEL.
 func decodeFuncRef(ws []core.Word, pos *int, w Wire) (FuncRef, error) {
-	alias, err := TakeID(ws, pos, w.ID)
+	alias, err := TakeID(ws, pos)
 	if err != nil {
 		return FuncRef{}, err
 	}

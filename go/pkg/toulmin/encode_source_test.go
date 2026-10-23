@@ -1,5 +1,5 @@
 //ff:func feature=toulmin type=encoder control=sequence
-//ff:what TestEncodeSource — SOURCE golden bytes plus bad SPAN width and ID errors
+//ff:what TestEncodeSource — SOURCE golden bytes plus the bad SPAN width error
 package toulmin
 
 import (
@@ -10,16 +10,13 @@ import (
 )
 
 // TestEncodeSource pins the SOURCE record of "ab" with a 2-word SPAN width (width
-// word 0x4000) and checks an undeclarable SPAN width and an Edge Id over width.
+// word 0x4000) and checks an undeclarable SPAN width.
 func TestEncodeSource(t *testing.T) {
-	got, err := EncodeSource(TextPacket{TID: 1, Bytes: []byte("ab")}, Wire{ID: 1, Span: 2})
-	if want := []core.Word{0x137C, 0, 0xC000, 1, 0x4000, 0x0840 | 0x80, 0x6162}; err != nil || !reflect.DeepEqual(got, want) {
+	got, err := EncodeSource(TextPacket{TID: 1, Bytes: []byte("ab")}, Wire{Span: 2})
+	if want := []core.Word{0x13FC, 0, 0xC000, 0x00C0, 1, 0x4000, 0x0840 | 0x80, 0x6162}; err != nil || !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %04X %v want %04X", got, err, want)
 	}
-	if _, err := EncodeSource(TextPacket{}, Wire{ID: 1, Span: 3}); err == nil {
+	if _, err := EncodeSource(TextPacket{}, Wire{Span: 3}); err == nil {
 		t.Fatal("span width 3: want error")
-	}
-	if _, err := EncodeSource(TextPacket{TID: 0x10000}, testWire); err == nil {
-		t.Fatal("ID over width: want error")
 	}
 }

@@ -8,7 +8,6 @@ GEUL 문서(`.geul`)를 GEULMD로 바꾼다. GEULMD는 GEUL의 텍스트 표현�
 ```geul
 SPEC-VERSION "geul-t002"
 PROFILE "tangeul-1.0"
-ID-WIDTH edge=2 var=1 import=1
 DEFAULT-LANGUAGE lang"ko"
 DOC-NAME 0x0001 0x0000000000000005
 IMPORT-DOC #1 0x0001 0x0000000000000002
@@ -40,7 +39,7 @@ RECORD EDGE 0x61 : 0x0067 0x0001 …
 | `lang"ko"` | LANGUAGE-BCP47-CODE |
 | `uint(n)`, `dec(CeE)`, `udec(CeE)` | UNSIGNED-INTEGER, SIGNED-/UNSIGNED-DECIMAL (계수·지수 보존) |
 
-- HEAD: SPEC-VERSION, PROFILE, DEFAULT-LANGUAGE, ID-WIDTH, DOC-NAME, IMPORT-DOC은 타입 표기, 나머지 Meta는 raw다.
+- HEAD: SPEC-VERSION, PROFILE, DEFAULT-LANGUAGE, DOC-NAME, IMPORT-DOC-*은 타입 표기(IMPORT-DOC의 Issuer 폭이 Codec을 정하고, 버전 ID가 0이 아니면 `v=0x…`를 붙인다), 나머지 Meta는 raw다.
 - BODY: PROFILE이 `tangeul-*`이면 TOULMIN 레코드(SOURCE, TEXT, SECTION, CASE-BEGIN/END, PROSE, NODE, LINK)를 구조로 쓴다. PREDICATE-DECLARE의 조건식은 tangl 식 AST에 속하므로 raw로 쓴다.
 
 ## 미결정

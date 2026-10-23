@@ -20,7 +20,7 @@ func decodeEdgeDst(ws []core.Word, pos *int, p *EdgePacket, w Wire) error {
 		p.DstFunc = &f
 		return err
 	case DstTID, DstText:
-		p.DstTID, err = TakeID(ws, pos, w.ID)
+		p.DstTID, err = TakeID(ws, pos)
 		return err
 	default:
 		return errors.New("geul/toulmin: provenance/Block dst has no layout")

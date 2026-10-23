@@ -10,8 +10,8 @@ import (
 )
 
 func TestToulminData(t *testing.T) {
-	w := toulmin.Wire{ID: 1, Span: 1}
-	src, _ := toulmin.EncodeSource(toulmin.TextPacket{TID: 1, Bytes: []byte("s")}, toulmin.Wire{ID: 1, Span: 2})
+	w := toulmin.Wire{Span: 1}
+	src, _ := toulmin.EncodeSource(toulmin.TextPacket{TID: 1, Bytes: []byte("s")}, toulmin.Wire{Span: 2})
 	txt, _ := toulmin.EncodeText(toulmin.TextPacket{TID: 2, Bytes: []byte("t")}, w)
 	sec, _ := toulmin.EncodeControl(toulmin.ControlPacket{ID: 3, Code: toulmin.ControlSection, Arg: 5}, w)
 	node, _ := toulmin.EncodeNode(toulmin.NodePacket{TID: 4, Type: toulmin.NodeCase}, w)

@@ -24,7 +24,7 @@ func DecodeNode(r core.Record, w Wire) (NodePacket, error) {
 	}
 	ws, pos := r.Payload, 0
 	p := NodePacket{Type: t}
-	if p.TID, err = TakeID(ws, &pos, w.ID); err != nil {
+	if p.TID, err = TakeID(ws, &pos); err != nil {
 		return NodePacket{}, err
 	}
 	header, err := TakeWord(ws, &pos, "NODE header")

@@ -14,11 +14,7 @@ func EncodeSource(p TextPacket, w Wire) ([]core.Word, error) {
 	if err != nil {
 		return nil, err
 	}
-	body, err := PutID(nil, p.TID, w.ID)
-	if err != nil {
-		return nil, err
-	}
-	body, err = PutValue(append(body, core.Word(uint16(code)<<14)), core.EncodeBytesValue(core.CodecUTF8TextEven, p.Bytes))
+	body, err := PutValue(append(PutID(nil, p.TID), core.Word(uint16(code)<<14)), core.EncodeBytesValue(core.CodecUTF8TextEven, p.Bytes))
 	if err != nil {
 		return nil, err
 	}

@@ -19,7 +19,7 @@ func DecodeText(r core.Record, w Wire) (TextPacket, error) {
 		return TextPacket{}, errors.New("geul/toulmin: record is not a TEXT")
 	}
 	ws, pos := r.Payload, 0
-	id, err := TakeID(ws, &pos, w.ID)
+	id, err := TakeID(ws, &pos)
 	if err != nil {
 		return TextPacket{}, err
 	}

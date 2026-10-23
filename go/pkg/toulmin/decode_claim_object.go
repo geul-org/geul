@@ -16,7 +16,7 @@ import (
 func decodeClaimObject(ws []core.Word, pos *int, kind ObjKind, w Wire, c *Claim) error {
 	switch kind {
 	case ObjTID:
-		t, err := TakeID(ws, pos, w.ID)
+		t, err := TakeID(ws, pos)
 		c.ObjTID = t
 		return err
 	case ObjNum:

@@ -17,10 +17,7 @@ func EncodeControl(p ControlPacket, w Wire) ([]core.Word, error) {
 	if err != nil {
 		return nil, err
 	}
-	body, err := PutID(nil, p.ID, w.ID)
-	if err != nil {
-		return nil, err
-	}
+	body := PutID(nil, p.ID)
 	switch p.Code {
 	case ControlProse:
 		if p.Span == nil {
@@ -33,7 +30,7 @@ func EncodeControl(p ControlPacket, w Wire) ([]core.Word, error) {
 		}
 		body = append(body, core.Word(p.Arg))
 	default:
-		body, err = PutID(body, TID(p.Arg), w.ID)
+		body = PutID(body, TID(p.Arg))
 	}
 	if err != nil {
 		return nil, err

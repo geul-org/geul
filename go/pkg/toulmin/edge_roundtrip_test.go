@@ -11,7 +11,7 @@ import (
 
 // TestEdgeRoundTrip checks DecodeEdge(EncodeEdge(p)) == p for an ATTACKS REF dst,
 // a DO-ONCE FuncRef dst with a gate, a plain DO, an UNDO with F_ONCE kept on the
-// wire, a LABEL (TEXT dst) and a GEUL-format relation at 2-word widths.
+// wire, a LABEL (TEXT dst) and a GEUL-format relation at a 2-word SPAN width.
 func TestEdgeRoundTrip(t *testing.T) {
 	g := Gate{Op: GateAtLeast, Percent: 75}
 	cases := []EdgePacket{
@@ -22,7 +22,7 @@ func TestEdgeRoundTrip(t *testing.T) {
 		{ID: 14, Prop: PropLabel, Src: 2, DstTID: 15},
 		{ID: 16, Prop: PropRequires, Src: 1, DstTID: 2, Flags: EdgeFlagStrike},
 	}
-	wires := []Wire{testWire, {ID: 2, Span: 2}}
+	wires := []Wire{testWire, {Span: 2}}
 	for k := 0; k < len(wires)*len(cases); k++ {
 		w, i := wires[k/len(cases)], k%len(cases)
 		in := cases[i]

@@ -21,9 +21,9 @@ func encodeEdgeDst(out []core.Word, p EdgePacket, w Wire) ([]core.Word, error) {
 		if p.DstFunc == nil {
 			return nil, errors.New("geul/toulmin: FuncRef dst PropCode but DstFunc is nil")
 		}
-		return encodeFuncRef(out, *p.DstFunc, w)
+		return encodeFuncRef(out, *p.DstFunc), nil
 	case DstTID, DstText:
-		return PutID(out, p.DstTID, w.ID)
+		return PutID(out, p.DstTID), nil
 	default:
 		return nil, errors.New("geul/toulmin: provenance/Block dst has no layout")
 	}

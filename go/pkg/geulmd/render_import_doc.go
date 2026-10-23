@@ -9,8 +9,9 @@ import (
 	"github.com/geul-org/geul/go/pkg/inspect"
 )
 
-// renderImportDoc renders Meta IMPORT-DOC: the IMPORT ID, the Issuer, the
-// 4-word document ID and, when pinned, the 16-word version ID.
+// renderImportDoc renders Meta IMPORT-DOC-*: the IMPORT ID, the Issuer (its
+// width names the codec), the 4-word document ID and, when pinned, the 16-word
+// version ID. An unpinned import follows the latest version.
 func renderImportDoc(v inspect.ImportDoc) string {
 	s := "IMPORT-DOC #" + strconv.FormatUint(v.ID, 10) + " " + core.FormatID(v.Issuer) + " " + core.FormatID(v.Doc)
 	if v.Version != nil {
