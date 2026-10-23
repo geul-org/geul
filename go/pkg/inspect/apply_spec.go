@@ -1,14 +1,10 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what applySpec — set each entry's codec spec, and an Edge's Edge Id when it has none
+//ff:what applySpec — set each entry's codec spec
 package inspect
 
-import (
-	"github.com/geul-org/geul/go/pkg/codecspec"
-	"github.com/geul-org/geul/go/pkg/core"
-)
+import "github.com/geul-org/geul/go/pkg/codecspec"
 
-// applySpec gives each entry the fields s declares for its codec. A declared
-// Edge without an Edge Id from its typed content takes its leading LOCAL one.
+// applySpec gives each entry the fields s declares for its codec.
 func applySpec(entries []Entry, s codecspec.Spec) {
 	for i := range entries {
 		e := &entries[i]
@@ -17,11 +13,5 @@ func applySpec(entries []Entry, s codecspec.Spec) {
 			continue
 		}
 		e.Spec = fs
-		if e.Record.Kind != core.KindEdge || e.ID != 0 {
-			continue
-		}
-		if r, _, err := core.DecodeRecord(e.Record.Payload); err == nil {
-			e.ID, _ = core.DecodeLocalRef(r)
-		}
 	}
 }

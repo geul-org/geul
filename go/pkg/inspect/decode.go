@@ -10,7 +10,8 @@ import (
 // Decode reads b as exactly one GEUL document and interprets every HEAD and
 // BODY record. BODY records are decoded as TOULMIN records only when PROFILE
 // names the TANGEUL profile this build reads. Framing errors are returned;
-// a record that does not decode is kept as a bare Entry instead.
+// a record that does not decode is kept as a bare Entry instead. Every Edge
+// carries its Edge Id.
 func Decode(b []byte) (Document, error) {
 	ws, err := core.ReadWords(b)
 	if err != nil {
@@ -22,5 +23,7 @@ func Decode(b []byte) (Document, error) {
 	}
 	head, profile := decodeHead(d.Head)
 	tg := toulmin.CheckProfile(profile) == nil
-	return Document{Head: head, Body: decodeBody(d.Body, tg), Profile: profile, Toulmin: tg}, nil
+	body := decodeBody(d.Body, tg)
+	edgeIDs(body)
+	return Document{Head: head, Body: body, Profile: profile, Toulmin: tg}, nil
 }
