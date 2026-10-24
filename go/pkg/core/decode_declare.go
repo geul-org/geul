@@ -1,12 +1,12 @@
-//ff:func feature=core type=decoder control=iteration dimension=1
+//ff:func feature=core type=decoder control=sequence
 //ff:what DecodeDeclare — a DECLARE Edge as Declare
 package core
 
 import "fmt"
 
 // DecodeDeclare reads a DECLARE Edge (GEUL t002 docs/edge/DECLARE): the LOCAL
-// Edge Id, the target word, the Issuer and format number of an ISSUER target,
-// then LOCAL References to FIELD Edges up to the end.
+// Edge Id, the target word and, for an ISSUER target, the Issuer and format
+// number. Nothing may follow.
 func DecodeDeclare(r Record) (Declare, error) {
 	if r.Kind != KindEdge || r.Codec != EdgeDeclare {
 		return Declare{}, fmt.Errorf("geul/core: not a DECLARE Edge (kind %d codec 0x%02X)", r.Kind, r.Codec)
@@ -27,13 +27,8 @@ func DecodeDeclare(r Record) (Declare, error) {
 		d.Issuer, d.Format = r.Payload[pos:pos+w], r.Payload[pos+w]
 		pos += w + 1
 	}
-	for pos < len(r.Payload) {
-		f, n, err := takeLocal(r.Payload[pos:])
-		if err != nil {
-			return Declare{}, err
-		}
-		d.Fields = append(d.Fields, f)
-		pos += n
+	if pos != len(r.Payload) {
+		return Declare{}, fmt.Errorf("geul/core: DECLARE has %d words after its target", len(r.Payload)-pos)
 	}
 	return d, nil
 }

@@ -17,8 +17,8 @@ func TestDecodeWith(t *testing.T) {
 		t.Fatalf("given: %+v %v", d.Body, err)
 	}
 	own := slices.Concat([]core.Word{0x180E}, enc(tomb),
-		enc(core.EncodeFieldDecl(core.FieldDecl{EdgeID: 4, Width: 7})),
-		enc(core.EncodeDeclare(core.Declare{EdgeID: 5, Target: core.TargetWord(core.KindEdge, core.EdgeTombstone), Fields: []uint64{4}})),
+		enc(core.EncodeDeclare(core.Declare{EdgeID: 5, Target: core.TargetWord(core.KindEdge, core.EdgeTombstone)})),
+		enc(core.EncodeFieldDecl(core.FieldDecl{EdgeID: 4, Declare: 5, Width: 7})),
 		[]core.Word{0x180F})
 	d, _ = DecodeWith(core.PutWords(core.WrapDocument(own)), tombstoneSpec())
 	if len(d.Body[0].Spec) != 1 {

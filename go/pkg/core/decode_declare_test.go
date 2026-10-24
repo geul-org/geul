@@ -1,5 +1,5 @@
 //ff:func feature=core type=decoder control=iteration dimension=1
-//ff:what TestDecodeDeclare — direct and ISSUER targets round-trip; other records, a missing target, short Issuer and a bad field fail
+//ff:what TestDecodeDeclare — direct and ISSUER targets round-trip; other records, a missing target, short Issuer and trailing words fail
 package core
 
 import (
@@ -10,7 +10,7 @@ import (
 
 func TestDecodeDeclare(t *testing.T) {
 	for _, d := range []Declare{
-		{EdgeID: 1, Target: TargetWord(KindEdge, EdgePublication), Fields: []uint64{2, 3, 4}},
+		{EdgeID: 1, Target: TargetWord(KindEdge, EdgePublication)},
 		{EdgeID: 5, Target: TargetWord(KindValue, CodecIssuer1Word), Issuer: []Word{0x20}, Format: 0xC001},
 	} {
 		got, err := DecodeDeclare(EncodeDeclare(d))
@@ -24,7 +24,8 @@ func TestDecodeDeclare(t *testing.T) {
 		{Kind: KindEdge, Codec: EdgeDeclare},
 		{Kind: KindEdge, Codec: EdgeDeclare, Payload: id},
 		{Kind: KindEdge, Codec: EdgeDeclare, Payload: slices.Concat(id, []Word{TargetWord(KindEdge, CodecIssuer2Word), 1})},
-		{Kind: KindEdge, Codec: EdgeDeclare, Payload: slices.Concat(id, []Word{0x1018, 0x0A22})},
+		{Kind: KindEdge, Codec: EdgeDeclare, Payload: slices.Concat(id, []Word{0x1018, 0x00C0, 2})},
+		{Kind: KindEdge, Codec: EdgeDeclare, Payload: slices.Concat(id, []Word{TargetWord(KindValue, CodecIssuer1Word), 0x20, 0xC001, 7})},
 	}
 	for i, r := range bad {
 		if _, err := DecodeDeclare(r); err == nil {

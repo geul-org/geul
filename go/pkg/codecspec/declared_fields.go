@@ -1,19 +1,19 @@
 //ff:func feature=codecspec type=decoder control=iteration dimension=1
-//ff:what declaredFields — a DECLARE's field list; false when it names a missing FIELD
+//ff:what declaredFields — the fields of a DECLARE: FIELDs naming it, in document order
 package codecspec
 
 import "github.com/geul-org/geul/go/pkg/core"
 
-// declaredFields resolves d's FIELD Edge Ids in order. It is false when one is
-// not a FIELD of the document.
-func declaredFields(d core.Declare, fields map[uint64]*Field) ([]Field, bool) {
-	out := make([]Field, 0, len(d.Fields))
-	for _, id := range d.Fields {
-		f := fields[id]
-		if f == nil {
-			return nil, false
+// declaredFields lists the FIELDs of body whose DECLARE is decl, in document
+// order (edge/FIELD).
+func declaredFields(decl uint64, body []core.Record, fields map[uint64]*Field) []Field {
+	var out []Field
+	for _, r := range body {
+		f, err := core.DecodeFieldDecl(r)
+		if err != nil || f.Declare != decl || fields[f.EdgeID] == nil {
+			continue
 		}
-		out = append(out, *f)
+		out = append(out, *fields[f.EdgeID])
 	}
-	return out, true
+	return out
 }
