@@ -24,14 +24,16 @@ const (
 	RefExternalIssuer4Word uint8 = 0x6
 	// RefExternalIssuer16Word cites a 16-word Issuer document's LOCAL ID.
 	RefExternalIssuer16Word uint8 = 0x7
-	// RefLocal is an ID this document issues (Edge Ids included).
-	RefLocal uint8 = 0x8
 	// RefGeul is an entity geul.org issues under CC0.
-	RefGeul uint8 = 0x9
+	RefGeul uint8 = 0x8
+	// RefGeulSIDX is a GEUL Semantic-aligned Index (SIDX).
+	RefGeulSIDX uint8 = 0x9
 	// RefWikidataQID is a Wikidata item (the integer after Q).
 	RefWikidataQID uint8 = 0xA
 	// RefWikidataPID is a Wikidata property (the integer after P).
 	RefWikidataPID uint8 = 0xB
+	// RefLocal is an ID this document issues (Edge Ids included).
+	RefLocal uint8 = 0xC
 	// CodecLocalIdentified is the Record codec of a LOCAL Reference with
 	// Quantifier Identified (QQQ=000): the form every Edge Id declaration uses.
 	CodecLocalIdentified uint8 = RefLocal << 3

@@ -7,7 +7,7 @@ import (
 )
 
 func TestSplitTarget(t *testing.T) {
-	if k, c := SplitTarget(0x0040); k != KindReference || c != 0x40 {
+	if k, c := SplitTarget(0x0060); k != KindReference || c != 0x60 {
 		t.Fatalf("got %v %02X", k, c)
 	}
 }

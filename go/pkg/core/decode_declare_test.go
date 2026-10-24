@@ -24,7 +24,7 @@ func TestDecodeDeclare(t *testing.T) {
 		{Kind: KindEdge, Codec: EdgeDeclare},
 		{Kind: KindEdge, Codec: EdgeDeclare, Payload: id},
 		{Kind: KindEdge, Codec: EdgeDeclare, Payload: slices.Concat(id, []Word{TargetWord(KindEdge, CodecIssuer2Word), 1})},
-		{Kind: KindEdge, Codec: EdgeDeclare, Payload: slices.Concat(id, []Word{0x1018, 0x00C0, 2})},
+		{Kind: KindEdge, Codec: EdgeDeclare, Payload: slices.Concat(id, []Word{0x1018, 0x00E0, 2})},
 		{Kind: KindEdge, Codec: EdgeDeclare, Payload: slices.Concat(id, []Word{TargetWord(KindValue, CodecIssuer1Word), 0x20, 0xC001, 7})},
 	}
 	for i, r := range bad {

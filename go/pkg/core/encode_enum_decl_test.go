@@ -9,7 +9,7 @@ import (
 
 func TestEncodeEnumDecl(t *testing.T) {
 	ws, _ := EncodeRecord(EncodeEnumDecl(EnumDecl{EdgeID: 6, Field: 5, Code: []Word{1}}))
-	if !slices.Equal(ws, []Word{0x129D, 0x00C0, 6, 0x00C0, 5, 1}) {
+	if !slices.Equal(ws, []Word{0x129D, 0x00E0, 6, 0x00E0, 5, 1}) {
 		t.Fatalf("got %04X", ws)
 	}
 }

@@ -10,7 +10,7 @@ import (
 
 func TestDecodeWith(t *testing.T) {
 	pos := 0
-	if got, err := decodeWith([]core.Word{0x0882, 2, 0x00C0, 5, 0x00C0, 6}, &pos); err != nil || len(got) != 2 || got[1] != 6 || pos != 6 {
+	if got, err := decodeWith([]core.Word{0x0882, 2, 0x00E0, 5, 0x00E0, 6}, &pos); err != nil || len(got) != 2 || got[1] != 6 || pos != 6 {
 		t.Fatalf("got %v %v", got, err)
 	}
 	pos = 0
@@ -22,7 +22,7 @@ func TestDecodeWith(t *testing.T) {
 		t.Fatal("non-integer count: want error")
 	}
 	pos = 0
-	if _, err := decodeWith([]core.Word{0x0882, 3, 0x00C0, 5}, &pos); err == nil {
+	if _, err := decodeWith([]core.Word{0x0882, 3, 0x00E0, 5}, &pos); err == nil {
 		t.Fatal("count past payload: want error")
 	}
 	pos = 0

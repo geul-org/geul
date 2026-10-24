@@ -10,7 +10,7 @@ import (
 )
 
 func TestEncodeFuncRef(t *testing.T) {
-	if got := encodeFuncRef(nil, FuncRef{Alias: 2, Verb: 0x7400}); !reflect.DeepEqual(got, []core.Word{0x00C0, 2, 0x7400}) {
+	if got := encodeFuncRef(nil, FuncRef{Alias: 2, Verb: 0x7400}); !reflect.DeepEqual(got, []core.Word{0x00E0, 2, 0x7400}) {
 		t.Fatalf("got %04X", got)
 	}
 }

@@ -12,7 +12,7 @@ func TestPlausibleEmbedded(t *testing.T) {
 	for r, want := range map[*core.Record]bool{
 		{Kind: core.KindReference, Codec: core.CodecLocalIdentified, Payload: []core.Word{1}}: true,
 		{Kind: core.KindReference, Codec: core.CodecLocalIdentified}:                          false,
-		{Kind: core.KindReference, Codec: 0x60, Payload: []core.Word{1}}:                      false,
+		{Kind: core.KindReference, Codec: 0x68, Payload: []core.Word{1}}:                      false,
 		{Kind: core.KindValue, Codec: core.CodecUTF8TextEven}:                                 true,
 		{Kind: core.KindValue, Codec: core.CodecIssuer1Word, Issuer: []core.Word{1}}:          true,
 		{Kind: core.KindValue, Codec: 0x30}:                                                   false,

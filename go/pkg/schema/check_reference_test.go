@@ -13,7 +13,7 @@ func TestCheckReference(t *testing.T) {
 	}
 	cases := map[string]rec{
 		"R1":    ref(0x45, 1),
-		"R1,R1": ref(0x65, 1),
+		"R1,R1": ref(0x6D, 1),
 		"R3":    ref(0x00, 9, 1),
 		"R4":    ref(0x20, 1),
 		"":      ref(0x40, 1),

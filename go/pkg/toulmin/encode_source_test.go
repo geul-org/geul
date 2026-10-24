@@ -13,7 +13,7 @@ import (
 // word 0x4000) and checks an undeclarable SPAN width.
 func TestEncodeSource(t *testing.T) {
 	got, err := EncodeSource(TextPacket{TID: 1, Bytes: []byte("ab")}, Wire{Span: 2})
-	if want := []core.Word{0x13FC, 0, 0xC000, 0x00C0, 1, 0x4000, 0x0840 | 0x80, 0x6162}; err != nil || !reflect.DeepEqual(got, want) {
+	if want := []core.Word{0x13FC, 0, 0xC000, 0x00E0, 1, 0x4000, 0x0840 | 0x80, 0x6162}; err != nil || !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %04X %v want %04X", got, err, want)
 	}
 	if _, err := EncodeSource(TextPacket{}, Wire{Span: 3}); err == nil {

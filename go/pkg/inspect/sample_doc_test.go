@@ -34,7 +34,7 @@ func sampleDoc(t *testing.T) []byte {
 	sec, _ := toulmin.EncodeControl(toulmin.ControlPacket{ID: 11, Code: toulmin.ControlSection, Arg: 5}, w)
 	node, _ := toulmin.EncodeNode(toulmin.NodePacket{TID: 1, Type: toulmin.NodeCase, Span: toulmin.Span{Off: 0, Len: 4}}, w)
 	link, _ := toulmin.EncodeEdge(toulmin.EdgePacket{ID: 12, Prop: toulmin.PropLabel, Src: 1, DstTID: 10, Span: toulmin.Span{Len: 4}}, w)
-	pred := raw(core.Record{Kind: core.KindEdge, Codec: toulmin.CodecPredicateDeclare, Payload: []core.Word{0x00C0, 13, 0}})
+	pred := raw(core.Record{Kind: core.KindEdge, Codec: toulmin.CodecPredicateDeclare, Payload: []core.Word{0x00E0, 13, 0}})
 	for _, p := range [][]core.Word{src, txt, sec, node, link, pred, raw(core.EncodeUintValue(5)), raw(core.Record{Kind: core.KindValue, Codec: 0x03, Payload: []core.Word{0x3c00}})} {
 		in = append(in, p...)
 	}

@@ -10,7 +10,7 @@ import (
 func TestCodecKey(t *testing.T) {
 	for want, w := range map[string]core.Word{
 		"proposal/reference/0000": core.TargetWord(core.KindReference, 0),
-		"proposal/reference/1000": core.TargetWord(core.KindReference, core.CodecLocalIdentified),
+		"proposal/reference/1100": core.TargetWord(core.KindReference, core.CodecLocalIdentified),
 		"proposal/edge/0011000":   core.TargetWord(core.KindEdge, core.EdgePublication),
 		"proposal/value/0100010":  core.TargetWord(core.KindValue, core.CodecPosixSeconds),
 		"proposal/meta/0110000":   core.TargetWord(core.KindMeta, 0x30),

@@ -13,8 +13,8 @@ func checkReference(r rec, imports map[uint64]bool) []Fact {
 		fs = append(fs, factAt("R1", Warn, r, "Quantifier", "000~100", fmt.Sprintf("%03b (예약)", q)))
 	}
 	switch {
-	case c >= 0xC:
-		return append(fs, factAt("R1", Warn, r, "Codec", "0000~1011", fmt.Sprintf("%04b (예약)", c)))
+	case c >= 0xD:
+		return append(fs, factAt("R1", Warn, r, "Codec", "0000~1100", fmt.Sprintf("%04b (예약)", c)))
 	case c <= 3:
 		return append(fs, checkPointer(r, c, imports)...)
 	case c <= 7:

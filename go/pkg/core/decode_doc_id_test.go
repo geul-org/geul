@@ -17,7 +17,7 @@ func TestDecodeDocID(t *testing.T) {
 		EncodeUintValue(1),
 		meta(0, 0, 0, 0, 1),
 		meta(append(slices.Clone(r.Payload), 9)...),
-		meta(0x00C0, 1),
+		meta(0x00E0, 1),
 		meta(0x0320, 0, 0, 0, 0, 1, 7),
 		meta(0x0320, 0, 0, 0, 0, 0, 0),
 		meta(0x0321, 0, 0, 0, 0, 1, 0),
