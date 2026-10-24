@@ -1,21 +1,15 @@
 //ff:func feature=resolve type=decoder control=sequence
-//ff:what issuerOf — the Issuer a Reference stands for: EXTERNAL-ISSUER-*(Issuer, document 0, target 0)
+//ff:what issuerOf — the Issuer a Reference stands for: ISSUER-POINTER(Issuer)
 package resolve
 
 import "github.com/geul-org/geul/go/pkg/core"
 
-// issuerOf returns the Issuer, in canonical hex, of an EXTERNAL-ISSUER-*
-// Reference whose document ID and target ID are both 0, which stands for the
-// Issuer itself (OVERVIEW Reference).
+// issuerOf returns the Issuer, in canonical hex, of an ISSUER-POINTER
+// Reference, which stands for the Issuer itself (reference/ISSUER-POINTER).
 func issuerOf(subj core.Record) (string, bool) {
-	c := subj.Codec >> 3
-	if subj.Kind != core.KindReference || c < core.RefExternalIssuer1Word || c > core.RefExternalIssuer16Word {
+	issuer, err := core.DecodeIssuerPointer(subj)
+	if err != nil {
 		return "", false
 	}
-	w := core.ImportIssuerWidth(core.MetaImportDoc1Word + c&3)
-	p := subj.Payload
-	if len(p) != w+5 || p[w]|p[w+1]|p[w+2]|p[w+3]|p[w+4] != 0 {
-		return "", false
-	}
-	return core.FormatID(p[:w]), true
+	return core.FormatID(issuer), true
 }

@@ -30,5 +30,5 @@ func (d Dir) Publish(b []byte) (VersionEntry, error) {
 	if !ok {
 		return VersionEntry{}, errors.New("geul/resolve: publishing needs a DOC-ID")
 	}
-	return d.publishAt(Key{Issuer: id.Issuer, Doc: id.Doc}.DocKey(), id.Doc, b, h)
+	return d.publishAt(Key{Issuer: id.Issuer, Doc: id.Doc}.DocKey(), id.Issuer, id.Doc, b, h)
 }

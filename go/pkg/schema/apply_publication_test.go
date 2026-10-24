@@ -11,15 +11,15 @@ func TestApplyPublication(t *testing.T) {
 	st := map[string]*docVersions{}
 	doc := []core.Word{0, 0, 0, 5}
 	pub := func(v uint32, h byte) core.Publication {
-		return core.Publication{Codec: core.EdgePublication, Doc: doc, Version: v, Hash: [32]byte{h}}
+		return core.Publication{Codec: core.EdgePublication, Issuer: []core.Word{0}, Doc: doc, Version: v, Hash: [32]byte{h}}
 	}
 	steps := []struct {
 		p    core.Publication
 		want string
 	}{
 		{pub(1, 1), ""},
-		{core.Publication{Codec: core.EdgeDeprecation, Doc: doc, Version: 1}, ""},
-		{core.Publication{Codec: core.EdgeTombstone, Doc: doc, Version: 4}, "P4"},
+		{core.Publication{Codec: core.EdgeDeprecation, Issuer: []core.Word{0}, Doc: doc, Version: 1}, ""},
+		{core.Publication{Codec: core.EdgeTombstone, Issuer: []core.Word{0}, Doc: doc, Version: 4}, "P4"},
 		{pub(3, 2), "P3"},
 		{pub(4, 1), "P3"},
 		{pub(5, 3), ""},

@@ -1,17 +1,18 @@
 //ff:func feature=core type=encoder control=sequence
-//ff:what EncodeDocID — Meta DOC-ID: one EXTERNAL-ISSUER-*(Issuer, document ID, 0) Reference
+//ff:what EncodeDocID — Meta DOC-ID: one DOC-POINTER(Issuer, document ID, version 0) Reference
 package core
 
 import "fmt"
 
 // EncodeDocID builds Meta DOC-ID (GEUL t002 docs/meta/declaration/DOC-ID):
-// its payload is the Reference EXTERNAL-ISSUER-*(issuer, doc, 0), the document
-// itself. issuer must be 1, 2, 4 or 16 words and doc 4 words.
+// its payload is the Reference DOC-POINTER(issuer, doc, 0), the document
+// itself. issuer must be 1, 2, 4 or 16 words and doc 4 words, not 0. The
+// version is 0 because the version list, not the document, assigns versions.
 func EncodeDocID(issuer, doc []Word) (Record, error) {
-	c, ok := issuerRefCodec(len(issuer))
-	if !ok || len(doc) != 4 {
-		return Record{}, fmt.Errorf("geul/core: DOC-ID needs a 1/2/4/16-word Issuer and a 4-word document ID (got %d, %d)", len(issuer), len(doc))
+	ptr, err := EncodeDocPointer(issuer, doc, []Word{0, 0})
+	if err != nil {
+		return Record{}, fmt.Errorf("geul/core: DOC-ID: %w", err)
 	}
-	ref, _ := EncodeRecord(Record{Kind: KindReference, Codec: c, Payload: append(append(append([]Word{}, issuer...), doc...), 0)})
+	ref, _ := EncodeRecord(ptr)
 	return Record{Kind: KindMeta, Codec: MetaDocID, Payload: ref}, nil
 }

@@ -9,12 +9,12 @@ import (
 	"github.com/geul-org/geul/go/pkg/core"
 )
 
-// publishAt stores b (content hash h) at k as the next version of document ID
-// doc: `<k>/<버전 ID>.geul`, `h/<내용 해시>.geul`, and a new version list
+// publishAt stores b (content hash h) at k as the next version of document
+// doc of Issuer issuer (the PUBLICATION's DOC-POINTER): `<k>/<버전 ID>.geul`, `h/<내용 해시>.geul`, and a new version list
 // `<k>/versions.geul` that keeps the previous records, appends a PUBLICATION
 // and points PARENT at the previous list, which stays under `h/`. Content
 // already in the list returns that entry and writes nothing.
-func (d Dir) publishAt(k DocKey, doc []core.Word, b []byte, h [32]byte) (VersionEntry, error) {
+func (d Dir) publishAt(k DocKey, issuer, doc []core.Word, b []byte, h [32]byte) (VersionEntry, error) {
 	lg, err := d.readList(k, core.FormatID(doc))
 	if err != nil {
 		return VersionEntry{}, err
@@ -26,7 +26,7 @@ func (d Dir) publishAt(k DocKey, doc []core.Word, b []byte, h [32]byte) (Version
 	if !ok {
 		return VersionEntry{}, errors.New("geul/resolve: version IDs used up; publish under a new document ID")
 	}
-	rec := core.EncodePublication(core.Publication{Codec: core.EdgePublication, EdgeID: uint64(len(lg.Records)) + 1, Doc: doc, Version: v, Hash: h})
+	rec := core.EncodePublication(core.Publication{Codec: core.EdgePublication, EdgeID: uint64(len(lg.Records)) + 1, Issuer: issuer, Doc: doc, Version: v, Hash: h})
 	var parent *[32]byte
 	if lg.Present {
 		parent = &lg.Hash

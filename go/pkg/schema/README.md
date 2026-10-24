@@ -40,10 +40,11 @@
 
 | 규칙 | 내용 |
 |---|---|
-| R1 | Codec `1100`~`1111`, Quantifier `101`~`111`은 예약이다. |
+| R1 | Codec `1111`, Quantifier `101`~`111`은 예약이다. |
 | R2 | 대상 ID는 가장 짧은 폭이다. 값 0은 `0x0000` 1 WORD이고, 그 밖에는 선행 `0x0000` WORD가 없다. |
-| R3 | `EXTERNAL-POINTER-*`: IMPORT ID가 들어가는 가장 좁은 Codec이고, 그 IMPORT ID를 배정한 `IMPORT-DOC-*`이 HEAD에 있다. |
-| R4 | `EXTERNAL-ISSUER-*`: Issuer 폭이 Codec과 맞고, 문서 ID 4 WORD 뒤에 대상 ID가 1 WORD 이상 있다. 문서 ID가 `0`이면 대상 ID는 `0`이다. |
+| R3 | `EXTERNAL-POINTER-*`: IMPORT ID가 들어가는 가장 좁은 Codec이고, 그 IMPORT ID를 배정한 `IMPORT-DOC`이 HEAD에 있다. 대상 ID는 `0`이 아니다(문서 자신은 `DOC-POINTER`). |
+| R4 | `EXTERNAL-ISSUER-*`: Issuer 폭이 Codec과 맞고, 문서 ID 4 WORD 뒤에 대상 ID가 1 WORD 이상 있다. 문서 ID와 대상 ID는 `0`이 아니다(Issuer 자신은 `ISSUER-POINTER`, 문서 자신은 `DOC-POINTER`). |
+| R5 | `ISSUER-POINTER`·`DOC-POINTER`: Quantifier는 `000`이다. Issuer 폭(Length에서 고정 필드를 뺀 나머지)은 1·2·4·16 WORD다. `DOC-POINTER`의 문서 ID는 `0`이 아니다. |
 
 ### V Value (OVERVIEW Value)
 
@@ -71,8 +72,8 @@
 | 규칙 | 내용 |
 |---|---|
 | M1 | 표에 없는 직접 코드는 예약이다. Meta에는 ISSUER 코드가 없다. |
-| M2 | `DOC-ID`는 하나이고, Payload는 `EXTERNAL-ISSUER-*`(Issuer, 문서 ID ≠ 0, 대상 0) Reference 하나다. |
-| M3 | `IMPORT-DOC-*`: Issuer 폭이 Codec과 맞고, 버전 ID가 2 WORD이며, IMPORT ID가 최소 폭이고 문서 안에서 중복되지 않는다. |
+| M2 | `DOC-ID`는 하나이고, Payload는 `DOC-POINTER`(Issuer, 문서 ID ≠ 0, 버전 0) Reference 하나다. |
+| M3 | `IMPORT-DOC`: Payload는 `DOC-POINTER` Reference 하나와 그 뒤의 IMPORT ID다. IMPORT ID가 최소 폭이고 문서 안에서 중복되지 않는다. |
 | M4 | `SPEC-VERSION`·`PROFILE`·`DEFAULT-LANGUAGE`은 각각 하나다. `SPEC-VERSION`의 Payload는 내장 Value 없이 가장 짧은 폭의 unsigned 정수다(t002 = `0x0002`). 나머지는 내장 Value가 해당 형식이다. |
 | M5 | `EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`은 각각 하나이고 GREGORIAN-DATE 또는 POSIX-TIMESTAMP-SECONDS다. 둘 다 있으면 FROM이 UNTIL보다 앞선다. |
 | M6 | `PARENT`는 SHA-256-DIGEST Value 하나다. M4~M6이 검사하는 Meta의 내장 Value는 V 규칙도 통과한다. 그 밖의 Meta Payload는 2층이다. |
@@ -83,11 +84,11 @@
 
 | 규칙 | 내용 |
 |---|---|
-| P1 | `IMPORT-DOC-*`이 없고, BODY에는 그 문서의 `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`과 `BIND`만 있다. |
+| P1 | `IMPORT-DOC`이 없고, BODY에는 그 문서의 `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`과 `BIND`만 있다. |
 | P2 | Edge Id는 1부터 이어지는 순번이다. |
 | P3 | 문서 ID마다 PUBLICATION의 버전 ID가 1부터 빠짐없이 오름차순이고, 같은 내용 해시를 다시 공표하지 않는다. |
 | P4 | DEPRECATION·TOMBSTONE은 앞에 나온 PUBLICATION을 가리킨다. |
-| P5 | `BIND`(문서 이름): Subject는 `EXTERNAL-ISSUER-*`(Issuer, 그 문서 ID, `0`)이고, 그 문서는 앞에 공표되었으며, 이름은 소문자 ASCII 슬러그다. Issuer 안 이름의 유일성은 목록 하나로 확인할 수 없어 1층 밖이다. |
+| P5 | `BIND`(문서 이름): Subject는 `DOC-POINTER`(Issuer, 그 문서 ID, 버전 `0`)이고, 그 문서는 앞에 공표되었으며, 이름은 소문자 ASCII 슬러그다. Issuer 안 이름의 유일성은 목록 하나로 확인할 수 없어 1층 밖이다. |
 
 - 1층은 서명을 확인하지 않는다. 서명 검증과 `PARENT` 사슬 확인은 resolve와 검증기(ISSUER 서명 절)의 일이다.
 

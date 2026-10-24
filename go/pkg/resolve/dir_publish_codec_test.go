@@ -25,4 +25,13 @@ func TestDirPublishCodec(t *testing.T) {
 	if _, err := d.PublishCodec(core.PutWords(core.WrapDocument([]core.Word{0x180E, 0x180F}))); err == nil {
 		t.Fatal("no DECLARE: want error")
 	}
+	decl, _ := core.EncodeRecord(core.EncodeDeclare(core.Declare{EdgeID: 1, Target: 0x1019}))
+	if _, err := d.PublishCodec(core.PutWords(core.WrapDocument(append(append([]core.Word{0x180E}, decl...), 0x180F)))); err == nil {
+		t.Fatal("no DOC-ID: want error")
+	}
+	other, _ := core.EncodeDocID([]core.Word{0}, codecDocID(0x1018))
+	ow, _ := core.EncodeRecord(other)
+	if _, err := d.PublishCodec(core.PutWords(core.WrapDocument(append(append(append(ow, 0x180E), decl...), 0x180F)))); err == nil {
+		t.Fatal("DOC-ID of another codec: want error")
+	}
 }

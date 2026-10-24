@@ -1,5 +1,5 @@
 //ff:func feature=resolve type=helper control=sequence
-//ff:what TestImportKeys — each IMPORT-DOC-* as a Key by IMPORT ID; none for a document without imports
+//ff:what TestImportKeys — each IMPORT-DOC as a Key by IMPORT ID; none for a document without imports
 package resolve
 
 import (

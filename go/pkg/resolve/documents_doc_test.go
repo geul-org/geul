@@ -11,7 +11,7 @@ func documentsDoc(names map[string]core.Word) []byte {
 	in := []core.Word{0x180E}
 	id := uint64(1)
 	for _, n := range sortedKeys(names) {
-		subj := core.Record{Kind: core.KindReference, Codec: core.RefExternalIssuer1Word << 3, Payload: []core.Word{0, 0xffff, 0, 0, names[n], 0}}
+		subj := core.Record{Kind: core.KindReference, Codec: core.RefDocPointer << 3, Payload: []core.Word{0, 0xffff, 0, 0, names[n], 0, 0}}
 		p := append(enc(core.EncodeLocalRef(id)), enc(subj)...)
 		p = append(p, enc(core.EncodeBytesValue(core.CodecUTF8TextEven, []byte(n)))...)
 		in = append(in, enc(core.Record{Kind: core.KindEdge, Codec: core.EdgeBind, Payload: p})...)

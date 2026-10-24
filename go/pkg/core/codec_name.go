@@ -7,8 +7,7 @@ var metaNames = map[uint8]string{
 	MetaDoc1Word: "DOC-1WORD", MetaDoc2Word: "DOC-2WORD", MetaDoc4Word: "DOC-4WORD",
 	MetaBody: "BODY", MetaEnd: "END", MetaSpecVersion: "SPEC-VERSION", MetaProfile: "PROFILE",
 	MetaDocID: "DOC-ID", MetaEffectiveFrom: "EFFECTIVE-FROM", MetaEffectiveUntil: "EFFECTIVE-UNTIL", MetaDefaultLanguage: "DEFAULT-LANGUAGE",
-	MetaImportDoc1Word: "IMPORT-DOC-1WORD", MetaImportDoc2Word: "IMPORT-DOC-2WORD",
-	MetaImportDoc4Word: "IMPORT-DOC-4WORD", MetaImportDoc16Word: "IMPORT-DOC-16WORD",
+	MetaImportDoc: "IMPORT-DOC",
 	0x20: "AUTHOR", 0x21: "CO-AUTHOR", 0x22: "CREATED-AT", 0x23: "MODIFIED-AT", 0x24: "RECORDED-BY",
 	0x25: "RECORDED-AT", 0x26: "SOURCE", 0x27: "SOURCE-SPAN", 0x28: "ACQUIRED-AT",
 	0x30: "PARENT", 0x31: "DERIVED-FROM", 0x32: "GENERATED-BY", 0x33: "TRANSFORMED-BY", 0x34: "CHERRY-PICKED-FROM",
@@ -24,6 +23,7 @@ var refNames = map[uint8]string{
 	RefExternalIssuer1Word: "EXTERNAL-ISSUER-1WORD", RefExternalIssuer2Word: "EXTERNAL-ISSUER-2WORD",
 	RefExternalIssuer4Word: "EXTERNAL-ISSUER-4WORD", RefExternalIssuer16Word: "EXTERNAL-ISSUER-16WORD",
 	RefGeul: "GEUL", RefGeulSIDX: "GEUL-SIDX", RefWikidataQID: "WIKIDATA-QID", RefWikidataPID: "WIKIDATA-PID", RefLocal: "LOCAL",
+	RefIssuerPointer: "ISSUER-POINTER", RefDocPointer: "DOC-POINTER",
 }
 
 // edgeNames maps the direct Edge codecs of the 서술, 근거 and 실행 families

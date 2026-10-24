@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=sequence
-//ff:what TestCheckIssuerRef — short payload fails R4; a full one checks its target; document 0 needs target 0
+//ff:what TestCheckIssuerRef — short payload fails R4; a full one checks its target; document 0 and target 0 fail R4
 package schema
 
 import (
@@ -17,10 +17,16 @@ func TestCheckIssuerRef(t *testing.T) {
 	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 7), 4); fs != nil {
 		t.Fatalf("ok: %+v", fs)
 	}
-	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 0), 4); fs != nil {
-		t.Fatalf("issuer itself: %+v", fs)
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 0), 4); rulesOf(fs) != "R4" {
+		t.Fatalf("document itself: %+v", fs)
 	}
 	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 7), 4); rulesOf(fs) != "R4" {
 		t.Fatalf("document 0, target 7: %+v", fs)
+	}
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 0), 4); rulesOf(fs) != "R4,R4" {
+		t.Fatalf("issuer itself: %+v", fs)
+	}
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 0, 7), 4); rulesOf(fs) != "R2" {
+		t.Fatalf("leading zero: %+v", fs)
 	}
 }

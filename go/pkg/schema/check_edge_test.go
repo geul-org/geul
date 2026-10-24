@@ -14,10 +14,10 @@ func TestCheckEdge(t *testing.T) {
 	if fs := checkEdge(recOf(edgeOf(0x00, 0))); rulesOf(fs) != "E1" {
 		t.Fatalf("Edge Id 0: %+v", fs)
 	}
-	if fs := checkEdge(recOf(edgeOf(core.EdgeDeprecation, 1, 0, 0, 0, 5, 0))); rulesOf(fs) != "E4" {
+	if fs := checkEdge(recOf(edgeOf(core.EdgeDeprecation, 1, 0x03F0, 0, 0, 0, 0, 5, 0))); rulesOf(fs) != "E4" {
 		t.Fatalf("layout: %+v", fs)
 	}
-	if fs := checkEdge(recOf(edgeOf(core.EdgeDeprecation, 1, 0, 0, 0, 5, 0, 1))); fs != nil {
+	if fs := checkEdge(recOf(edgeOf(core.EdgeDeprecation, 1, 0x03F0, 0, 0, 0, 0, 5, 0, 1))); fs != nil {
 		t.Fatalf("ok: %+v", fs)
 	}
 }

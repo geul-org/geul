@@ -9,7 +9,7 @@ import (
 )
 
 func TestApplySpec(t *testing.T) {
-	r := core.EncodePublication(core.Publication{Codec: core.EdgeTombstone, EdgeID: 3, Doc: []core.Word{0, 0, 0, 1}, Version: 1})
+	r := core.EncodePublication(core.Publication{Codec: core.EdgeTombstone, EdgeID: 3, Issuer: []core.Word{0}, Doc: []core.Word{0, 0, 0, 1}, Version: 1})
 	s := tombstoneSpec()
 	s[core.TargetWord(core.KindValue, core.CodecUnsignedInteger)] = []codecspec.Field{{Name: "n", Width: 1}}
 	entries := []Entry{{Record: r}, {Record: core.EncodeUintValue(1)}, {Record: core.Record{Kind: core.KindEdge, Codec: 0x05}}}

@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=sequence
-//ff:what TestCheckPointer — short payload, wider codec than needed, missing IMPORT-DOC, ok
+//ff:what TestCheckPointer — short payload, wider codec than needed, missing IMPORT-DOC, target 0, ok
 package schema
 
 import (
@@ -23,5 +23,8 @@ func TestCheckPointer(t *testing.T) {
 	}
 	if fs := checkPointer(ref(0, 2, 0, 5), 0, imports); rulesOf(fs) != "R3,R2" {
 		t.Fatalf("missing + target: %+v", fs)
+	}
+	if fs := checkPointer(ref(0, 1, 0), 0, imports); rulesOf(fs) != "R3" {
+		t.Fatalf("document itself: %+v", fs)
 	}
 }

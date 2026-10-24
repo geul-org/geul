@@ -1,5 +1,5 @@
 //ff:func feature=core type=decoder control=iteration dimension=1
-//ff:what TestDecodeDocID — round trip; other records, junk, trailing words, LOCAL, a target, document 0 and a non-Identified Quantifier fail
+//ff:what TestDecodeDocID — round trip; other records, junk, trailing words, LOCAL, the old EXTERNAL-ISSUER form, a version, document 0 and a non-Identified Quantifier fail
 package core
 
 import (
@@ -18,9 +18,10 @@ func TestDecodeDocID(t *testing.T) {
 		meta(0, 0, 0, 0, 1),
 		meta(append(slices.Clone(r.Payload), 9)...),
 		meta(0x00E0, 1),
-		meta(0x0320, 0, 0, 0, 0, 1, 7),
-		meta(0x0320, 0, 0, 0, 0, 0, 0),
-		meta(0x0321, 0, 0, 0, 0, 1, 0),
+		meta(0x0320, 0, 0xffff, 0, 0, 1, 0),
+		meta(0x03F0, 0, 0xffff, 0, 0, 1, 0, 1),
+		meta(0x03F0, 0, 0, 0, 0, 0, 0, 0),
+		meta(0x03F1, 0, 0xffff, 0, 0, 1, 0, 0),
 	} {
 		if _, _, err := DecodeDocID(b); err == nil {
 			t.Fatalf("bad %d: want error", i)

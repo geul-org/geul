@@ -6,7 +6,7 @@ import "github.com/geul-org/geul/go/pkg/core"
 
 // ParseDocumentNames reads a documents.geul (GEUL-ORG 문서 이름): in
 // `<Issuer>/documents.geul` every BIND whose Subject is
-// EXTERNAL-ISSUER-*(Issuer, document, 0) maps its name to that document; in
+// DOC-POINTER(Issuer, document, 0) maps its name to that document; in
 // `proposal/<kind>/documents.geul` a Subject that is a codec TAG WORD maps it
 // to that codec's spec document (codecKey). Other records are ignored. A
 // later BIND of the same name wins.

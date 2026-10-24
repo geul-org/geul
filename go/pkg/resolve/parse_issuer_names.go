@@ -5,7 +5,7 @@ package resolve
 import "github.com/geul-org/geul/go/pkg/core"
 
 // ParseIssuerNames reads issuers.geul (GEUL-ORG Issuer 이름): every BIND whose
-// Subject is EXTERNAL-ISSUER-*(Issuer, 0, 0) maps its name to that Issuer in
+// Subject is ISSUER-POINTER(Issuer) maps its name to that Issuer in
 // canonical hex. Other records are ignored. A later BIND of the same name wins.
 func ParseIssuerNames(b []byte) (map[string]string, error) {
 	ws, err := core.ReadWords(b)

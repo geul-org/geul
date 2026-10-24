@@ -14,7 +14,7 @@ func checkMeta(r rec) []Fact {
 	switch {
 	case c == core.MetaDocID:
 		return checkDocID(r)
-	case core.ImportIssuerWidth(c) > 0:
+	case c == core.MetaImportDoc:
 		return checkImportDoc(r)
 	case c == core.MetaSpecVersion:
 		return checkSpecVersion(r)

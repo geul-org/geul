@@ -24,7 +24,7 @@ func TestDirLatestCodec(t *testing.T) {
 	if _, err := d.latestCodec(0x101A); err == nil {
 		t.Fatal("bad list: want error")
 	}
-	d.write(listPath(k), encodeVersionList([]core.Record{core.EncodePublication(core.Publication{Codec: core.EdgePublication, EdgeID: 1, Doc: []core.Word{0, 0, 0, 0x101A}, Version: 1})}, nil, 0))
+	d.write(listPath(k), encodeVersionList([]core.Record{core.EncodePublication(core.Publication{Codec: core.EdgePublication, EdgeID: 1, Issuer: []core.Word{0}, Doc: codecDocID(0x101A), Version: 1})}, nil, 0))
 	if _, err := d.latestCodec(0x101A); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("no file: %v", err)
 	}
@@ -32,7 +32,7 @@ func TestDirLatestCodec(t *testing.T) {
 	if _, err := d.latestCodec(0x101A); !errors.Is(err, ErrVerify) {
 		t.Fatalf("tampered: %v", err)
 	}
-	d.write(listPath(k), encodeVersionList([]core.Record{core.EncodePublication(core.Publication{Codec: core.EdgePublication, EdgeID: 1, Doc: []core.Word{0, 0, 0, 0x101A}, Version: 1}), core.EncodePublication(core.Publication{Codec: core.EdgeTombstone, EdgeID: 2, Doc: []core.Word{0, 0, 0, 0x101A}, Version: 1})}, nil, 0))
+	d.write(listPath(k), encodeVersionList([]core.Record{core.EncodePublication(core.Publication{Codec: core.EdgePublication, EdgeID: 1, Issuer: []core.Word{0}, Doc: codecDocID(0x101A), Version: 1}), core.EncodePublication(core.Publication{Codec: core.EdgeTombstone, EdgeID: 2, Issuer: []core.Word{0}, Doc: codecDocID(0x101A), Version: 1})}, nil, 0))
 	if _, err := d.latestCodec(0x101A); !errors.Is(err, ErrNotFound) {
 		t.Fatalf("deleted: %v", err)
 	}

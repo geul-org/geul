@@ -8,14 +8,14 @@ import (
 	"github.com/geul-org/geul/go/pkg/core"
 )
 
-// importsOf collects the IMPORT IDs assigned by the HEAD's IMPORT-DOC-* records.
+// importsOf collects the IMPORT IDs assigned by the HEAD's IMPORT-DOC records.
 // An IMPORT ID assigned twice is an M3 violation.
 func importsOf(head []rec) (map[uint64]bool, []Fact) {
 	ids := map[uint64]bool{}
 	var fs []Fact
 	for _, r := range head {
 		id, ok := importID(r)
-		if core.ImportIssuerWidth(r.R.Codec) == 0 || !ok {
+		if r.R.Codec != core.MetaImportDoc || !ok {
 			continue
 		}
 		if ids[id] {

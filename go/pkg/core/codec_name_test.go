@@ -5,7 +5,7 @@ package core
 import "testing"
 
 func TestCodecName(t *testing.T) {
-	if got := CodecName(KindMeta, MetaImportDoc4Word); got != "IMPORT-DOC-4WORD" {
+	if got := CodecName(KindMeta, MetaImportDoc); got != "IMPORT-DOC" {
 		t.Fatalf("meta: %q", got)
 	}
 	if got := CodecName(KindMeta, MetaEffectiveFrom); got != "EFFECTIVE-FROM" {

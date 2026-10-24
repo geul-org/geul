@@ -1,21 +1,16 @@
 //ff:func feature=schema type=decoder control=sequence
-//ff:what bindDoc — the document a BIND Subject names: EXTERNAL-ISSUER-*(Issuer, document, target 0)
+//ff:what bindDoc — the document a BIND Subject names: DOC-POINTER(Issuer, document, version 0)
 package schema
 
 import "github.com/geul-org/geul/go/pkg/core"
 
-// bindDoc reads a version list BIND Subject, which must be an
-// EXTERNAL-ISSUER-* Reference with target ID 0 (the document itself), and
-// returns its document ID in canonical hex.
+// bindDoc reads a version list BIND Subject, which must be a DOC-POINTER
+// Reference with version ID 0 (the document, not one version), and returns
+// its document ID in canonical hex.
 func bindDoc(subj core.Record) (string, bool) {
-	c := subj.Codec >> 3
-	if subj.Kind != core.KindReference || c < core.RefExternalIssuer1Word || c > core.RefExternalIssuer16Word {
+	_, doc, ver, err := core.DecodeDocPointer(subj)
+	if err != nil || ver[0]|ver[1] != 0 {
 		return "", false
 	}
-	w := core.ImportIssuerWidth(core.MetaImportDoc1Word + c&3)
-	p := subj.Payload
-	if len(p) != w+5 || p[w+4] != 0 {
-		return "", false
-	}
-	return core.FormatID(p[w : w+4]), true
+	return core.FormatID(doc), true
 }

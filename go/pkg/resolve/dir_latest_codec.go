@@ -13,7 +13,7 @@ import (
 // whose content hash differs from its PUBLICATION is a verification failure.
 func (d Dir) latestCodec(target core.Word) ([]byte, error) {
 	k := codecKey(target)
-	lg, err := d.readList(k, core.FormatID([]core.Word{0, 0, 0, target}))
+	lg, err := d.readList(k, core.FormatID(codecDocID(target)))
 	if err != nil {
 		return nil, err
 	}

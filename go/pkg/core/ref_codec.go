@@ -6,7 +6,9 @@ package core
 // the 4-bit codec CCCC and the 3-bit Quantifier QQQ in its 7 codec bits, so the
 // Record codec is CCCC<<3 | QQQ. 지시 codes (00xx) carry an IMPORT ID of
 // 1/2/4/8 words, 지시선언 codes (01xx) an Issuer of 1/2/4/16 words plus a
-// 4-word document ID, and 선언 codes (1xxx) only the target ID.
+// 4-word document ID, and 선언 codes (1000-1100) only the target ID. The
+// 지시선언 codes ISSUER-POINTER (1101) and DOC-POINTER (1110) carry no target
+// ID: an Issuer, or an Issuer, a 4-word document ID and a 2-word version ID.
 const (
 	// RefExternalPointer1Word points at an imported document's LOCAL ID (1-word IMPORT ID).
 	RefExternalPointer1Word uint8 = 0x0
@@ -34,6 +36,11 @@ const (
 	RefWikidataPID uint8 = 0xB
 	// RefLocal is an ID this document issues (Edge Ids included).
 	RefLocal uint8 = 0xC
+	// RefIssuerPointer is an Issuer itself; its width is the Length minus the TAG.
+	RefIssuerPointer uint8 = 0xD
+	// RefDocPointer is one version of an Issuer's document: Issuer, 4-word
+	// document ID and 2-word version ID (0 is the latest).
+	RefDocPointer uint8 = 0xE
 	// CodecLocalIdentified is the Record codec of a LOCAL Reference with
 	// Quantifier Identified (QQQ=000): the form every Edge Id declaration uses.
 	CodecLocalIdentified uint8 = RefLocal << 3

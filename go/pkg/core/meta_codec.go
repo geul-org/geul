@@ -27,13 +27,7 @@ const (
 	MetaEffectiveUntil uint8 = 0x14
 	// MetaDefaultLanguage declares the default language.
 	MetaDefaultLanguage uint8 = 0x16
-	// MetaImportDoc1Word imports a 1-word Issuer's document under an IMPORT ID.
-	// The low 2 bits of the IMPORT-DOC codes give the Issuer width.
-	MetaImportDoc1Word uint8 = 0x60
-	// MetaImportDoc2Word imports a 2-word Issuer's document.
-	MetaImportDoc2Word uint8 = 0x61
-	// MetaImportDoc4Word imports a 4-word Issuer's document.
-	MetaImportDoc4Word uint8 = 0x62
-	// MetaImportDoc16Word imports a 16-word Issuer's document.
-	MetaImportDoc16Word uint8 = 0x63
+	// MetaImportDoc imports a document under an IMPORT ID: a DOC-POINTER
+	// Reference, then the IMPORT ID.
+	MetaImportDoc uint8 = 0x60
 )

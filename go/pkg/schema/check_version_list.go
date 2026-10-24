@@ -11,7 +11,7 @@ func checkVersionList(parts docParts) []Fact {
 	imports, _ := importsOf(parts.Head)
 	var fs []Fact
 	if len(imports) > 0 {
-		fs = append(fs, Fact{Rule: "P1", Severity: Error, Expected: "IMPORT-DOC-* 없음", Actual: fmt.Sprintf("%d개", len(imports))})
+		fs = append(fs, Fact{Rule: "P1", Severity: Error, Expected: "IMPORT-DOC 없음", Actual: fmt.Sprintf("%d개", len(imports))})
 	}
 	st := &listState{doc: listDoc(parts.Body), docs: map[string]*docVersions{}, names: map[string]string{}}
 	for i, r := range parts.Body {

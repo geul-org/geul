@@ -8,8 +8,8 @@ import (
 )
 
 // DecodePublication reads a version list record (GEUL t002 docs/edge/PUBLICATION):
-// the LOCAL Edge Id, the 4-word document ID, the 2-word version ID (not 0) and
-// the codec's tail. The length after the Edge Id is fixed per codec.
+// the LOCAL Edge Id, the DOC-POINTER of the version (version ID not 0) and the
+// codec's tail, whose length is fixed per codec.
 func DecodePublication(r Record) (Publication, error) {
 	tail, ok := publicationTail(r.Codec)
 	if r.Kind != KindEdge || !ok {
@@ -23,14 +23,22 @@ func DecodePublication(r Record) (Publication, error) {
 	if err != nil {
 		return Publication{}, err
 	}
-	rest := r.Payload[n:]
-	if len(rest) != 6+tail {
-		return Publication{}, fmt.Errorf("geul/core: version list record needs %d words after the Edge Id, got %d", 6+tail, len(rest))
+	ptr, m, err := DecodeRecord(r.Payload[n:])
+	if err != nil {
+		return Publication{}, err
 	}
-	p := Publication{Codec: r.Codec, EdgeID: id, Doc: rest[:4], Version: uint32(rest[4])<<16 | uint32(rest[5])}
+	issuer, doc, ver, err := DecodeDocPointer(ptr)
+	if err != nil {
+		return Publication{}, err
+	}
+	rest := r.Payload[n+m:]
+	if len(rest) != tail {
+		return Publication{}, fmt.Errorf("geul/core: version list record needs %d words after its DOC-POINTER, got %d", tail, len(rest))
+	}
+	p := Publication{Codec: r.Codec, EdgeID: id, Issuer: issuer, Doc: doc, Version: uint32(ver[0])<<16 | uint32(ver[1])}
 	if p.Version == 0 {
 		return Publication{}, errors.New("geul/core: version ID 0 in a version list record")
 	}
-	fillPublicationTail(&p, rest[6:])
+	fillPublicationTail(&p, rest)
 	return p, nil
 }

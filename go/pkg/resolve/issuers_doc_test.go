@@ -13,7 +13,10 @@ func issuersDoc(pairs ...[2]any) []byte {
 		return enc(core.Record{Kind: core.KindEdge, Codec: core.EdgeBind, Payload: p})
 	}
 	ref := func(issuer, doc core.Word) core.Record {
-		return core.Record{Kind: core.KindReference, Codec: core.RefExternalIssuer1Word << 3, Payload: []core.Word{issuer, 0, 0, 0, doc, 0}}
+		if doc == 0 {
+			return core.Record{Kind: core.KindReference, Codec: core.RefIssuerPointer << 3, Payload: []core.Word{issuer}}
+		}
+		return core.Record{Kind: core.KindReference, Codec: core.RefDocPointer << 3, Payload: []core.Word{issuer, 0, 0, 0, doc, 0, 0}}
 	}
 	in := []core.Word{0x180E}
 	for i, p := range pairs {

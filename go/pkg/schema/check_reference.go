@@ -2,10 +2,15 @@
 //ff:what checkReference — R1~R4 for one Reference record
 package schema
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/geul-org/geul/go/pkg/core"
+)
 
 // checkReference applies the Reference rules: reserved Codec and Quantifier
-// (R1), then the layout of the pointer, issuer or declaration forms.
+// (R1), then the layout of the pointer, issuer, issuer/document pointer or
+// declaration forms.
 func checkReference(r rec, imports map[uint64]bool) []Fact {
 	c, q := r.R.Codec>>3, r.R.Codec&7
 	var fs []Fact
@@ -13,8 +18,10 @@ func checkReference(r rec, imports map[uint64]bool) []Fact {
 		fs = append(fs, factAt("R1", Warn, r, "Quantifier", "000~100", fmt.Sprintf("%03b (예약)", q)))
 	}
 	switch {
-	case c >= 0xD:
-		return append(fs, factAt("R1", Warn, r, "Codec", "0000~1100", fmt.Sprintf("%04b (예약)", c)))
+	case c >= 0xF:
+		return append(fs, factAt("R1", Warn, r, "Codec", "0000~1110", fmt.Sprintf("%04b (예약)", c)))
+	case c == core.RefIssuerPointer || c == core.RefDocPointer:
+		return append(fs, checkIssuerDocPointer(r, c)...)
 	case c <= 3:
 		return append(fs, checkPointer(r, c, imports)...)
 	case c <= 7:
