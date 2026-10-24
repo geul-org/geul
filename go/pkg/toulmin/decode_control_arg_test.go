@@ -18,7 +18,7 @@ func TestDecodeControlArg(t *testing.T) {
 		t.Fatalf("section: %v %+v", err, p)
 	}
 	p, pos = ControlPacket{Code: ControlCaseEnd}, 0
-	if err := decodeControlArg([]core.Word{0x00E0, 7}, &pos, &p, testWire); err != nil || p.Arg != 7 {
+	if err := decodeControlArg([]core.Word{0x0088, 7}, &pos, &p, testWire); err != nil || p.Arg != 7 {
 		t.Fatalf("case: %v %+v", err, p)
 	}
 }

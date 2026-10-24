@@ -14,7 +14,7 @@ import (
 // without DstFunc, a gate flag without a Gate, a bad gate and a SPAN overflow.
 func TestEncodeEdge(t *testing.T) {
 	got, err := EncodeEdge(EdgePacket{ID: 5, Prop: PropDo, Src: 2, DstFunc: &FuncRef{Alias: 3, Verb: 0xC200}, Flags: EdgeFlagOnce}, testWire)
-	if want := []core.Word{0x1572, 0x00E0, 5, 0x00E0, 2, 0x00E0, 3, 0xC200, 0, 0, 0}; err != nil || !reflect.DeepEqual(got, want) {
+	if want := []core.Word{0x1572, 0x0088, 5, 0x0088, 2, 0x0088, 3, 0xC200, 0, 0, 0}; err != nil || !reflect.DeepEqual(got, want) {
 		t.Fatalf("do once: %04X %v want %04X", got, err, want)
 	}
 	bad := []EdgePacket{

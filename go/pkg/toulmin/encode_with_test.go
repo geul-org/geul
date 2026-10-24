@@ -10,7 +10,7 @@ import (
 )
 
 func TestEncodeWith(t *testing.T) {
-	want := []core.Word{0x0882, 2, 0x00E0, 5, 0x00E0, 6}
+	want := []core.Word{0x0882, 2, 0x0088, 5, 0x0088, 6}
 	if got := encodeWith(nil, []TID{5, 6}); !reflect.DeepEqual(got, want) {
 		t.Fatalf("got %04X", got)
 	}

@@ -17,11 +17,11 @@ func TestDecodeDocID(t *testing.T) {
 		EncodeUintValue(1),
 		meta(0, 0, 0, 0, 1),
 		meta(append(slices.Clone(r.Payload), 9)...),
-		meta(0x00E0, 1),
-		meta(0x0320, 0, 0xffff, 0, 0, 1, 0),
-		meta(0x03F0, 0, 0xffff, 0, 0, 1, 0, 1),
-		meta(0x03F0, 0, 0, 0, 0, 0, 0, 0),
-		meta(0x03F1, 0, 0xffff, 0, 0, 1, 0, 0),
+		meta(0x0088, 1),
+		meta(0x0360, 0, 0xffff, 0, 0, 1, 0),
+		meta(0x03B8, 0, 0xffff, 0, 0, 1, 0, 1),
+		meta(0x03B8, 0, 0, 0, 0, 0, 0, 0),
+		meta(0x03B9, 0, 0xffff, 0, 0, 1, 0, 0),
 	} {
 		if _, _, err := DecodeDocID(b); err == nil {
 			t.Fatalf("bad %d: want error", i)

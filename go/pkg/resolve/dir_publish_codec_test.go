@@ -13,7 +13,7 @@ func TestDirPublishCodec(t *testing.T) {
 	if e, err := d.PublishCodec(codecDocOf(0x1018, 4, 2)); err != nil || e.Version != 1 {
 		t.Fatalf("publish: %+v %v", e, err)
 	}
-	if _, err := os.Stat(d.file("proposal/edge/0011000/0x00000001.geul")); err != nil {
+	if _, err := os.Stat(d.file("0x0000/0x0000000000001018/0x00000001.geul")); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := d.PublishCodec([]byte{1}); err == nil {

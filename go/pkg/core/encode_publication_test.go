@@ -21,7 +21,7 @@ func TestEncodePublication(t *testing.T) {
 		}
 	}
 	r := EncodePublication(Publication{Codec: EdgeDeprecation, EdgeID: 1, Issuer: []Word{0}, Doc: doc, Version: 1})
-	if !slices.Equal(r.Payload, []Word{0x00E0, 1, 0x03F0, 0, 0, 0, 0, 5, 0, 1}) {
+	if !slices.Equal(r.Payload, []Word{0x0088, 1, 0x03B8, 0, 0, 0, 0, 5, 0, 1}) {
 		t.Fatalf("words %04X", r.Payload)
 	}
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func TestRecordParts(t *testing.T) {
-	w := &walker{ws: []core.Word{0x00E0, 7, 0x0830}}
+	w := &walker{ws: []core.Word{0x0088, 7, 0x0830}}
 	recordParts(w)
 	if len(w.out) != 2 || w.out[0].Name != "LOCAL" || !w.out[0].Record || w.out[1].Name != "record" || w.pos != 3 {
 		t.Fatalf("got %+v", w.out)

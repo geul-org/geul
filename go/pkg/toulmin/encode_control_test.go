@@ -13,7 +13,7 @@ import (
 // 0xC002, Edge Id, section code) and checks every error.
 func TestEncodeControl(t *testing.T) {
 	got, err := EncodeControl(ControlPacket{ID: 3, Code: ControlSection, Arg: 5}, testWire)
-	if want := []core.Word{0x12FC, 0, 0xC002, 0x00E0, 3, 5}; err != nil || !reflect.DeepEqual(got, want) {
+	if want := []core.Word{0x12FC, 0, 0xC002, 0x0088, 3, 5}; err != nil || !reflect.DeepEqual(got, want) {
 		t.Fatalf("section: %04X %v want %04X", got, err, want)
 	}
 	bad := []ControlPacket{

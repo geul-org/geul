@@ -13,7 +13,7 @@ func TestCheckDocument(t *testing.T) {
 	if fs := checkDocument(docParts{Head: []rec{id}, Body: body}); rulesOf(fs) != "E2" {
 		t.Fatalf("plain: %+v", fs)
 	}
-	list := []rec{recOf(edgeOf(core.EdgePublication, 1, append([]core.Word{0x03F0, 0, 0xffff, 0, 0, 2, 0, 1}, make([]core.Word, 16)...)...)), recOf(edgeOf(0, 1))}
+	list := []rec{recOf(edgeOf(core.EdgePublication, 1, append([]core.Word{0x03B8, 0, 0xffff, 0, 0, 2, 0, 1}, make([]core.Word, 16)...)...)), recOf(edgeOf(0, 1))}
 	if fs := checkDocument(docParts{Body: list}); rulesOf(fs) != "E2,P2,P1" {
 		t.Fatalf("list: %+v", fs)
 	}

@@ -21,7 +21,7 @@ func TestParseDocumentNames(t *testing.T) {
 	p := append(enc(core.EncodeLocalRef(1)), 0x1018)
 	p = append(p, enc(core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("publication")))...)
 	codecs := append([]core.Word{0x180E}, enc(core.Record{Kind: core.KindEdge, Codec: core.EdgeBind, Payload: p})...)
-	if n, _ := ParseDocumentNames(core.PutWords(core.WrapDocument(append(codecs, 0x180F)))); n["publication"] != (DocKey{Issuer: "proposal/edge", Doc: "0011000"}) {
+	if n, _ := ParseDocumentNames(core.PutWords(core.WrapDocument(append(codecs, 0x180F)))); n["publication"] != codecKey(0x1018) {
 		t.Fatalf("codec: %v", n)
 	}
 	if _, err := ParseDocumentNames([]byte{1}); err == nil {

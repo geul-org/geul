@@ -41,7 +41,7 @@ func TestCodecName(t *testing.T) {
 	if got := CodecName(KindReference, RefLocal<<3|4); got != "LOCAL" {
 		t.Fatalf("reference: %q", got)
 	}
-	if got := CodecName(KindReference, 0x7F); got != "" {
+	if got := CodecName(KindReference, 0x07); got != "" {
 		t.Fatalf("reserved reference: %q", got)
 	}
 }

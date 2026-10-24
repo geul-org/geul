@@ -11,7 +11,7 @@ import (
 func TestDecodeClaimObject(t *testing.T) {
 	var c Claim
 	pos := 0
-	if err := decodeClaimObject([]core.Word{0x00E0, 9}, &pos, ObjTID, testWire, &c); err != nil || c.ObjTID != 9 {
+	if err := decodeClaimObject([]core.Word{0x0088, 9}, &pos, ObjTID, testWire, &c); err != nil || c.ObjTID != 9 {
 		t.Fatalf("REF: %v %+v", err, c)
 	}
 	pos = 0

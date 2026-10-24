@@ -23,10 +23,10 @@ func TestDecodeControl(t *testing.T) {
 		ctl(FormatText, 1),
 		ctl(FormatSection),
 		ctl(FormatSection, 1),
-		ctl(FormatSection, 0x00E0, 1),
-		ctl(FormatProse, 0x00E0, 1, 0),
-		ctl(FormatCaseEnd, 0x00E0, 1),
-		ctl(FormatCaseEnd, 0x00E0, 1, 0x00E0, 2, 3),
+		ctl(FormatSection, 0x0088, 1),
+		ctl(FormatProse, 0x0088, 1, 0),
+		ctl(FormatCaseEnd, 0x0088, 1),
+		ctl(FormatCaseEnd, 0x0088, 1, 0x0088, 2, 3),
 	}
 	for i, r := range bad {
 		if _, err := DecodeControl(r, testWire); err == nil {

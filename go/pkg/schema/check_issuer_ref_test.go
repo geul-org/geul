@@ -9,24 +9,24 @@ import (
 
 func TestCheckIssuerRef(t *testing.T) {
 	ref := func(p ...core.Word) rec {
-		return recOf(core.Record{Kind: core.KindReference, Codec: 4 << 3, Payload: p})
+		return recOf(core.Record{Kind: core.KindReference, Codec: core.RefExternalIssuer1Word << 3, Payload: p})
 	}
-	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2), 4); rulesOf(fs) != "R4" {
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2), core.RefExternalIssuer1Word); rulesOf(fs) != "R4" {
 		t.Fatalf("short: %+v", fs)
 	}
-	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 7), 4); fs != nil {
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 7), core.RefExternalIssuer1Word); fs != nil {
 		t.Fatalf("ok: %+v", fs)
 	}
-	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 0), 4); rulesOf(fs) != "R4" {
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 0), core.RefExternalIssuer1Word); rulesOf(fs) != "R4" {
 		t.Fatalf("document itself: %+v", fs)
 	}
-	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 7), 4); rulesOf(fs) != "R4" {
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 7), core.RefExternalIssuer1Word); rulesOf(fs) != "R4" {
 		t.Fatalf("document 0, target 7: %+v", fs)
 	}
-	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 0), 4); rulesOf(fs) != "R4,R4" {
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 0), core.RefExternalIssuer1Word); rulesOf(fs) != "R4,R4" {
 		t.Fatalf("issuer itself: %+v", fs)
 	}
-	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 0, 7), 4); rulesOf(fs) != "R2" {
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 0, 7), core.RefExternalIssuer1Word); rulesOf(fs) != "R2" {
 		t.Fatalf("leading zero: %+v", fs)
 	}
 }

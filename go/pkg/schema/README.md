@@ -40,7 +40,7 @@
 
 | 규칙 | 내용 |
 |---|---|
-| R1 | Codec `1111`, Quantifier `101`~`111`은 예약이다. |
+| R1 | Codec `0000`, Quantifier `101`~`111`은 예약이다. |
 | R2 | 대상 ID는 가장 짧은 폭이다. 값 0은 `0x0000` 1 WORD이고, 그 밖에는 선행 `0x0000` WORD가 없다. |
 | R3 | `EXTERNAL-POINTER-*`: IMPORT ID가 들어가는 가장 좁은 Codec이고, 그 IMPORT ID를 배정한 `IMPORT-DOC`이 HEAD에 있다. 대상 ID는 `0`이 아니다(문서 자신은 `DOC-POINTER`). |
 | R4 | `EXTERNAL-ISSUER-*`: Issuer 폭이 Codec과 맞고, 문서 ID 4 WORD 뒤에 대상 ID가 1 WORD 이상 있다. 문서 ID와 대상 ID는 `0`이 아니다(Issuer 자신은 `ISSUER-POINTER`, 문서 자신은 `DOC-POINTER`). |

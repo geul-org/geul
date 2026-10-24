@@ -15,11 +15,11 @@ import (
 // SPAN beyond the width.
 func TestEncodeNode(t *testing.T) {
 	got, err := EncodeNode(NodePacket{TID: 7, Type: NodeCase, Span: Span{Off: 1, Len: 2}}, testWire)
-	if want := []core.Word{0x12E0, 0x00E0, 7, 0, 1, 2}; err != nil || !reflect.DeepEqual(got, want) {
+	if want := []core.Word{0x12E0, 0x0088, 7, 0, 1, 2}; err != nil || !reflect.DeepEqual(got, want) {
 		t.Fatalf("case: %04X %v want %04X", got, err, want)
 	}
 	got, err = EncodeNode(NodePacket{TID: 1, Type: NodeAlias}, testWire)
-	if want := []core.Word{0x13FC, 0, 0xC013, 0x00E0, 1, 0, 0, 0}; err != nil || !reflect.DeepEqual(got, want) {
+	if want := []core.Word{0x13FC, 0, 0xC013, 0x0088, 1, 0, 0, 0}; err != nil || !reflect.DeepEqual(got, want) {
 		t.Fatalf("alias: %04X %v want %04X", got, err, want)
 	}
 	bad := []NodePacket{

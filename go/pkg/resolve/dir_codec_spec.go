@@ -1,5 +1,5 @@
 //ff:func feature=resolve type=resolver control=iteration dimension=1
-//ff:what Dir.CodecSpec — the codec specs of every direct codec spec document published under proposal/
+//ff:what Dir.CodecSpec — the codec specs of every direct codec spec document published under the GEUL Issuer
 package resolve
 
 import (
@@ -12,14 +12,15 @@ import (
 )
 
 // CodecSpec gathers the specs of the latest version of every codec spec
-// document under `proposal/<kind>/<Codec 비트>/` (GEUL-ORG 직접 코드 코덱북).
-// The first error stops it.
+// document, the GEUL Issuer documents `0x0000/<codecDocID>/` (GEUL-ORG 직접
+// 코드 코덱북). Other documents of the Issuer are skipped. The first error
+// stops it.
 func (d Dir) CodecSpec() (codecspec.Spec, error) {
-	lists, _ := filepath.Glob(d.file("proposal/*/*/" + listFile))
+	lists, _ := filepath.Glob(d.file(core.FormatID([]core.Word{0}) + "/*/" + listFile))
 	sort.Strings(lists)
 	s := codecspec.Spec{}
 	for _, l := range lists {
-		target, ok := parseCodecKey(filepath.Base(filepath.Dir(filepath.Dir(l))), filepath.Base(filepath.Dir(l)))
+		target, ok := codecTargetOf(filepath.Base(filepath.Dir(l)))
 		if !ok {
 			continue
 		}

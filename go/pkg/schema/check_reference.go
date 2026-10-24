@@ -18,14 +18,14 @@ func checkReference(r rec, imports map[uint64]bool) []Fact {
 		fs = append(fs, factAt("R1", Warn, r, "Quantifier", "000~100", fmt.Sprintf("%03b (예약)", q)))
 	}
 	switch {
-	case c >= 0xF:
-		return append(fs, factAt("R1", Warn, r, "Codec", "0000~1110", fmt.Sprintf("%04b (예약)", c)))
+	case c == 0:
+		return append(fs, factAt("R1", Warn, r, "Codec", "0001~1111", "0000 (예약)"))
 	case c == core.RefIssuerPointer || c == core.RefDocPointer:
 		return append(fs, checkIssuerDocPointer(r, c)...)
-	case c <= 3:
-		return append(fs, checkPointer(r, c, imports)...)
-	case c <= 7:
+	case c >= core.RefExternalIssuer1Word:
 		return append(fs, checkIssuerRef(r, c)...)
+	case c >= core.RefExternalPointer1Word:
+		return append(fs, checkPointer(r, c, imports)...)
 	default:
 		return append(fs, checkTarget(r, r.R.Payload)...)
 	}

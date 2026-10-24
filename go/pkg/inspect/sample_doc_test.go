@@ -26,7 +26,7 @@ func sampleDoc(t *testing.T) []byte {
 	in = append(in, meta(core.MetaProfile, core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("tangeul-1.0")))...)
 	in = append(in, meta(core.MetaDefaultLanguage, core.EncodeBytesValue(core.CodecLanguageBCP47Even, []byte("ko")))...)
 	in = append(in, raw(func() core.Record { r, _ := core.EncodeDocID([]core.Word{1}, []core.Word{0, 0, 0, 5}); return r }())...)
-	in = append(in, raw(core.Record{Kind: core.KindMeta, Codec: core.MetaImportDoc, Payload: []core.Word{0x03F0, 1, 0, 0, 0, 2, 0, 0, 1}})...)
+	in = append(in, raw(core.Record{Kind: core.KindMeta, Codec: core.MetaImportDoc, Payload: []core.Word{0x03B8, 1, 0, 0, 0, 2, 0, 0, 1}})...)
 	in = append(in, raw(core.Record{Kind: core.KindMeta, Codec: 0x2A, Payload: []core.Word{7}})...)
 	in = append(in, 0x180E)
 	src, _ := toulmin.EncodeSource(toulmin.TextPacket{TID: 9, Bytes: []byte("# t\n")}, w)
@@ -34,7 +34,7 @@ func sampleDoc(t *testing.T) []byte {
 	sec, _ := toulmin.EncodeControl(toulmin.ControlPacket{ID: 11, Code: toulmin.ControlSection, Arg: 5}, w)
 	node, _ := toulmin.EncodeNode(toulmin.NodePacket{TID: 1, Type: toulmin.NodeCase, Span: toulmin.Span{Off: 0, Len: 4}}, w)
 	link, _ := toulmin.EncodeEdge(toulmin.EdgePacket{ID: 12, Prop: toulmin.PropLabel, Src: 1, DstTID: 10, Span: toulmin.Span{Len: 4}}, w)
-	pred := raw(core.Record{Kind: core.KindEdge, Codec: toulmin.CodecPredicateDeclare, Payload: []core.Word{0x00E0, 13, 0}})
+	pred := raw(core.Record{Kind: core.KindEdge, Codec: toulmin.CodecPredicateDeclare, Payload: []core.Word{0x0088, 13, 0}})
 	for _, p := range [][]core.Word{src, txt, sec, node, link, pred, raw(core.EncodeUintValue(5)), raw(core.Record{Kind: core.KindValue, Codec: 0x03, Payload: []core.Word{0x3c00}})} {
 		in = append(in, p...)
 	}

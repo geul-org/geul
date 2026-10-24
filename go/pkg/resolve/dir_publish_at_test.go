@@ -10,7 +10,7 @@ import (
 
 func TestDirPublishAt(t *testing.T) {
 	d := Dir{Root: t.TempDir()}
-	k := DocKey{Issuer: "proposal/edge", Doc: "0011000"}
+	k := codecKey(0x1018)
 	doc := codecDocID(0x1018)
 	b := codecDocOf(0x1018, 4)
 	ws, _ := core.ReadWords(b)
@@ -30,18 +30,18 @@ func TestDirPublishAt(t *testing.T) {
 	if e, err := d.publishAt(k, []core.Word{0}, doc, b2, h2); err != nil || e.Version != 2 {
 		t.Fatalf("second: %+v %v", e, err)
 	}
-	full := DocKey{Issuer: "proposal/edge", Doc: "0011010"}
+	full := codecKey(0x101A)
 	d.write(listPath(full), encodeVersionList([]core.Record{core.EncodePublication(core.Publication{Codec: core.EdgePublication, EdgeID: 1, Issuer: []core.Word{0}, Doc: doc, Version: math.MaxUint32})}, nil, 0))
 	if _, err := d.publishAt(full, []core.Word{0}, doc, b, h); err == nil {
 		t.Fatal("exhausted: want error")
 	}
-	junk := DocKey{Issuer: "proposal/edge", Doc: "0011011"}
+	junk := codecKey(0x101B)
 	d.write(listPath(junk), []byte("x"))
 	if _, err := d.publishAt(junk, []core.Word{0}, doc, b, h); err == nil {
 		t.Fatal("bad list: want error")
 	}
-	blockWrite(t, d, "proposal/edge/0011001/versions.geul")
-	if _, err := d.publishAt(DocKey{Issuer: "proposal/edge", Doc: "0011001"}, []core.Word{0}, doc, b, h); err == nil {
+	blockWrite(t, d, listPath(codecKey(0x1019)))
+	if _, err := d.publishAt(codecKey(0x1019), []core.Word{0}, doc, b, h); err == nil {
 		t.Fatal("blocked: want error")
 	}
 }

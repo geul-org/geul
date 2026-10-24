@@ -9,7 +9,7 @@ import (
 
 func TestEncodeDeclare(t *testing.T) {
 	ws, _ := EncodeRecord(EncodeDeclare(Declare{EdgeID: 1, Target: 0x1018}))
-	want := []Word{0x119B, 0x00E0, 1, 0x1018}
+	want := []Word{0x119B, 0x0088, 1, 0x1018}
 	if !slices.Equal(ws, want) {
 		t.Fatalf("got %04X", ws)
 	}

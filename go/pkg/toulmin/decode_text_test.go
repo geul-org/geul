@@ -17,9 +17,9 @@ func TestDecodeText(t *testing.T) {
 		{Kind: core.KindValue},
 		{Kind: core.KindEdge, Codec: CodecAttacks},
 		txt(),
-		txt(0x00E0, 1),
-		txt(0x00E0, 1, 0x0882, 1),
-		txt(0x00E0, 1, 0x0840, 0),
+		txt(0x0088, 1),
+		txt(0x0088, 1, 0x0882, 1),
+		txt(0x0088, 1, 0x0840, 0),
 	}
 	for i, r := range bad {
 		if _, err := DecodeText(r, testWire); err == nil {

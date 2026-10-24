@@ -6,7 +6,7 @@ import "testing"
 
 func TestDecodePublication(t *testing.T) {
 	id, _ := EncodeRecord(EncodeLocalRef(3))
-	ptr := func(v Word) []Word { return []Word{0x03F0, 0, 0, 0, 0, 5, 0, v} }
+	ptr := func(v Word) []Word { return []Word{0x03B8, 0, 0, 0, 0, 5, 0, v} }
 	edge := func(c uint8, rest ...Word) Record {
 		return Record{Kind: KindEdge, Codec: c, Payload: append(append([]Word{}, id...), rest...)}
 	}

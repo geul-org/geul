@@ -17,11 +17,11 @@ func TestDecodeSource(t *testing.T) {
 		{Kind: core.KindValue},
 		{Kind: core.KindEdge, Codec: core.CodecIssuer1Word, Issuer: []core.Word{0}, Format: FormatText},
 		src(),
-		src(0x00E0, 1),
-		src(0x00E0, 1, 0x0001),
-		src(0x00E0, 1, 0),
-		src(0x00E0, 1, 0, 0x0882, 1),
-		src(0x00E0, 1, 0, 0x0840, 0),
+		src(0x0088, 1),
+		src(0x0088, 1, 0x0001),
+		src(0x0088, 1, 0),
+		src(0x0088, 1, 0, 0x0882, 1),
+		src(0x0088, 1, 0, 0x0840, 0),
 	}
 	for i, r := range bad {
 		if _, _, err := DecodeSource(r); err == nil {
