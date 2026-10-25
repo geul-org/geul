@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=iteration dimension=1
-//ff:what TestCheckIssuerDocPointer — Issuer widths, a non-canonical Issuer, document ID 0 and Quantifier fail R5; valid forms pass
+//ff:what TestCheckIssuerDocPointer — Issuer widths, a non-canonical Issuer and Quantifier fail R5; document 0 passes; valid forms pass
 package schema
 
 import (
@@ -27,10 +27,10 @@ func TestCheckIssuerDocPointer(t *testing.T) {
 		{ref(iss, 4, 0x40), iss, "R5"},
 		{ref(doc, 0, 0, 0xFFFF, 0, 0, 1, 0, 1), doc, ""},
 		{ref(doc, 0, 0, 0xFFFF, 0, 0, 1, 0, 0), doc, ""},
-		{ref(doc, 0, 0, 0, 0, 0, 0, 0, 1), doc, "R5"},
+		{ref(doc, 0, 0, 0, 0, 0, 0, 0, 1), doc, ""},
 		{ref(doc, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1), doc, "R5"},
 		{ref(doc, 1, 0, 0xFFFF, 0, 0, 1, 0, 1), doc, "R5"},
-		{ref(doc, 1, 0, 0, 0, 0, 0, 0, 1), doc, "R5,R5"},
+		{ref(doc, 1, 0, 0, 0, 0, 0, 0, 1), doc, "R5"},
 	}
 	for i, tc := range cases {
 		if got := rulesOf(checkIssuerDocPointer(tc.r, tc.c)); got != tc.want {

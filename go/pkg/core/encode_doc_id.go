@@ -6,7 +6,8 @@ import "fmt"
 
 // EncodeDocID builds Meta DOC-ID (GEUL t002 docs/meta/declaration/DOC-ID):
 // its payload is the Reference DOC-POINTER(issuer, doc, 0), the document
-// itself. issuer must be 1, 2, 4 or 16 words and doc 4 words, not 0. The
+// itself. issuer must be canonical and doc 4 words (0 is the Issuer's term
+// definition index document). The
 // version is 0 because the version list, not the document, assigns versions.
 func EncodeDocID(issuer, doc []Word) (Record, error) {
 	ptr, err := EncodeDocPointer(issuer, doc, []Word{0, 0})

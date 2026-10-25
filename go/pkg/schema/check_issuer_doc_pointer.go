@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=sequence
-//ff:what checkIssuerDocPointer — R5: ISSUER-POINTER·DOC-POINTER Quantifier Identified, a canonical 1/2/4/16-word Issuer, DOC-POINTER document ID not 0
+//ff:what checkIssuerDocPointer — R5: ISSUER-POINTER·DOC-POINTER Quantifier Identified and a canonical 1/2/4/16-word Issuer
 package schema
 
 import (
@@ -29,9 +29,6 @@ func checkIssuerDocPointer(r rec, c uint8) []Fact {
 	}
 	if !core.IssuerCanonical(p[:w]) {
 		fs = append(fs, factAt("R5", Error, r, "Issuer", "값이 들어가는 가장 짧은 폭", fmtWords(w)))
-	}
-	if c == core.RefDocPointer && p[w]|p[w+1]|p[w+2]|p[w+3] == 0 {
-		fs = append(fs, factAt("R5", Error, r, "문서 ID", "0이 아님 (Issuer 자신은 ISSUER-POINTER)", "0"))
 	}
 	return fs
 }

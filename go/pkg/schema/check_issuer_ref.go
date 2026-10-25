@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=sequence
-//ff:what checkIssuerRef — R4: EXTERNAL-ISSUER Issuer width and canonical form, document ID not 0 and a target ID not 0
+//ff:what checkIssuerRef — R4: EXTERNAL-ISSUER Issuer width and canonical form and a target ID not 0
 package schema
 
 import (
@@ -11,8 +11,8 @@ import (
 // checkIssuerRef applies R4 (and R2 to the target) to an EXTERNAL-ISSUER-*
 // Reference whose 4-bit codec is c, whose Issuer must be in canonical form
 // (core.IssuerCanonical). It points at a LOCAL ID of an Issuer's
-// document: the Issuer itself is ISSUER-POINTER and the document itself
-// DOC-POINTER, so document ID 0 and target ID 0 are invalid.
+// document (document ID 0 is the Issuer's term definition index document):
+// the document itself is DOC-POINTER, so target ID 0 is invalid.
 func checkIssuerRef(r rec, c uint8) []Fact {
 	w := core.ExternalIssuerWidth(c)
 	p := r.R.Payload
@@ -22,9 +22,6 @@ func checkIssuerRef(r rec, c uint8) []Fact {
 	fs := checkTarget(r, p[w+4:])
 	if !core.IssuerCanonical(p[:w]) {
 		fs = append(fs, factAt("R4", Error, r, "Issuer", "값이 들어가는 가장 짧은 폭", fmt.Sprintf("EXTERNAL-ISSUER-%dWORD", w)))
-	}
-	if p[w]|p[w+1]|p[w+2]|p[w+3] == 0 {
-		fs = append(fs, factAt("R4", Error, r, "문서 ID", "0이 아님 (Issuer 자신은 ISSUER-POINTER)", "0"))
 	}
 	if len(p) == w+5 && p[w+4] == 0 {
 		fs = append(fs, factAt("R4", Error, r, "대상 ID", "0이 아님 (문서 자신은 DOC-POINTER)", "0"))

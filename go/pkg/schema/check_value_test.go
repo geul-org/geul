@@ -24,6 +24,8 @@ func TestCheckValue(t *testing.T) {
 		{v(0x21, 1), "V2"},
 		{v(0x60, 1), "V2"},
 		{v(0x41), "V4"},
+		{v(0x25), "V4"},
+		{v(0x24, 0x3139, 0x3734), ""},
 		{v(0x30), "V1"},
 	}
 	for i, c := range cases {

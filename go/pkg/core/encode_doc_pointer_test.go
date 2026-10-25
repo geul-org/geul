@@ -1,5 +1,5 @@
 //ff:func feature=core type=encoder control=iteration dimension=1
-//ff:what TestEncodeDocPointer — a 1-word Issuer document version encodes as 03F0 …; bad widths and document 0 fail
+//ff:what TestEncodeDocPointer — a 1-word Issuer document version encodes as 03F0 …; document 0 (the term definition index) encodes; bad widths fail
 package core
 
 import (
@@ -16,11 +16,13 @@ func TestEncodeDocPointer(t *testing.T) {
 	if ws, _ := EncodeRecord(r); !slices.Equal(ws, []Word{0x03B8, 0, 0xFFFF, 0, 0, 1, 0, 1}) {
 		t.Fatalf("%04X", ws)
 	}
+	if _, err := EncodeDocPointer([]Word{0}, []Word{0, 0, 0, 0}, []Word{0, 0}); err != nil {
+		t.Fatalf("document 0: %v", err)
+	}
 	for _, c := range [][3][]Word{
 		{{1, 2, 3}, doc, {0, 1}},
 		{{0}, {1, 2, 3}, {0, 1}},
 		{{0}, doc, {1}},
-		{{0}, {0, 0, 0, 0}, {0, 1}},
 	} {
 		if _, err := EncodeDocPointer(c[0], c[1], c[2]); err == nil {
 			t.Fatalf("%v accepted", c)

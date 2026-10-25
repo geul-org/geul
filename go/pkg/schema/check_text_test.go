@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=iteration dimension=1
-//ff:what TestCheckText — UTF-8 validity and BOM, empty and non-ASCII URI or tag
+//ff:what TestCheckText — UTF-8 and BOM for text, ASCII for URI, language tags and EDTF, plain-day EDTF fails V6
 package schema
 
 import (
@@ -18,6 +18,12 @@ func TestCheckText(t *testing.T) {
 		{0x44, "http://x", ""},
 		{0x44, "", "V5"},
 		{0x46, "ko KR", "V5"},
+		{0x24, "1974", ""},
+		{0x24, "197X", ""},
+		{0x24, "1952-03-11?", ""},
+		{0x24, "", "V5"},
+		{0x24, "1952-03-11", "V6"},
+		{0x24, "-0043-03-15", "V6"},
 	}
 	for i, c := range cases {
 		if got := rulesOf(checkText(rec{}, c.even, []byte(c.b))); got != c.want {

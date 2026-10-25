@@ -29,7 +29,7 @@ var refNames = map[uint8]string{
 // (GEUL t002 OVERVIEW Edge) to their spec names. Profile families such as
 // TOULMIN name their own.
 var edgeNames = map[uint8]string{
-	0x00: "REFERENCE-NODE", 0x01: "SAME-NODE", 0x02: "DIFFERENT-NODE", EdgeBind: "BIND", 0x04: "LABEL",
+	0x00: "REFERENCE-NODE", 0x01: "SAME-NODE", 0x02: "DIFFERENT-NODE", EdgeBind: "BIND", 0x04: "LABEL", 0x05: "ALIAS",
 	0x08: "VERB-SHORT", 0x09: "VERB", 0x0A: "TRIPLE", 0x0B: "STATEMENT", 0x10: "WORLD", 0x11: "TIMELINE", 0x12: "SCENE",
 	EdgePublication: "PUBLICATION", EdgeDeprecation: "DEPRECATION", EdgeTombstone: "TOMBSTONE",
 	EdgeDeclare: "DECLARE", EdgeField: "FIELD", EdgeEnum: "ENUM",
@@ -47,6 +47,7 @@ var valueNames = map[uint8]string{
 	0x00: "BOOL", 0x01: "SIGNED-INTEGER", CodecUnsignedInteger: "UNSIGNED-INTEGER", 0x03: "BINARY-FLOAT",
 	CodecSignedDecimal: "SIGNED-DECIMAL", CodecUnsignedDecimal: "UNSIGNED-DECIMAL",
 	CodecGregorianDate: "GREGORIAN-DATE", 0x21: "CIVIL-TIME-NANOSECONDS", CodecPosixSeconds: "POSIX-TIMESTAMP-SECONDS", 0x23: "DURATION-SECONDS",
+	CodecEDTFEven: "EDTF", CodecEDTFEven | 1: "EDTF",
 	CodecUTF8TextEven: "UTF8-TEXT", CodecUTF8TextEven | 1: "UTF8-TEXT", 0x42: "UTF8-NFC-TEXT", 0x43: "UTF8-NFC-TEXT",
 	0x44: "URI", 0x45: "URI", CodecLanguageBCP47Even: "LANGUAGE-BCP47-CODE", CodecLanguageBCP47Even | 1: "LANGUAGE-BCP47-CODE",
 	0x48: "LANGUAGE-SHORT-CODE", 0x60: "UUID", CodecSHA256Digest: "SHA-256-DIGEST",

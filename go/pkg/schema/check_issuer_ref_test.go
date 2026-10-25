@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=sequence
-//ff:what TestCheckIssuerRef — short payload fails R4; a full one checks its target; document 0, target 0 and a non-canonical Issuer fail R4
+//ff:what TestCheckIssuerRef — short payload fails R4; a full one checks its target; target 0 and a non-canonical Issuer fail R4; document 0 passes
 package schema
 
 import (
@@ -20,10 +20,10 @@ func TestCheckIssuerRef(t *testing.T) {
 	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 0), core.RefExternalIssuer1Word); rulesOf(fs) != "R4" {
 		t.Fatalf("document itself: %+v", fs)
 	}
-	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 7), core.RefExternalIssuer1Word); rulesOf(fs) != "R4" {
-		t.Fatalf("document 0, target 7: %+v", fs)
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 7), core.RefExternalIssuer1Word); fs != nil {
+		t.Fatalf("document 0 (term index), target 7: %+v", fs)
 	}
-	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 0), core.RefExternalIssuer1Word); rulesOf(fs) != "R4,R4" {
+	if fs := checkIssuerRef(ref(1, 0, 0, 0, 0, 0), core.RefExternalIssuer1Word); rulesOf(fs) != "R4" {
 		t.Fatalf("issuer itself: %+v", fs)
 	}
 	if fs := checkIssuerRef(ref(1, 0, 0, 0, 2, 0, 7), core.RefExternalIssuer1Word); rulesOf(fs) != "R2" {

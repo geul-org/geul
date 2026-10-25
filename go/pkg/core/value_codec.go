@@ -18,6 +18,9 @@ const (
 	CodecGregorianDate uint8 = 0x20
 	// CodecPosixSeconds is a fixed 4-word signed int64 second count from the Unix epoch.
 	CodecPosixSeconds uint8 = 0x22
+	// CodecEDTFEven is an EDTF (ISO 8601-2) date string, ASCII (even bytes;
+	// 0x25 is the odd member).
+	CodecEDTFEven uint8 = 0x24
 	// CodecSHA256Digest is a fixed 16-word SHA-256 digest.
 	CodecSHA256Digest uint8 = 0x61
 	// CodecUTF8TextEven is valid UTF-8 without implied normalization (even bytes).

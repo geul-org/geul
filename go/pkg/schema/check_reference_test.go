@@ -18,7 +18,7 @@ func TestCheckReference(t *testing.T) {
 		"R4":    ref(0x60, 1),
 		"":      ref(0x10, 1),
 		"R2":    ref(0x18, 0, 1),
-		"R5":    ref(0x38, 0, 0, 0, 0, 0, 0, 1),
+		"R5":    ref(0x39, 0, 0, 0, 0, 0, 0, 1),
 	}
 	for want, r := range cases {
 		if got := rulesOf(checkReference(r, nil)); got != want {

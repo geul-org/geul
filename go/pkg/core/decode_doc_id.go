@@ -5,7 +5,7 @@ package core
 import "fmt"
 
 // DecodeDocID reads Meta DOC-ID: exactly one DOC-POINTER Reference with
-// Quantifier Identified, a document ID that is not 0 and version ID 0.
+// Quantifier Identified and version ID 0.
 func DecodeDocID(r Record) (issuer, doc []Word, err error) {
 	if r.Kind != KindMeta || r.Codec != MetaDocID {
 		return nil, nil, fmt.Errorf("geul/core: not a DOC-ID (kind %d codec 0x%02X)", r.Kind, r.Codec)
