@@ -21,6 +21,9 @@ const (
 	// CodecEDTFEven is an EDTF (ISO 8601-2) date string, ASCII (even bytes;
 	// 0x25 is the odd member).
 	CodecEDTFEven uint8 = 0x24
+	// CodecGEDCOMDateEven is a GEDCOM 7 date value string (calendar keyword,
+	// e.g. JULIAN), ASCII (even bytes; 0x27 is the odd member).
+	CodecGEDCOMDateEven uint8 = 0x26
 	// CodecSHA256Digest is a fixed 16-word SHA-256 digest.
 	CodecSHA256Digest uint8 = 0x61
 	// CodecUTF8TextEven is valid UTF-8 without implied normalization (even bytes).

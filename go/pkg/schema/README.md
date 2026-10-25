@@ -53,8 +53,8 @@
 | V1 | 직접 코드의 Reserved 구간은 예약이다. |
 | V2 | 고정 폭 직접 코드는 Payload 폭이 맞다. BOOL 1(`0x0000`·`0x0001`만), BINARY-FLOAT 1/2/4/8, GREGORIAN-DATE 2, CIVIL-TIME-NANOSECONDS 4(`[0, 86400×10^9)`), POSIX-TIMESTAMP-SECONDS 4, DURATION-SECONDS 4, LANGUAGE-SHORT-CODE 1, UUID 8, SHA-256-DIGEST 16. |
 | V3 | SIGNED-INTEGER·UNSIGNED-INTEGER와 DECIMAL의 coefficient는 최소 WORD다. DECIMAL은 exponent 2 WORD + coefficient 1 WORD 이상이다. |
-| V4 | 홀짝 코드 쌍(텍스트, URI, 언어 태그, EDTF)에서 홀수 코드는 Payload가 1 WORD 이상이고 마지막 하위 byte가 `0x00`이다. |
-| V5 | UTF8-TEXT는 well-formed UTF-8이고 선두 BOM이 없다. UTF8-NFC-TEXT는 NFC다. URI·URI-RELATIVE-REF·LANGUAGE-BCP47-CODE·EDTF는 ASCII이고 빈 문자열이 아니다. |
+| V4 | 홀짝 코드 쌍(텍스트, URI, 언어 태그, EDTF, GEDCOM-DATE)에서 홀수 코드는 Payload가 1 WORD 이상이고 마지막 하위 byte가 `0x00`이다. |
+| V5 | UTF8-TEXT는 well-formed UTF-8이고 선두 BOM이 없다. UTF8-NFC-TEXT는 NFC다. URI·URI-RELATIVE-REF·LANGUAGE-BCP47-CODE·EDTF는 ASCII이고 빈 문자열이 아니다. GEDCOM-DATE는 ASCII 0x20~0x7E이고 비어 있지 않으며 앞뒤 공백이 없다. |
 | V6 | EDTF는 GREGORIAN-DATE로 정확히 쓸 수 있는 날짜(한정자·미상 자릿수·구간 없는 `[-]YYYY-MM-DD`)가 아니다. |
 
 - ISSUER 형식 Value는 1층에서 Issuer·형식 번호의 존재(F5)만 본다. 레이아웃은 2층이다.
@@ -138,7 +138,7 @@ type Options struct {
 
 ## 구현 상태
 
-- 1층 규칙 표 전체를 구현했다(`Check`). 예외: V5의 NFC 검사와 EDTF 문법 검사(미결정. 라이브러리는 외부 의존성이 없다).
+- 1층 규칙 표 전체를 구현했다(`Check`). 예외: V5의 NFC 검사와 EDTF·GEDCOM 날짜 문법 검사(미결정. 라이브러리는 외부 의존성이 없다).
 - 2층은 `Options.Codecs`로 받은 Codec을 모든 레코드에 돌리는 틀만 있다. 내장 규격(TOULMIN, `docs/value`, `docs/edge`)은 아직 없다.
 - 3층(격틀, 선택 제약)은 없다.
 - core에 버전 목록 레코드 디코드(`core.DecodePublication`)를 넣어 E4·P 규칙이 쓴다.

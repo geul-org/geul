@@ -23,7 +23,10 @@ func TestCodecName(t *testing.T) {
 	if got := CodecName(KindValue, CodecEDTFEven|1); got != "EDTF" {
 		t.Fatalf("EDTF odd: %q", got)
 	}
-	if got := CodecName(KindValue, 0x26); got != "" {
+	if got := CodecName(KindValue, CodecGEDCOMDateEven); got != "GEDCOM-DATE" {
+		t.Fatalf("GEDCOM-DATE: %q", got)
+	}
+	if got := CodecName(KindValue, 0x28); got != "" {
 		t.Fatalf("reserved value: %q", got)
 	}
 	if got := CodecName(KindEdge, CodecIssuer2Word); got != "ISSUER-2WORD" {

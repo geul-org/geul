@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=selection
-//ff:what checkText — V5: UTF-8 validity and no BOM for text, non-empty ASCII for URI, language tags and EDTF; V6 for EDTF
+//ff:what checkText — V5: UTF-8 validity and no BOM for text, non-empty ASCII for URI, language tags, EDTF and GEDCOM-DATE; V6 for EDTF
 package schema
 
 import (
@@ -11,8 +11,8 @@ import (
 
 // checkText applies V5 to the bytes of a byte-string Value whose even codec is
 // even (0x40 UTF8-TEXT, 0x42 UTF8-NFC-TEXT, 0x44 URI, 0x46 LANGUAGE-BCP47-CODE,
-// 0x24 EDTF), then V6 to EDTF. NFC itself and the EDTF grammar are not checked
-// yet (README 미결정).
+// 0x24 EDTF, 0x26 GEDCOM-DATE), then V6 to EDTF. NFC itself and the EDTF grammar are not checked
+// yet, nor the GEDCOM date grammar (README 미결정).
 func checkText(r rec, even uint8, b []byte) []Fact {
 	text := even == core.CodecUTF8TextEven || even == 0x42
 	switch {
@@ -24,6 +24,10 @@ func checkText(r rec, even uint8, b []byte) []Fact {
 		return nil
 	case len(b) == 0:
 		return []Fact{factAt("V5", Error, r, "Payload", "빈 문자열이 아님", "0 byte")}
+	case even == core.CodecGEDCOMDateEven && !gedcomASCII(b):
+		return []Fact{factAt("V5", Error, r, "Payload", "ASCII (0x20~0x7E), 앞뒤 공백 없음", "다른 byte 또는 앞뒤 공백")}
+	case even == core.CodecGEDCOMDateEven:
+		return nil
 	case !printableASCII(b):
 		return []Fact{factAt("V5", Error, r, "Payload", "ASCII (0x21~0x7E)", "다른 byte 포함")}
 	case even == core.CodecEDTFEven && edtfPlainDay(b):

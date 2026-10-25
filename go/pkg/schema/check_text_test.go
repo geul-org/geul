@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=iteration dimension=1
-//ff:what TestCheckText — UTF-8 and BOM for text, ASCII for URI, language tags and EDTF, plain-day EDTF fails V6
+//ff:what TestCheckText — UTF-8 and BOM for text, ASCII for URI, language tags, EDTF and GEDCOM-DATE (spaces inside), plain-day EDTF fails V6
 package schema
 
 import (
@@ -24,6 +24,9 @@ func TestCheckText(t *testing.T) {
 		{0x24, "", "V5"},
 		{0x24, "1952-03-11", "V6"},
 		{0x24, "-0043-03-15", "V6"},
+		{0x26, "JULIAN 14 OCT 1066", ""},
+		{0x26, "JULIAN 1300 ", "V5"},
+		{0x26, "", "V5"},
 	}
 	for i, c := range cases {
 		if got := rulesOf(checkText(rec{}, c.even, []byte(c.b))); got != c.want {
