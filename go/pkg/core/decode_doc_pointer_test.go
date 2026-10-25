@@ -8,9 +8,9 @@ import (
 )
 
 func TestDecodeDocPointer(t *testing.T) {
-	r, _ := EncodeDocPointer([]Word{0, 0x40}, []Word{0xFFFF, 0, 0, 1}, []Word{0, 2})
+	r, _ := EncodeDocPointer([]Word{1, 0x40}, []Word{0xFFFF, 0, 0, 1}, []Word{0, 2})
 	iss, doc, ver, err := DecodeDocPointer(r)
-	if err != nil || !slices.Equal(iss, []Word{0, 0x40}) || !slices.Equal(doc, []Word{0xFFFF, 0, 0, 1}) || !slices.Equal(ver, []Word{0, 2}) {
+	if err != nil || !slices.Equal(iss, []Word{1, 0x40}) || !slices.Equal(doc, []Word{0xFFFF, 0, 0, 1}) || !slices.Equal(ver, []Word{0, 2}) {
 		t.Fatalf("%v %v %v %v", iss, doc, ver, err)
 	}
 	for _, bad := range []Record{

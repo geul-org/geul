@@ -8,8 +8,8 @@ import (
 )
 
 func TestDecodeIssuerPointer(t *testing.T) {
-	r, _ := EncodeIssuerPointer([]Word{0, 0x40})
-	if iss, err := DecodeIssuerPointer(r); err != nil || !slices.Equal(iss, []Word{0, 0x40}) {
+	r, _ := EncodeIssuerPointer([]Word{1, 0x40})
+	if iss, err := DecodeIssuerPointer(r); err != nil || !slices.Equal(iss, []Word{1, 0x40}) {
 		t.Fatalf("%v %v", iss, err)
 	}
 	for _, bad := range []Record{

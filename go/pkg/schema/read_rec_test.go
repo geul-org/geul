@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=sequence
-//ff:what TestReadRec — prefix, untrusted and non-canonical Length, truncated and split ISSUER extension
+//ff:what TestReadRec — prefix, untrusted and non-canonical Length, truncated and split ISSUER extension, non-canonical Issuer width
 package schema
 
 import (
@@ -28,5 +28,11 @@ func TestReadRec(t *testing.T) {
 	}
 	if r, fs, ok := readRec([]core.Word{0x0A7C, 1, 0xC000, 7, 8}, 0, 0); !ok || fs != nil || r.R.Issuer[0] != 1 || r.R.Format != 0xC000 || len(r.R.Payload) != 2 {
 		t.Fatalf("issuer: %+v %v", r, fs)
+	}
+	if _, fs, ok := readRec([]core.Word{0x0A7D, 1, 0x20, 0xC000, 7}, 0, 0); !ok || fs != nil {
+		t.Fatalf("2-word issuer: %+v %v", fs, ok)
+	}
+	if _, fs, ok := readRec([]core.Word{0x0A7D, 0, 0x20, 0xC000, 7}, 0, 0); !ok || rulesOf(fs) != "F5" {
+		t.Fatalf("2-word issuer of a 1-word value: %+v %v", fs, ok)
 	}
 }

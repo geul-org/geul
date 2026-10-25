@@ -2,7 +2,6 @@
 //ff:what checkImportDoc — M3: IMPORT-DOC is a DOC-POINTER and a minimal IMPORT ID
 package schema
 
-
 // checkImportDoc applies M3 to one IMPORT-DOC: a DOC-POINTER Reference of the
 // imported document, then the IMPORT ID (minimal, 1 WORD or more).
 func checkImportDoc(r rec) []Fact {

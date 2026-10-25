@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=iteration dimension=1
-//ff:what TestCheckIssuerDocPointer — Issuer widths, document ID 0 and Quantifier fail R5; valid forms pass
+//ff:what TestCheckIssuerDocPointer — Issuer widths, a non-canonical Issuer, document ID 0 and Quantifier fail R5; valid forms pass
 package schema
 
 import (
@@ -20,6 +20,8 @@ func TestCheckIssuerDocPointer(t *testing.T) {
 	}{
 		{ref(iss, 0, 0x40), iss, ""},
 		{ref(iss, 0, 1, 2), iss, ""},
+		{ref(iss, 0, 0, 2), iss, "R5"},
+		{ref(doc, 0, 0, 0x20, 0xFFFF, 0, 0, 1, 0, 1), doc, "R5"},
 		{ref(iss, 0, 1, 2, 3), iss, "R5"},
 		{ref(iss, 0), iss, "R5"},
 		{ref(iss, 4, 0x40), iss, "R5"},

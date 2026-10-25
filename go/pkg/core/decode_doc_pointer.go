@@ -9,7 +9,7 @@ import "fmt"
 // 1/2/4/16 words), its 4-word document ID (not 0) and its 2-word version ID.
 func DecodeDocPointer(r Record) (issuer, doc, version []Word, err error) {
 	w := len(r.Payload) - 6
-	if r.Kind != KindReference || r.Codec != RefDocPointer<<3 || !issuerWidthOK(w) {
+	if r.Kind != KindReference || r.Codec != RefDocPointer<<3 || w < 1 || !IssuerCanonical(r.Payload[:w]) {
 		return nil, nil, nil, fmt.Errorf("geul/core: expected DOC-POINTER(Issuer, document ID, version ID), got kind %d codec 0x%02X, %d words", r.Kind, r.Codec, len(r.Payload))
 	}
 	p := r.Payload

@@ -8,8 +8,8 @@ import (
 )
 
 func TestDecodeDocID(t *testing.T) {
-	r, _ := EncodeDocID([]Word{0, 0x20}, []Word{0xffff, 0, 0, 1})
-	if i, d, err := DecodeDocID(r); err != nil || !slices.Equal(i, []Word{0, 0x20}) || !slices.Equal(d, []Word{0xffff, 0, 0, 1}) {
+	r, _ := EncodeDocID([]Word{1, 0x20}, []Word{0xffff, 0, 0, 1})
+	if i, d, err := DecodeDocID(r); err != nil || !slices.Equal(i, []Word{1, 0x20}) || !slices.Equal(d, []Word{0xffff, 0, 0, 1}) {
 		t.Fatalf("got %v %v %v", i, d, err)
 	}
 	meta := func(p ...Word) Record { return Record{Kind: KindMeta, Codec: MetaDocID, Payload: p} }

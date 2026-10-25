@@ -9,7 +9,7 @@ import (
 )
 
 func TestCheckDocID(t *testing.T) {
-	ok, _ := core.EncodeDocID([]core.Word{0, 1}, []core.Word{0, 0, 0, 5})
+	ok, _ := core.EncodeDocID([]core.Word{1, 1}, []core.Word{0, 0, 0, 5})
 	raw := core.Record{Kind: core.KindMeta, Codec: core.MetaDocID, Payload: make([]core.Word, 5)}
 	if checkDocID(recOf(ok)) != nil || rulesOf(checkDocID(recOf(raw))) != "M2" {
 		t.Fatal("wrong")

@@ -9,7 +9,8 @@ import (
 )
 
 // readRec frames the record at ws[at]: prefix (F4), Length (F2, F3) and the
-// Codec extension TAG of an ISSUER codec (F5). The bool is false when the
+// Codec extension TAG of an ISSUER codec and the canonical width of its
+// Issuer (F5). The bool is false when the
 // Length cannot be trusted; framing stops there.
 func readRec(ws []core.Word, at, index int) (rec, []Fact, bool) {
 	tag := ws[at]
@@ -37,6 +38,9 @@ func readRec(ws []core.Word, at, index int) (rec, []Fact, bool) {
 	}
 	if w > 0 {
 		r.R.Issuer, r.R.Format, body = body[:w], uint16(body[w]), body[w+1:]
+		if !core.IssuerCanonical(r.R.Issuer) {
+			fs = append(fs, factAt("F5", Error, r, "Issuer", "값이 들어가는 가장 짧은 폭", fmt.Sprintf("ISSUER-%dWORD", w)))
+		}
 	}
 	r.R.Payload = body
 	return r, fs, true
