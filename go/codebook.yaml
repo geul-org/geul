@@ -7,6 +7,9 @@ required:
     codecspec: "Codec 규격 — DECLARE·FIELD·ENUM·BIND로 쓴 규격 문서를 Codec별 필드 목록으로 모은다 (명세 edge/DECLARE)"
     schema: "형식 검증 — 0층 규칙(프레이밍·구조·Kind), Codec 규격 레이아웃, 격틀·선택 제약"
     delta: "버전 diff와 LOCAL ID 이어받기 — 직전 스냅숏에서 같은 서술에 같은 번호(auto increment), diff 생성·적용 (명세 meta/lineage/DELTA-BASE·DELTA-REMOVE·NEXT-LOCAL-ID)"
+    notation: "텍스트 표기 — 레코드 한 줄 ↔ GEUL 레코드(geul CLI show·add·meta). 짧은 형식이 없으면 날 WORD로 써서 왕복 보장"
+    cli: "geul 명령줄 도구 — cobra 명령 정의, 인자 해석과 출력만(로직은 pkg)"
+    config: "geul CLI 설정 — 플래그·환경변수(GEUL…)·설정 파일·데이터 폴더 탐색의 우선순위 해석"
   type:
     model: "data type definition"
     decoder: "binary → structure"
@@ -14,6 +17,7 @@ required:
     rule: "individual validation rule"
     resolver: "document location/fetch implementation"
     helper: "internal utility function"
+    command: "cobra 명령 엔트리포인트"
 
 optional:
   level:

@@ -9,4 +9,8 @@ const (
 	wellKnown = ".well-known/geul"
 	// listFile is a document's version list document (edge/PUBLICATION).
 	listFile = "versions.geul"
+	// namesFile is an Issuer's document name index (GEUL-ORG 문서 이름).
+	namesFile = "documents.geul"
+	// issuersFile is geul.org's Issuer name index (GEUL-ORG Issuer 이름).
+	issuersFile = "issuers.geul"
 )

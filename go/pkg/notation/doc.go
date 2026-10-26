@@ -1,0 +1,21 @@
+// Package notation writes GEUL records as one line of text and reads them
+// back, for the geul CLI (show, add, meta). A line is the record's spec name
+// and its fields as tokens; an Edge line starts with its Edge Id as `#n`.
+// Tokens:
+//
+//	_                     the Absent word 0x0000 (edge/CODEC 선택 필드)
+//	#12                   LOCAL
+//	Q42, P31              WIKIDATA-QID, WIKIDATA-PID
+//	0x0000/0x…0806[@2]    DOC-POINTER (names allowed when reading: geul.org/quantity)
+//	0x0000/0x…0806#3      EXTERNAL-ISSUER-* (Issuer document's LOCAL)
+//	"text", "text"@en     UTF8-TEXT, UTF8-LANGUAGE-TEXT
+//	<https://…>           URI
+//	1.20, -3, 12e2        SIGNED-DECIMAL, digits as written
+//	NAME(arg, …)          a Value or Reference by codec name, e.g.
+//	                      GREGORIAN-DATE(1952-03-11), QUANTITY(652, Q828224, _, _)
+//	enum name             a raw field's ENUM name (TRIPLE rank: normal)
+//	0x…                   raw words: a raw field, or a whole record verbatim
+//
+// Anything the shorter forms do not cover is written as raw words, so every
+// record a line is made from reads back to the same words.
+package notation

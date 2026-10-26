@@ -38,4 +38,7 @@ const (
 	// MetaNextLocalID is the next LOCAL ID a document assigns (auto
 	// increment), kept in its version list.
 	MetaNextLocalID uint8 = 0x3C
+	// MetaIssuerKey declares the public key a 16-word Issuer ID is computed
+	// from (verification class).
+	MetaIssuerKey uint8 = 0x40
 )

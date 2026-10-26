@@ -9,7 +9,10 @@ import (
 )
 
 func TestPartsLocal(t *testing.T) {
-	local := func(id uint64) Part { ws, _ := core.EncodeRecord(core.EncodeLocalRef(id)); return Part{Words: ws, Record: true} }
+	local := func(id uint64) Part {
+		ws, _ := core.EncodeRecord(core.EncodeLocalRef(id))
+		return Part{Words: ws, Record: true}
+	}
 	ps := []Part{local(4), {Words: []core.Word{0x0088, 0x0063}}, {Words: []core.Word{0x0088}, Record: true}, {Words: []core.Word{0x00A0, 0x0063}, Record: true}, local(2)}
 	if got := partsLocal(ps); got != 4 {
 		t.Fatalf("got %d", got)
