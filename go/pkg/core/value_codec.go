@@ -16,6 +16,9 @@ const (
 	// CodecCoordinateGeo is CodecCoordinateEarth on a given body: a globe
 	// Reference record first.
 	CodecCoordinateGeo uint8 = 0x05
+	// CodecQuantity is an amount (SIGNED-DECIMAL) with a unit Reference and
+	// lower and upper bounds, each left out as the Absent record.
+	CodecQuantity uint8 = 0x06
 	// CodecSignedDecimal is a signed 32-bit exponent E plus a minimal-word
 	// two's-complement coefficient C, value C×10^E.
 	CodecSignedDecimal uint8 = 0x10

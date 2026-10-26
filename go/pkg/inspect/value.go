@@ -12,18 +12,23 @@ import "time"
 // SIGNED- or UNSIGNED-DECIMAL as written (Coef×10^Exp, quantum kept), Float a
 // BINARY-FLOAT (binaryFloat), and
 // Lat/Lon/U a COORDINATE-EARTH or COORDINATE-GEO, whose body is in Globe
-// (globeText; empty for Earth).
+// (referenceText; empty for Earth), and Amount/Unit/Lower/Upper a QUANTITY
+// (exact decimals and the unit as text; empty when left out).
 type Value struct {
-	Codec uint8
-	Text  string
-	Lang  string
-	Time  time.Time
-	Uint  uint64
-	Exp   int32
-	Coef  int64
-	Float float64
-	Lat   float64
-	Lon   float64
-	U     uint32
-	Globe string
+	Codec  uint8
+	Text   string
+	Lang   string
+	Time   time.Time
+	Uint   uint64
+	Exp    int32
+	Coef   int64
+	Float  float64
+	Lat    float64
+	Lon    float64
+	U      uint32
+	Globe  string
+	Amount string
+	Unit   string
+	Lower  string
+	Upper  string
 }

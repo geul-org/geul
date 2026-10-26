@@ -3,6 +3,7 @@
 package inspect
 
 import (
+	"math/big"
 	"strings"
 	"testing"
 	"time"
@@ -11,6 +12,7 @@ import (
 )
 
 func TestParseValue(t *testing.T) {
+	qty, _ := core.EncodeQuantity(core.Quantity{Amount: core.EncodeSignedDecimalBig(-2, big.NewInt(120)), Unit: core.Record{Kind: core.KindReference}, Lower: core.Record{Kind: core.KindReference}, Upper: core.Record{Kind: core.KindReference}})
 	sd, _ := core.EncodeDecimalValue(true, -1, 8)
 	ud, _ := core.EncodeDecimalValue(false, 0, 75)
 	cases := []struct {
@@ -32,6 +34,7 @@ func TestParseValue(t *testing.T) {
 		{core.Record{Kind: core.KindValue, Codec: core.CodecGregorianDate, Payload: []core.Word{0, 1}}, Value{Codec: core.CodecGregorianDate, Time: time.Unix(86400, 0).UTC()}},
 		{core.Record{Kind: core.KindValue, Codec: core.CodecSHA256Digest, Payload: make([]core.Word, 16)}, Value{Codec: core.CodecSHA256Digest, Text: "0x" + strings.Repeat("0", 64)}},
 		{core.Record{Kind: core.KindValue, Codec: core.CodecSHA1Digest, Payload: make([]core.Word, 10)}, Value{Codec: core.CodecSHA1Digest, Text: "0x" + strings.Repeat("0", 40)}},
+		{qty, Value{Codec: core.CodecQuantity, Amount: "1.20"}},
 	}
 	for _, c := range cases {
 		if got, ok := ParseValue(c.r); !ok || got != c.want {
