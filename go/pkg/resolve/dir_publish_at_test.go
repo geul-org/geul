@@ -31,7 +31,7 @@ func TestDirPublishAt(t *testing.T) {
 		t.Fatalf("second: %+v %v", e, err)
 	}
 	full := codecKey(0x101A)
-	d.write(listPath(full), encodeVersionList([]core.Record{core.EncodePublication(core.Publication{Codec: core.EdgePublication, EdgeID: 1, Issuer: []core.Word{0}, Doc: doc, Version: math.MaxUint32})}, nil, 0))
+	d.write(listPath(full), encodeVersionList([]core.Record{core.EncodePublication(core.Publication{Codec: core.EdgePublication, EdgeID: 1, Issuer: []core.Word{0}, Doc: doc, Version: math.MaxUint32})}, nil, 0, 0))
 	if _, err := d.publishAt(full, []core.Word{0}, doc, b, h); err == nil {
 		t.Fatal("exhausted: want error")
 	}

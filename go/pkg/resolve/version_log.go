@@ -14,5 +14,6 @@ type versionLog struct {
 	Hash      [32]byte
 	Parent    [32]byte
 	HasParent bool
+	Next      uint64
 	Present   bool
 }

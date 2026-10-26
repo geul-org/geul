@@ -22,6 +22,9 @@ func TestCheckMeta(t *testing.T) {
 		{raw(core.MetaDefaultLanguage), "M4"},
 		{raw(core.MetaEffectiveFrom), "M5"},
 		{raw(metaParent), "M6"},
+		{raw(core.MetaDeltaBase), "M7"},
+		{raw(core.MetaDeltaRemove), "M7"},
+		{raw(core.MetaNextLocalID), "M7"},
 		{raw(0x15), "M1"},
 		{raw(0x20), ""},
 	}

@@ -11,7 +11,7 @@ import (
 func TestListParent(t *testing.T) {
 	var p [32]byte
 	p[0], p[31] = 0xAB, 0xCD
-	b := encodeVersionList(nil, &p, 1)
+	b := encodeVersionList(nil, &p, 1, 0)
 	ws, _ := core.ReadWords(b)
 	d, _ := core.SplitDocument(ws)
 	if h, ok := listParent(d.Head); !ok || h != p {

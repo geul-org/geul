@@ -1,5 +1,5 @@
 //ff:type feature=core type=model
-//ff:what Meta codec constants — the GEUL t002 structure and declaration Meta codes TANGEUL uses
+//ff:what Meta codec constants — the GEUL t002 structure, declaration and diff Meta codes the library uses
 package core
 
 // Meta codecs from the GEUL t002 OVERVIEW Meta tables used by a TANGEUL
@@ -30,4 +30,12 @@ const (
 	// MetaImportDoc imports a document under an IMPORT ID: a DOC-POINTER
 	// Reference, then the IMPORT ID.
 	MetaImportDoc uint8 = 0x60
+	// MetaDeltaBase marks a version file as a diff against an earlier version
+	// of the same document: a 2-word version ID.
+	MetaDeltaBase uint8 = 0x3A
+	// MetaDeltaRemove lists the LOCAL IDs a diff removes from its base.
+	MetaDeltaRemove uint8 = 0x3B
+	// MetaNextLocalID is the next LOCAL ID a document assigns (auto
+	// increment), kept in its version list.
+	MetaNextLocalID uint8 = 0x3C
 )

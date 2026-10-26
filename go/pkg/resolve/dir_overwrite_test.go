@@ -45,8 +45,8 @@ func TestDirOverwrite(t *testing.T) {
 		t.Fatalf("version 2 left: %v", err)
 	}
 	lb, _ := d.Fetch(context.Background(), listPath(k))
-	if list, _ := inspect.Decode(lb); len(list.Head) != 2 {
-		t.Fatalf("list HEAD has a PARENT: %+v", list.Head)
+	if list, _ := inspect.Decode(lb); len(list.Head) != 3 || list.Head[1].Name != "RECORDED-AT" || list.Head[2].Name != "NEXT-LOCAL-ID" {
+		t.Fatalf("list HEAD (no PARENT, NEXT-LOCAL-ID last): %+v", list.Head)
 	}
 	again, _ := d.Fetch(context.Background(), listPath(k))
 	if _, err := d.Overwrite(b); err != nil {

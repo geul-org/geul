@@ -23,6 +23,7 @@ func decodeVersionList(b []byte, docHex string) (versionLog, error) {
 	h, _ := core.ContentHash(ws)
 	lg := versionLog{Records: doc.Body, Hash: h, Present: true}
 	lg.Parent, lg.HasParent = listParent(doc.Head)
+	lg.Next = listNext(doc.Head)
 	for _, r := range doc.Body {
 		if err := applyListRecord(&lg, r, docHex); err != nil {
 			return versionLog{}, fmt.Errorf("%w: version list: %v", ErrVerify, err)

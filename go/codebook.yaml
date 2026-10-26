@@ -6,6 +6,7 @@ required:
     inspect: "GEUL → 해석된 문서 모델 — 레코드별 스펙 이름·디코드 내용·Edge Id·참조. 재인코딩이 같을 때만 타입 내용, 아니면 원본 레코드 (뷰어·텍스트 표현의 공통 기반)"
     codecspec: "Codec 규격 — DECLARE·FIELD·ENUM·BIND로 쓴 규격 문서를 Codec별 필드 목록으로 모은다 (명세 edge/DECLARE)"
     schema: "형식 검증 — 0층 규칙(프레이밍·구조·Kind), Codec 규격 레이아웃, 격틀·선택 제약"
+    delta: "버전 diff와 LOCAL ID 이어받기 — 직전 스냅숏에서 같은 서술에 같은 번호(auto increment), diff 생성·적용 (명세 meta/lineage/DELTA-BASE·DELTA-REMOVE·NEXT-LOCAL-ID)"
   type:
     model: "data type definition"
     decoder: "binary → structure"

@@ -24,5 +24,5 @@ func listDocOf(id core.Word, entries ...VersionEntry) []byte {
 			add(core.Publication{Codec: core.EdgeTombstone, Version: e.Version})
 		}
 	}
-	return encodeVersionList(recs, nil, 0)
+	return encodeVersionList(recs, nil, 0, 0)
 }
