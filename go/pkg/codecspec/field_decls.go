@@ -12,7 +12,7 @@ func fieldDecls(body []core.Record, names map[uint64]string) map[uint64]*Field {
 		if err != nil {
 			continue
 		}
-		out[f.EdgeID] = &Field{Name: names[f.EdgeID], Width: int(f.Width), Expect: f.Expect, HasExpect: f.HasExpect, Enums: map[string]string{}}
+		out[f.EdgeID] = &Field{Name: names[f.EdgeID], Width: int(f.Width), Enums: map[string]string{}}
 	}
 	return out
 }

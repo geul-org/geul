@@ -8,6 +8,12 @@ package core
 const (
 	// CodecUnsignedInteger is a minimal-word big-endian unsigned integer.
 	CodecUnsignedInteger uint8 = 0x02
+	// CodecCoordinateEarth is a WGS 84 point: latitude and longitude as
+	// binary64 degrees, then the uncertainty radius as uint32 millimetres.
+	CodecCoordinateEarth uint8 = 0x04
+	// CodecCoordinateGeo is CodecCoordinateEarth on a given body: a globe
+	// Reference record first.
+	CodecCoordinateGeo uint8 = 0x05
 	// CodecSignedDecimal is a signed 32-bit exponent E plus a minimal-word
 	// two's-complement coefficient C, value C×10^E.
 	CodecSignedDecimal uint8 = 0x10

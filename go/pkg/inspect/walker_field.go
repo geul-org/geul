@@ -1,8 +1,10 @@
 //ff:func feature=inspect type=decoder control=selection
-//ff:what walker.field — take one declared field: raw words with their ENUM name, or a record checked against its expected TAG
+//ff:what walker.field — take one declared field: raw words with their ENUM name, or a record checked against its CODEC targets
 package inspect
 
 import (
+	"slices"
+
 	"github.com/geul-org/geul/go/pkg/codecspec"
 	"github.com/geul-org/geul/go/pkg/core"
 )
@@ -10,8 +12,9 @@ import (
 // field takes f at the cursor. A rest field takes every word left but the
 // tail fixed fields after it, and adds no part when that is none. A raw field
 // is f.Width words noted with the
-// ENUM name of that code; a record field is one record, which must have the
-// expected Kind·Codec when f declares one, noted with its decoded Value.
+// ENUM name of that code and, under a CODEC, the Value they are the Payload
+// of (rawData); a record field is one record, which must have one of f's
+// CODEC targets when it declares any, noted with its decoded Value.
 func (w *walker) field(f codecspec.Field) {
 	n := len(w.out)
 	switch {
@@ -28,11 +31,12 @@ func (w *walker) field(f codecspec.Field) {
 		return
 	}
 	p := &w.out[n]
-	if f.Width > 0 {
+	if f.Width != 0 {
 		p.Enum = f.Enums[core.FormatID(p.Words)]
+		p.Data = rawData(f.Codecs, p.Words)
 		return
 	}
 	r, _, _ := core.DecodeRecord(p.Words)
-	w.bad = f.HasExpect && core.TargetWord(r.Kind, r.Codec) != f.Expect
+	w.bad = len(f.Codecs) > 0 && !slices.Contains(f.Codecs, core.TargetWord(r.Kind, r.Codec))
 	p.Data = asData(ParseValue(r))
 }

@@ -15,8 +15,10 @@ const (
 	EdgeTombstone uint8 = 0x1A
 	// EdgeDeclare declares one codec's payload: Edge Id, target, FIELD list (edge/DECLARE).
 	EdgeDeclare uint8 = 0x1B
-	// EdgeField declares one payload field: Edge Id, width, optional expected TAG (edge/FIELD).
+	// EdgeField declares one payload field: Edge Id, DECLARE, width (edge/FIELD).
 	EdgeField uint8 = 0x1C
 	// EdgeEnum names one code of a raw field: Edge Id, field, code (edge/ENUM).
 	EdgeEnum uint8 = 0x1D
+	// EdgeCodec names one Kind·Codec a field takes: Edge Id, field, target word (edge/CODEC).
+	EdgeCodec uint8 = 0x1E
 )

@@ -19,6 +19,8 @@ func checkValue(r rec) []Fact {
 		return checkBool(r)
 	case c == 0x01 || c == core.CodecUnsignedInteger:
 		return checkInteger(r, r.R.Payload, c == 0x01, "Payload")
+	case c == core.CodecCoordinateEarth || c == core.CodecCoordinateGeo:
+		return checkCoordinate(r)
 	case c == 0x03:
 		return checkWidth(r, 1, 2, 4, 8)
 	case c == core.CodecSignedDecimal || c == core.CodecUnsignedDecimal:

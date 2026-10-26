@@ -1,5 +1,5 @@
 //ff:func feature=core type=decoder control=iteration dimension=1
-//ff:what TestDecodeFieldDecl — raw, record and expected-TAG fields round-trip with their DECLARE; other records, a missing DECLARE and bad layouts fail
+//ff:what TestDecodeFieldDecl — raw and record fields round-trip with their DECLARE; other records, a missing DECLARE and bad layouts fail
 package core
 
 import (
@@ -8,7 +8,7 @@ import (
 )
 
 func TestDecodeFieldDecl(t *testing.T) {
-	for _, f := range []FieldDecl{{EdgeID: 2, Declare: 1, Width: 4}, {EdgeID: 3, Declare: 1}, {EdgeID: 4, Declare: 1, Expect: 0x0088, HasExpect: true}} {
+	for _, f := range []FieldDecl{{EdgeID: 2, Declare: 1, Width: 4}, {EdgeID: 3, Declare: 1}} {
 		got, err := DecodeFieldDecl(EncodeFieldDecl(f))
 		if err != nil || got != f {
 			t.Fatalf("%+v: %+v %v", f, got, err)
@@ -22,6 +22,7 @@ func TestDecodeFieldDecl(t *testing.T) {
 		{Kind: KindEdge, Codec: EdgeField, Payload: slices.Concat(id, []Word{4})},
 		{Kind: KindEdge, Codec: EdgeField, Payload: slices.Concat(id, id)},
 		{Kind: KindEdge, Codec: EdgeField, Payload: slices.Concat(id, id, []Word{4, 0x0088})},
+		{Kind: KindEdge, Codec: EdgeField, Payload: slices.Concat(id, id, []Word{0, 0x0088})},
 	} {
 		if _, err := DecodeFieldDecl(r); err == nil {
 			t.Fatalf("bad %d: want error", i)

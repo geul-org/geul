@@ -5,7 +5,7 @@ package schema
 import "github.com/geul-org/geul/go/pkg/core"
 
 // builtinLayout decodes r when it is a core-embedded Edge (GEUL-ORG 0층): the
-// version list records and DECLARE, FIELD and ENUM. It returns the spec
+// version list records and DECLARE, FIELD, ENUM and CODEC. It returns the spec
 // document r must follow and the decode error; nil for a fitting or another record.
 func builtinLayout(r core.Record) (string, error) {
 	var err error
@@ -22,6 +22,9 @@ func builtinLayout(r core.Record) (string, error) {
 	case core.EdgeEnum:
 		_, err = core.DecodeEnumDecl(r)
 		return "edge/ENUM 레이아웃", err
+	case core.EdgeCodec:
+		_, err = core.DecodeCodecDecl(r)
+		return "edge/CODEC 레이아웃", err
 	}
 	return "", nil
 }

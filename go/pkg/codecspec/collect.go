@@ -5,12 +5,13 @@ package codecspec
 import "github.com/geul-org/geul/go/pkg/core"
 
 // Collect reads the codec specs in body: each DECLARE of a direct codec with
-// the FIELDs that name it, in document order, and FIELD and ENUM names from
-// BIND. ISSUER targets are skipped; the first DECLARE of a codec wins.
+// the FIELDs that name it, in document order, FIELD and ENUM names from BIND
+// and each field's CODECs. ISSUER targets are skipped; the first DECLARE of a codec wins.
 func Collect(body []core.Record) Spec {
 	names := bindNames(body)
 	fields := fieldDecls(body, names)
 	addEnums(body, fields, names)
+	addCodecs(body, fields)
 	s := Spec{}
 	for _, r := range body {
 		d, err := core.DecodeDeclare(r)

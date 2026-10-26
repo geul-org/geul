@@ -1,0 +1,21 @@
+//ff:func feature=codecspec type=decoder control=sequence
+//ff:what TestAddCodecs — a record field gathers every target, a raw field only its first; unknown fields and other records are skipped
+package codecspec
+
+import (
+	"slices"
+	"testing"
+
+	"github.com/geul-org/geul/go/pkg/core"
+)
+
+func TestAddCodecs(t *testing.T) {
+	fields := map[uint64]*Field{2: {}, 3: {Width: 4}}
+	codec := func(id, f uint64, t core.Word) core.Record {
+		return core.EncodeCodecDecl(core.CodecDecl{EdgeID: id, Field: f, Target: t})
+	}
+	addCodecs([]core.Record{codec(4, 2, 0x084A), codec(5, 2, 0x0008), codec(6, 3, 0x0803), codec(7, 3, 0x0801), codec(8, 9, 1), core.EncodeUintValue(1)}, fields)
+	if !slices.Equal(fields[2].Codecs, []core.Word{0x084A, 0x0008}) || !slices.Equal(fields[3].Codecs, []core.Word{0x0803}) {
+		t.Fatalf("%v %v", fields[2].Codecs, fields[3].Codecs)
+	}
+}

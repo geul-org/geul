@@ -9,7 +9,9 @@ import "time"
 // text of a UTF8-LANGUAGE-TEXT (its language in Lang: the tag, or a short code
 // in hex) and a SHA-256-DIGEST as `0x` hex, Time a GREGORIAN-DATE or
 // POSIX-TIMESTAMP-SECONDS (UTC), Uint an UNSIGNED-INTEGER, and Exp/Coef a
-// SIGNED- or UNSIGNED-DECIMAL as written (Coef×10^Exp, quantum kept).
+// SIGNED- or UNSIGNED-DECIMAL as written (Coef×10^Exp, quantum kept), and
+// Lat/Lon/U a COORDINATE-EARTH or COORDINATE-GEO, whose body is in Globe
+// (globeText; empty for Earth).
 type Value struct {
 	Codec uint8
 	Text  string
@@ -18,4 +20,8 @@ type Value struct {
 	Uint  uint64
 	Exp   int32
 	Coef  int64
+	Lat   float64
+	Lon   float64
+	U     uint32
+	Globe string
 }

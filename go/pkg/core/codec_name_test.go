@@ -29,6 +29,9 @@ func TestCodecName(t *testing.T) {
 	if got := CodecName(KindValue, CodecUTF8LanguageTextEven|1); got != "UTF8-LANGUAGE-TEXT" {
 		t.Fatalf("language text: %q", got)
 	}
+	if got := CodecName(KindValue, CodecCoordinateGeo); got != "COORDINATE-GEO" {
+		t.Fatalf("geo: %q", got)
+	}
 	if got := CodecName(KindValue, 0x42); got != "" {
 		t.Fatalf("retired NFC text: %q", got)
 	}
