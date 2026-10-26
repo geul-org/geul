@@ -8,6 +8,8 @@ package core
 const (
 	// CodecUnsignedInteger is a minimal-word big-endian unsigned integer.
 	CodecUnsignedInteger uint8 = 0x02
+	// CodecBinaryFloat is an IEEE 754 binary16/32/64/128 by Payload width 1/2/4/8.
+	CodecBinaryFloat uint8 = 0x03
 	// CodecCoordinateEarth is a WGS 84 point: latitude and longitude as
 	// binary64 degrees, then the uncertainty radius as uint32 millimetres.
 	CodecCoordinateEarth uint8 = 0x04

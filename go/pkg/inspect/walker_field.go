@@ -37,6 +37,6 @@ func (w *walker) field(f codecspec.Field) {
 		return
 	}
 	r, _, _ := core.DecodeRecord(p.Words)
-	w.bad = len(f.Codecs) > 0 && !slices.Contains(f.Codecs, core.TargetWord(r.Kind, r.Codec))
+	w.bad = len(f.Codecs) > 0 && !slices.ContainsFunc(f.Codecs, func(t core.Word) bool { return core.CodecMatches(t, r.Kind, r.Codec) })
 	p.Data = asData(ParseValue(r))
 }

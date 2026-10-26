@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what TestParseValue — every known codec decodes (byte strings incl. URI, EDTF, GEDCOM-DATE, language text; coordinates; integer, decimal, time, digest); unknown codecs and bad payloads do not
+//ff:what TestParseValue — every known codec decodes (byte strings incl. URI, EDTF, GEDCOM-DATE, language text; coordinates; binary float; integer, decimal, time, digest); unknown codecs and bad payloads do not
 package inspect
 
 import (
@@ -24,6 +24,7 @@ func TestParseValue(t *testing.T) {
 		{core.EncodeBytesValue(core.CodecEDTFEven, []byte("1974")), Value{Codec: core.CodecEDTFEven, Text: "1974"}},
 		{core.EncodeBytesValue(core.CodecGEDCOMDateEven, []byte("JULIAN 1300")), Value{Codec: core.CodecGEDCOMDateEven | 1, Text: "JULIAN 1300"}},
 		{core.EncodeUintValue(7), Value{Codec: core.CodecUnsignedInteger, Uint: 7}},
+		{core.Record{Kind: core.KindValue, Codec: core.CodecBinaryFloat, Payload: []core.Word{0x3C00}}, Value{Codec: core.CodecBinaryFloat, Float: 1}},
 		{core.EncodeCoordinate(core.Coordinate{Lat: 52.5, Lon: 13.4, U: 44}), Value{Codec: core.CodecCoordinateEarth, Lat: 52.5, Lon: 13.4, U: 44}},
 		{sd, Value{Codec: core.CodecSignedDecimal, Exp: -1, Coef: 8}},
 		{ud, Value{Codec: core.CodecUnsignedDecimal, Coef: 75}},
@@ -46,5 +47,8 @@ func TestParseValue(t *testing.T) {
 	}
 	if _, ok := ParseValue(core.Record{Kind: core.KindValue, Codec: 0x41}); ok {
 		t.Fatal("bad odd text: want not ok")
+	}
+	if _, ok := ParseValue(core.Record{Kind: core.KindValue, Codec: core.CodecBinaryFloat, Payload: make([]core.Word, 8)}); ok {
+		t.Fatal("binary128: want not ok")
 	}
 }

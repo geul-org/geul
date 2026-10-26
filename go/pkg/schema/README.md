@@ -69,7 +69,7 @@
 | E2 | Edge Id는 문서 안에서 중복되지 않는다. |
 | E3 | 서술·실행·TOULMIN 직접 코드의 Reserved 구간은 예약이다. |
 | E4 | core 내장 Codec은 레이아웃이 맞다. `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`(Edge Id 뒤 22·6·7 WORD), `DECLARE`·`FIELD`·`ENUM`·`CODEC`(edge/DECLARE·FIELD·ENUM·CODEC). |
-| E5 | CODEC의 필드는 같은 문서의 FIELD이고, 한 필드에 같은 대상을 두 번 두지 않으며, 날값 필드(폭 ≥ 1)에는 CODEC이 하나뿐이다. |
+| E5 | CODEC의 필드는 같은 문서의 FIELD이고, 한 필드에 같은 대상을 두 번 두지 않으며, 날값 필드(폭 ≥ 1)에는 CODEC이 하나뿐이고 와일드카드(LLLL `1111`)가 아니다. 대상 WORD는 LLLL `0000`이거나 `1111` 와일드카드다(E4). |
 
 ### M Meta (OVERVIEW Meta)
 

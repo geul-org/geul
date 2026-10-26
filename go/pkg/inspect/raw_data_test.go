@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what TestRawData — raw words read as an UNSIGNED-INTEGER; no CODEC, two, a Reference target and an undecodable payload give nil
+//ff:what TestRawData — raw words read as an UNSIGNED-INTEGER; no CODEC, two, a Reference target, a wildcard and an undecodable payload give nil
 package inspect
 
 import (
@@ -13,7 +13,7 @@ func TestRawData(t *testing.T) {
 	if got := rawData([]core.Word{u}, []core.Word{2}); got != (Value{Codec: core.CodecUnsignedInteger, Uint: 2}) {
 		t.Fatalf("uint: %+v", got)
 	}
-	for i, c := range [][]core.Word{nil, {u, u}, {core.TargetWord(core.KindReference, 0x08)}} {
+	for i, c := range [][]core.Word{nil, {u, u}, {core.TargetWord(core.KindReference, 0x08)}, {0x0F80}} {
 		if got := rawData(c, []core.Word{2}); got != nil {
 			t.Fatalf("case %d: %+v", i, got)
 		}

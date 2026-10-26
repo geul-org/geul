@@ -1,5 +1,5 @@
 //ff:func feature=core type=decoder control=iteration dimension=1
-//ff:what TestDecodeCodecDecl — a round trip; another Edge, broken LOCALs, a missing or extra word and LLLL bits fail
+//ff:what TestDecodeCodecDecl — a round trip; another Edge, broken LOCALs, a missing or extra word, LLLL bits and an empty wildcard fail
 package core
 
 import (
@@ -20,6 +20,7 @@ func TestDecodeCodecDecl(t *testing.T) {
 		{Kind: KindEdge, Codec: EdgeCodec, Payload: slices.Concat(id, localWords(2))},
 		{Kind: KindEdge, Codec: EdgeCodec, Payload: slices.Concat(id, localWords(2), []Word{0x084A, 0})},
 		{Kind: KindEdge, Codec: EdgeCodec, Payload: slices.Concat(id, localWords(2), []Word{0x0D04})},
+		{Kind: KindEdge, Codec: EdgeCodec, Payload: slices.Concat(id, localWords(2), []Word{0x0F84})},
 	} {
 		if _, err := DecodeCodecDecl(r); err == nil {
 			t.Fatalf("case %d: want error", i)

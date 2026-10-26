@@ -7,12 +7,16 @@ import "github.com/geul-org/geul/go/pkg/core"
 // ParseValue decodes the Value codecs this library knows: the byte strings
 // (UTF8-TEXT, URI, LANGUAGE-BCP47-CODE, EDTF, GEDCOM-DATE; either pair member)
 // as Text, UTF8-LANGUAGE-TEXT as Text and Lang (languageText), the two coordinates
-// (coordinate), UNSIGNED-INTEGER, the two decimals, the two time
+// (coordinate), BINARY-FLOAT up to binary64 (binaryFloat), UNSIGNED-INTEGER, the two decimals, the two time
 // codecs and SHA-256-DIGEST. ok is
 // false for any other codec or a malformed payload.
 func ParseValue(r core.Record) (Value, bool) {
 	v := Value{Codec: r.Codec}
 	var err error
+	if r.Codec == core.CodecBinaryFloat {
+		v.Float, err = binaryFloat(r.Payload)
+		return v, err == nil
+	}
 	switch even := r.Codec &^ 1; even {
 	case core.CodecUTF8TextEven, 0x44, core.CodecLanguageBCP47Even, core.CodecEDTFEven, core.CodecGEDCOMDateEven:
 		var b []byte
