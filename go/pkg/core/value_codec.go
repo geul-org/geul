@@ -30,4 +30,7 @@ const (
 	CodecUTF8TextEven uint8 = 0x40
 	// CodecLanguageBCP47Even is a canonical BCP 47 language tag (even bytes).
 	CodecLanguageBCP47Even uint8 = 0x46
+	// CodecUTF8LanguageTextEven is a language-tagged text: a language Value
+	// record, then UTF-8 bytes (even text bytes; 0x4B is the odd member).
+	CodecUTF8LanguageTextEven uint8 = 0x4A
 )

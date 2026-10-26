@@ -26,6 +26,12 @@ func TestCodecName(t *testing.T) {
 	if got := CodecName(KindValue, CodecGEDCOMDateEven); got != "GEDCOM-DATE" {
 		t.Fatalf("GEDCOM-DATE: %q", got)
 	}
+	if got := CodecName(KindValue, CodecUTF8LanguageTextEven|1); got != "UTF8-LANGUAGE-TEXT" {
+		t.Fatalf("language text: %q", got)
+	}
+	if got := CodecName(KindValue, 0x42); got != "" {
+		t.Fatalf("retired NFC text: %q", got)
+	}
 	if got := CodecName(KindValue, 0x28); got != "" {
 		t.Fatalf("reserved value: %q", got)
 	}

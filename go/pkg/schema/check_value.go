@@ -27,9 +27,11 @@ func checkValue(r rec) []Fact {
 		return checkCivilTime(r)
 	case fixedValueWidth[c] > 0:
 		return checkWidth(r, fixedValueWidth[c])
-	case c >= core.CodecUTF8TextEven && c <= 0x47, c == core.CodecEDTFEven, c == core.CodecEDTFEven|1,
+	case c == core.CodecUTF8TextEven, c == core.CodecUTF8TextEven|1, c >= 0x44 && c <= 0x47, c == core.CodecEDTFEven, c == core.CodecEDTFEven|1,
 		c == core.CodecGEDCOMDateEven, c == core.CodecGEDCOMDateEven|1:
 		return checkBytes(r)
+	case c == core.CodecUTF8LanguageTextEven, c == core.CodecUTF8LanguageTextEven|1:
+		return checkLanguageText(r)
 	default:
 		return []Fact{factAt("V1", Warn, r, "Codec", "배정된 직접 코드", fmt.Sprintf("0x%02X (예약)", c))}
 	}

@@ -10,11 +10,11 @@ import (
 )
 
 // checkText applies V5 to the bytes of a byte-string Value whose even codec is
-// even (0x40 UTF8-TEXT, 0x42 UTF8-NFC-TEXT, 0x44 URI, 0x46 LANGUAGE-BCP47-CODE,
-// 0x24 EDTF, 0x26 GEDCOM-DATE), then V6 to EDTF. NFC itself and the EDTF grammar are not checked
-// yet, nor the GEDCOM date grammar (README 미결정).
+// even (0x40 UTF8-TEXT, 0x44 URI, 0x46 LANGUAGE-BCP47-CODE,
+// 0x24 EDTF, 0x26 GEDCOM-DATE), then V6 to EDTF. The EDTF and GEDCOM date
+// grammars are not checked yet (README 미결정).
 func checkText(r rec, even uint8, b []byte) []Fact {
-	text := even == core.CodecUTF8TextEven || even == 0x42
+	text := even == core.CodecUTF8TextEven
 	switch {
 	case text && !utf8.Valid(b):
 		return []Fact{factAt("V5", Error, r, "Payload", "well-formed UTF-8", "invalid UTF-8")}

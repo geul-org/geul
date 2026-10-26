@@ -18,7 +18,7 @@ func bodyEntry(r core.Record, tg bool, w *toulmin.Wire) Entry {
 	ref, err := toulmin.RecordRef(r)
 	switch {
 	case r.Kind == core.KindValue:
-		e.Data = asData(parseValue(r))
+		e.Data = asData(ParseValue(r))
 		return e
 	case !tg || err != nil:
 		return e

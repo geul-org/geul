@@ -28,6 +28,8 @@ func TestCheckValue(t *testing.T) {
 		{v(0x24, 0x3139, 0x3734), ""},
 		{v(0x27), "V4"},
 		{v(0x30), "V1"},
+		{v(0x42, 0x4142), "V1"},
+		{v(0x4A, 0x08C6, 0x656E), ""},
 	}
 	for i, c := range cases {
 		if got := rulesOf(checkValue(c.r)); got != c.want {

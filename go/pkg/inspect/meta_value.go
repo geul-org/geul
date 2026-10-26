@@ -11,5 +11,5 @@ func metaValue(r core.Record) (Value, bool) {
 	if err != nil || n != len(r.Payload) || v.Kind != core.KindValue {
 		return Value{}, false
 	}
-	return parseValue(v)
+	return ParseValue(v)
 }

@@ -34,5 +34,5 @@ func (w *walker) field(f codecspec.Field) {
 	}
 	r, _, _ := core.DecodeRecord(p.Words)
 	w.bad = f.HasExpect && core.TargetWord(r.Kind, r.Codec) != f.Expect
-	p.Data = asData(parseValue(r))
+	p.Data = asData(ParseValue(r))
 }

@@ -13,7 +13,7 @@ func TestCheckText(t *testing.T) {
 		want string
 	}{
 		{0x40, "가", ""},
-		{0x42, "\xff", "V5"},
+		{0x40, "\xff", "V5"},
 		{0x40, "\xef\xbb\xbfx", "V5"},
 		{0x44, "http://x", ""},
 		{0x44, "", "V5"},
