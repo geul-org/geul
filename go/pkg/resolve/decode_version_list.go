@@ -9,7 +9,7 @@ import (
 )
 
 // decodeVersionList reads the version list document of the document whose ID
-// is docHex in canonical hex (edge/PUBLICATION). Anything that does not read as
+// is docHex in canonical hex (edge/PUBLICATION), with its PARENT (listParent). Anything that does not read as
 // one is a verification failure.
 func decodeVersionList(b []byte, docHex string) (versionLog, error) {
 	ws, err := core.ReadWords(b)
@@ -22,6 +22,7 @@ func decodeVersionList(b []byte, docHex string) (versionLog, error) {
 	}
 	h, _ := core.ContentHash(ws)
 	lg := versionLog{Records: doc.Body, Hash: h, Present: true}
+	lg.Parent, lg.HasParent = listParent(doc.Head)
 	for _, r := range doc.Body {
 		if err := applyListRecord(&lg, r, docHex); err != nil {
 			return versionLog{}, fmt.Errorf("%w: version list: %v", ErrVerify, err)

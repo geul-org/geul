@@ -1,0 +1,37 @@
+//ff:func feature=resolve type=resolver control=iteration dimension=1
+//ff:what TestDirRemoveOtherVersions — version files other than 1 go, version 1 and the list stay; a missing folder is fine; an undeletable file fails
+package resolve
+
+import (
+	"os"
+	"path/filepath"
+	"testing"
+)
+
+func TestDirRemoveOtherVersions(t *testing.T) {
+	d := Dir{Root: t.TempDir()}
+	k := DocKey{Issuer: "0x0001", Doc: "0x0000000000000001"}
+	dir := d.file(k.Issuer + "/" + k.Doc)
+	os.MkdirAll(dir, 0o755)
+	for _, f := range []string{"0x00000001.geul", "0x00000002.geul", "versions.geul"} {
+		os.WriteFile(filepath.Join(dir, f), []byte{0}, 0o644)
+	}
+	if err := d.removeOtherVersions(k); err != nil {
+		t.Fatal(err)
+	}
+	left, _ := os.ReadDir(dir)
+	if len(left) != 2 {
+		t.Fatalf("left %d files", len(left))
+	}
+	if err := d.removeOtherVersions(DocKey{Issuer: "0x0002", Doc: "0x0000000000000001"}); err != nil {
+		t.Fatalf("missing folder: %v", err)
+	}
+	os.Mkdir(filepath.Join(dir, "0x00000003.geul"), 0o755)
+	os.WriteFile(filepath.Join(dir, "0x00000003.geul", "x"), nil, 0o644)
+	if err := d.removeOtherVersions(k); err == nil {
+		t.Fatal("non-empty folder named like a version: want error")
+	}
+	if err := (Dir{Root: "["}).removeOtherVersions(DocKey{Issuer: "[", Doc: "["}); err == nil {
+		t.Fatal("bad pattern: want error")
+	}
+}

@@ -4,15 +4,16 @@ package inspect
 
 import "github.com/geul-org/geul/go/pkg/core"
 
-// parseValue decodes the Value codecs this library knows: UTF8-TEXT and BCP 47
-// tags (either pair member), UNSIGNED-INTEGER, the two decimals, the two time
+// parseValue decodes the Value codecs this library knows: the byte strings
+// (UTF8-TEXT, UTF8-NFC-TEXT, URI, LANGUAGE-BCP47-CODE, EDTF, GEDCOM-DATE; either
+// pair member) as Text, UNSIGNED-INTEGER, the two decimals, the two time
 // codecs and SHA-256-DIGEST. ok is
 // false for any other codec or a malformed payload.
 func parseValue(r core.Record) (Value, bool) {
 	v := Value{Codec: r.Codec}
 	var err error
 	switch even := r.Codec &^ 1; even {
-	case core.CodecUTF8TextEven, core.CodecLanguageBCP47Even:
+	case core.CodecUTF8TextEven, 0x42, 0x44, core.CodecLanguageBCP47Even, core.CodecEDTFEven, core.CodecGEDCOMDateEven:
 		var b []byte
 		b, err = core.DecodeBytesValue(r, even)
 		v.Text = string(b)

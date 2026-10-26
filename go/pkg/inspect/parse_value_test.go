@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what TestParseValue — every known codec decodes (text, integer, decimal, time, digest); unknown codecs and bad payloads do not
+//ff:what TestParseValue — every known codec decodes (byte strings incl. NFC text, URI, EDTF, GEDCOM-DATE; integer, decimal, time, digest); unknown codecs and bad payloads do not
 package inspect
 
 import (
@@ -19,6 +19,10 @@ func TestParseValue(t *testing.T) {
 	}{
 		{core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("abc")), Value{Codec: core.CodecUTF8TextEven | 1, Text: "abc"}},
 		{core.EncodeBytesValue(core.CodecLanguageBCP47Even, []byte("ko")), Value{Codec: core.CodecLanguageBCP47Even, Text: "ko"}},
+		{core.EncodeBytesValue(0x42, []byte("우주")), Value{Codec: 0x42, Text: "우주"}},
+		{core.EncodeBytesValue(0x44, []byte("http://x")), Value{Codec: 0x44, Text: "http://x"}},
+		{core.EncodeBytesValue(core.CodecEDTFEven, []byte("1974")), Value{Codec: core.CodecEDTFEven, Text: "1974"}},
+		{core.EncodeBytesValue(core.CodecGEDCOMDateEven, []byte("JULIAN 1300")), Value{Codec: core.CodecGEDCOMDateEven | 1, Text: "JULIAN 1300"}},
 		{core.EncodeUintValue(7), Value{Codec: core.CodecUnsignedInteger, Uint: 7}},
 		{sd, Value{Codec: core.CodecSignedDecimal, Exp: -1, Coef: 8}},
 		{ud, Value{Codec: core.CodecUnsignedDecimal, Coef: 75}},
