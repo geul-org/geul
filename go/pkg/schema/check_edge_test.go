@@ -8,7 +8,7 @@ import (
 )
 
 func TestCheckEdge(t *testing.T) {
-	if fs := checkEdge(recOf(core.Record{Kind: core.KindEdge, Codec: 0x06})); rulesOf(fs) != "E1,E3" {
+	if fs := checkEdge(recOf(core.Record{Kind: core.KindEdge, Codec: 0x07})); rulesOf(fs) != "E1,E3" {
 		t.Fatalf("bad: %+v", fs)
 	}
 	if fs := checkEdge(recOf(edgeOf(0x00, 0))); rulesOf(fs) != "E1" {

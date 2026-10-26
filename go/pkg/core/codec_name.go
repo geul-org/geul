@@ -29,7 +29,7 @@ var refNames = map[uint8]string{
 // (GEUL t002 OVERVIEW Edge) to their spec names. Profile families such as
 // TOULMIN name their own.
 var edgeNames = map[uint8]string{
-	0x00: "REFERENCE-NODE", 0x01: "SAME-NODE", 0x02: "DIFFERENT-NODE", EdgeBind: "BIND", 0x04: "LABEL", 0x05: "ALIAS",
+	0x00: "REFERENCE-NODE", 0x01: "SAME-NODE", 0x02: "DIFFERENT-NODE", EdgeBind: "BIND", 0x04: "LABEL", 0x05: "ALIAS", 0x06: "DESCRIPTION",
 	0x08: "VERB-SHORT", 0x09: "VERB", 0x0A: "TRIPLE", 0x0B: "QUALIFIER", 0x10: "WORLD", 0x11: "TIMELINE", 0x12: "SCENE",
 	EdgePublication: "PUBLICATION", EdgeDeprecation: "DEPRECATION", EdgeTombstone: "TOMBSTONE",
 	EdgeDeclare: "DECLARE", EdgeField: "FIELD", EdgeEnum: "ENUM", EdgeCodec: "CODEC",

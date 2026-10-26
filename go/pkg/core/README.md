@@ -17,14 +17,17 @@
 |---|---|
 | `record.go`, `encode_record.go`, `decode_record.go` | 레코드 하나: TAG WORD, Length(확장 포함, 정규형 검사), ISSUER 확장, Payload |
 | `wrap_document.go`, `split_document.go` | DOC 컨테이너: 가장 좁은 DOC-* 로 감싸기, HEAD/BODY/END 나누기와 배치 검사 |
-| `*_value.go` | Value: UTF8-TEXT·BCP47(홀짝 쌍), UNSIGNED-INTEGER, SIGNED-/UNSIGNED-DECIMAL |
+| `*_value.go`, `*_language_text.go`, `*_coordinate.go`, `encode_posix_seconds.go` | Value: 바이트 Value(UTF8-TEXT·URI·BCP47 등 홀짝 쌍), UNSIGNED-INTEGER, SIGNED-/UNSIGNED-DECIMAL, GREGORIAN-DATE·POSIX-TIMESTAMP-SECONDS, UTF8-LANGUAGE-TEXT, COORDINATE-EARTH·GEO |
+| `*_doc_pointer.go`, `*_issuer_pointer.go`, `encode_doc_id.go`, `*_spec_version.go` | DOC-POINTER·ISSUER-POINTER Reference, Meta DOC-ID·SPEC-VERSION |
+| `*_publication.go`, `publication_tail.go`, `*_bind.go` | 버전 목록 Edge(PUBLICATION·DEPRECATION·TOMBSTONE), BIND |
+| `*_declare.go`, `*_field_decl.go`, `*_enum_decl.go`, `*_codec_decl.go`, `codec_matches.go` | Codec 규격 어휘 DECLARE·FIELD·ENUM·CODEC, CODEC 대상 대조 |
 | `encode_id.go`, `decode_id.go`, `width*.go`, `min_width.go` | 고정 폭(1/2/4/8 WORD) 필드와 폭 코드 (DOC-* 길이, TOULMIN SPAN) |
 | `ref_codec.go`, `encode_local_ref.go`, `decode_local_ref.go` | Reference Codec, LOCAL Reference (Edge Id·문서 안 언급) |
 | `meta_codec.go`, `value_codec.go`, `codec_issuer.go`, `import_issuer_width.go` | 사용하는 Meta·Value·ISSUER 코드, IMPORT-DOC-* Issuer 폭 |
 | `content_hash.go`, `strip_validation.go` | 내용 해시: 검증 클래스 Meta를 빼고 DOC-* 길이를 다시 계산한 뒤 END 직전까지의 SHA-256 |
 
 - toulmin(`draft/t002/toulmin`, 브랜치 `geul-t002`)이 이 패키지를 import해 `.geul`을 읽고 쓴다.
-- 아직 없는 것: 지시·지시선언 Reference 인코딩, 정규형 전체 규칙, 서명.
+- 아직 없는 것: EXTERNAL-ISSUER·EXTERNAL-POINTER 인코딩, EDTF·GEDCOM-DATE 해석(바이트 Value로만 다룬다), 정규형 전체 규칙, 서명.
 
 ## 원칙
 

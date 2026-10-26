@@ -55,9 +55,9 @@
 | V3 | SIGNED-INTEGER·UNSIGNED-INTEGER와 DECIMAL의 coefficient는 최소 WORD다. DECIMAL은 exponent 2 WORD + coefficient 1 WORD 이상이다. |
 | V4 | 홀짝 코드 쌍(텍스트, URI, 언어 태그, EDTF, GEDCOM-DATE, UTF8-LANGUAGE-TEXT의 텍스트 부분)에서 홀수 코드는 Payload가 1 WORD 이상이고 마지막 하위 byte가 `0x00`이다. |
 | V5 | UTF8-TEXT는 well-formed UTF-8이고 선두 BOM이 없다. URI·URI-RELATIVE-REF·LANGUAGE-BCP47-CODE·EDTF는 ASCII이고 빈 문자열이 아니다. GEDCOM-DATE는 ASCII 0x20~0x7E이고 비어 있지 않으며 앞뒤 공백이 없다. |
+| V6 | EDTF는 GREGORIAN-DATE로 정확히 쓸 수 있는 날짜(한정자·미상 자릿수·구간 없는 `[-]YYYY-MM-DD`)가 아니다. |
 | V7 | UTF8-LANGUAGE-TEXT는 완전한 LANGUAGE-SHORT-CODE 또는 LANGUAGE-BCP47-CODE 레코드로 시작하고 그 레코드도 Value 규칙을 지킨다. 나머지는 UTF8-TEXT처럼 V4·V5를 따른다. |
 | V8 | COORDINATE-EARTH는 Payload 10 WORD, COORDINATE-GEO는 Quantifier Identified인 완전한 Reference 레코드(천체) 뒤 10 WORD다. 위도·경도는 유한하고 위도 [-90, 90], 경도 [-180, 180](Earth)·[-180, 360](Geo)이다. |
-| V6 | EDTF는 GREGORIAN-DATE로 정확히 쓸 수 있는 날짜(한정자·미상 자릿수·구간 없는 `[-]YYYY-MM-DD`)가 아니다. |
 
 - ISSUER 형식 Value는 1층에서 Issuer·형식 번호의 존재(F5)만 본다. 레이아웃은 2층이다.
 
@@ -141,7 +141,7 @@ type Options struct {
 
 ## 구현 상태
 
-- 1층 규칙 표 전체를 구현했다(`Check`). 예외: EDTF·GEDCOM 날짜 문법과 BCP 47 tag 문법 검사(미결정. 라이브러리는 외부 의존성이 없다). UTF8-NFC-TEXT(`0x42`/`0x43`)는 2026-10-26 폐기되어 V1(예약)이다.
+- 1층 규칙 표 전체를 구현했다(`Check`). 예외: EDTF·GEDCOM 날짜의 전체 문법과 BCP 47 tag 문법 검사(미결정. V6의 평범한 날짜 금지는 구현했다. 라이브러리는 외부 의존성이 없다). UTF8-NFC-TEXT(`0x42`/`0x43`)는 2026-10-26 폐기되어 V1(예약)이다.
 - 2층은 `Options.Codecs`로 받은 Codec을 모든 레코드에 돌리는 틀만 있다. 내장 규격(TOULMIN, `docs/value`, `docs/edge`)은 아직 없다.
 - 3층(격틀, 선택 제약)은 없다.
 - core에 버전 목록 레코드 디코드(`core.DecodePublication`)를 넣어 E4·P 규칙이 쓴다.
