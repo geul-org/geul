@@ -53,7 +53,7 @@ var valueNames = map[uint8]string{
 	CodecCoordinateEarth: "COORDINATE-EARTH", CodecCoordinateGeo: "COORDINATE-GEO",
 	CodecUTF8LanguageTextEven: "UTF8-LANGUAGE-TEXT", CodecUTF8LanguageTextEven | 1: "UTF8-LANGUAGE-TEXT",
 	0x44: "URI", 0x45: "URI", CodecLanguageBCP47Even: "LANGUAGE-BCP47-CODE", CodecLanguageBCP47Even | 1: "LANGUAGE-BCP47-CODE",
-	0x48: "LANGUAGE-SHORT-CODE", 0x60: "UUID", CodecSHA256Digest: "SHA-256-DIGEST",
+	0x48: "LANGUAGE-SHORT-CODE", 0x60: "UUID", CodecSHA256Digest: "SHA-256-DIGEST", CodecSHA1Digest: "SHA1-DIGEST",
 }
 
 // issuerNames maps the ISSUER codecs of the Value and Edge kinds to their names.

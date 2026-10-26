@@ -11,4 +11,5 @@ var fixedValueWidth = map[uint8]int{
 	0x48:                    1,  // LANGUAGE-SHORT-CODE
 	0x60:                    8,  // UUID
 	0x61:                    16, // SHA-256-DIGEST
+	0x62:                    10, // SHA1-DIGEST
 }

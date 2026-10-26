@@ -34,6 +34,9 @@ const (
 	CodecGEDCOMDateEven uint8 = 0x26
 	// CodecSHA256Digest is a fixed 16-word SHA-256 digest.
 	CodecSHA256Digest uint8 = 0x61
+	// CodecSHA1Digest is a fixed 10-word SHA-1 digest, for identifiers such as
+	// git object IDs only (SHA-1 is not collision resistant).
+	CodecSHA1Digest uint8 = 0x62
 	// CodecUTF8TextEven is valid UTF-8 without implied normalization (even bytes).
 	CodecUTF8TextEven uint8 = 0x40
 	// CodecLanguageBCP47Even is a canonical BCP 47 language tag (even bytes).

@@ -51,7 +51,7 @@
 | 규칙 | 내용 |
 |---|---|
 | V1 | 직접 코드의 Reserved 구간은 예약이다. |
-| V2 | 고정 폭 직접 코드는 Payload 폭이 맞다. BOOL 1(`0x0000`·`0x0001`만), BINARY-FLOAT 1/2/4/8, GREGORIAN-DATE 2, CIVIL-TIME-NANOSECONDS 4(`[0, 86400×10^9)`), POSIX-TIMESTAMP-SECONDS 4, DURATION-SECONDS 4, LANGUAGE-SHORT-CODE 1, UUID 8, SHA-256-DIGEST 16. |
+| V2 | 고정 폭 직접 코드는 Payload 폭이 맞다. BOOL 1(`0x0000`·`0x0001`만), BINARY-FLOAT 1/2/4/8, GREGORIAN-DATE 2, CIVIL-TIME-NANOSECONDS 4(`[0, 86400×10^9)`), POSIX-TIMESTAMP-SECONDS 4, DURATION-SECONDS 4, LANGUAGE-SHORT-CODE 1, UUID 8, SHA-256-DIGEST 16, SHA1-DIGEST 10. |
 | V3 | SIGNED-INTEGER·UNSIGNED-INTEGER와 DECIMAL의 coefficient는 최소 WORD다. DECIMAL은 exponent 2 WORD + coefficient 1 WORD 이상이다. |
 | V4 | 홀짝 코드 쌍(텍스트, URI, 언어 태그, EDTF, GEDCOM-DATE, UTF8-LANGUAGE-TEXT의 텍스트 부분)에서 홀수 코드는 Payload가 1 WORD 이상이고 마지막 하위 byte가 `0x00`이다. |
 | V5 | UTF8-TEXT는 well-formed UTF-8이고 선두 BOM이 없다. URI·URI-RELATIVE-REF·LANGUAGE-BCP47-CODE·EDTF는 ASCII이고 빈 문자열이 아니다. GEDCOM-DATE는 ASCII 0x20~0x7E이고 비어 있지 않으며 앞뒤 공백이 없다. |

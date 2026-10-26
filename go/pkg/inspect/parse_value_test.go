@@ -31,19 +31,23 @@ func TestParseValue(t *testing.T) {
 		{core.EncodePosixSeconds(86400), Value{Codec: core.CodecPosixSeconds, Time: time.Unix(86400, 0).UTC()}},
 		{core.Record{Kind: core.KindValue, Codec: core.CodecGregorianDate, Payload: []core.Word{0, 1}}, Value{Codec: core.CodecGregorianDate, Time: time.Unix(86400, 0).UTC()}},
 		{core.Record{Kind: core.KindValue, Codec: core.CodecSHA256Digest, Payload: make([]core.Word, 16)}, Value{Codec: core.CodecSHA256Digest, Text: "0x" + strings.Repeat("0", 64)}},
+		{core.Record{Kind: core.KindValue, Codec: core.CodecSHA1Digest, Payload: make([]core.Word, 10)}, Value{Codec: core.CodecSHA1Digest, Text: "0x" + strings.Repeat("0", 40)}},
 	}
 	for _, c := range cases {
 		if got, ok := ParseValue(c.r); !ok || got != c.want {
 			t.Fatalf("got %+v %v want %+v", got, ok, c.want)
 		}
 	}
-	for _, c := range []uint8{0x60, 0x30, 0x42} {
+	for _, c := range []uint8{0x60, 0x30, 0x42, 0x63} {
 		if _, ok := ParseValue(core.Record{Kind: core.KindValue, Codec: c}); ok {
 			t.Fatalf("0x%02X: want not ok", c)
 		}
 	}
 	if _, ok := ParseValue(core.Record{Kind: core.KindValue, Codec: core.CodecSHA256Digest, Payload: []core.Word{1}}); ok {
 		t.Fatal("short digest: want not ok")
+	}
+	if _, ok := ParseValue(core.Record{Kind: core.KindValue, Codec: core.CodecSHA1Digest, Payload: make([]core.Word, 16)}); ok {
+		t.Fatal("long SHA-1 digest: want not ok")
 	}
 	if _, ok := ParseValue(core.Record{Kind: core.KindValue, Codec: 0x41}); ok {
 		t.Fatal("bad odd text: want not ok")

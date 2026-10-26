@@ -8,7 +8,7 @@ import "github.com/geul-org/geul/go/pkg/core"
 // (UTF8-TEXT, URI, LANGUAGE-BCP47-CODE, EDTF, GEDCOM-DATE; either pair member)
 // as Text, UTF8-LANGUAGE-TEXT as Text and Lang (languageText), the two coordinates
 // (coordinate), BINARY-FLOAT up to binary64 (binaryFloat), UNSIGNED-INTEGER, the two decimals, the two time
-// codecs and SHA-256-DIGEST. ok is
+// codecs, SHA-256-DIGEST and SHA1-DIGEST (in hex). ok is
 // false for any other codec or a malformed payload.
 func ParseValue(r core.Record) (Value, bool) {
 	v := Value{Codec: r.Codec}
@@ -35,6 +35,9 @@ func ParseValue(r core.Record) (Value, bool) {
 	case core.CodecSHA256Digest &^ 1:
 		v.Text = core.FormatID(r.Payload)
 		return v, r.Codec == core.CodecSHA256Digest && len(r.Payload) == 16
+	case core.CodecSHA1Digest:
+		v.Text = core.FormatID(r.Payload)
+		return v, r.Codec == core.CodecSHA1Digest && len(r.Payload) == 10
 	default:
 		return Value{}, false
 	}
