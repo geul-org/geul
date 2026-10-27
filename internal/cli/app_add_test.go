@@ -1,5 +1,5 @@
 //ff:func feature=cli type=command control=sequence
-//ff:what TestAppAdd — no Edge, a missing draft, a line that does not read, a repeated label and an Edge breaking the spec fail and write nothing; labels (#n, #name, also forward) map to new IDs, other #n stay
+//ff:what TestAppAdd — no Edge, a missing draft, a line that does not read, a repeated label and an Edge breaking the spec fail and write nothing; labels (#n, #name, also forward) map to new IDs, other #n stay; a document SOURCE and its QUALIFIER go to the HEAD
 package cli
 
 import (
@@ -44,5 +44,13 @@ func TestAppAdd(t *testing.T) {
 	}
 	if show := h.must("show", draft); !strings.Contains(show, "#6 QUALIFIER P582 #7 #2") {
 		t.Fatal(show)
+	}
+	out, err = h.run("#s SOURCE #0 Q2013\nQUALIFIER P813 #s POSIX-TIMESTAMP-SECONDS(5)\nSOURCE #4 Q1\n", "add", draft, "-i", "-")
+	if err != nil || out != "#8\n#9\n#10\n" {
+		t.Fatalf("%q %v", out, err)
+	}
+	head, body, _ := strings.Cut(h.must("show", draft), "BODY\n")
+	if !strings.Contains(head, "#8 SOURCE #0 Q2013\n#9 QUALIFIER P813 #8 POSIX-TIMESTAMP-SECONDS(5)") || !strings.HasSuffix(body, "#10 SOURCE #4 Q1\n") {
+		t.Fatalf("HEAD SOURCE and its QUALIFIER in the HEAD:\n%s---\n%s", head, body)
 	}
 }

@@ -1,21 +1,25 @@
 //ff:func feature=inspect type=decoder control=sequence
-//ff:what coordinate — the latitude, longitude, uncertainty and body of a COORDINATE-EARTH or COORDINATE-GEO
+//ff:what coordinate — the latitude, longitude, uncertainty, its unit and the body of a COORDINATE-EARTH or COORDINATE-GEO
 package inspect
 
 import "github.com/geul-org/gogeul/pkg/core"
 
-// coordinate decodes a coordinate Value (core.DecodeCoordinate) into
-// latitude, longitude, uncertainty and its body: "" for COORDINATE-EARTH, a
-// WIKIDATA-QID globe as Qn, any other Reference as its codec name and payload
-// hex.
-func coordinate(r core.Record) (float64, float64, uint32, string, error) {
+// coordinate decodes a coordinate Value (core.DecodeCoordinate) into a Value
+// with latitude, longitude, the uncertainty (Float), its unit and the body:
+// a Reference as referenceText (a WIKIDATA-QID as Qn, any other Reference as
+// its codec name and payload hex); the body is "" for COORDINATE-EARTH and
+// the unit "" when it is ABSENT (uncertainty unknown).
+func coordinate(r core.Record) (Value, error) {
 	c, err := core.DecodeCoordinate(r)
 	if err != nil {
-		return 0, 0, 0, "", err
+		return Value{}, err
 	}
-	globe := ""
+	v := Value{Codec: r.Codec, Lat: c.Lat, Lon: c.Lon, Float: float64(c.Uncertainty)}
 	if c.Globe != nil {
-		globe = referenceText(*c.Globe)
+		v.Globe = referenceText(*c.Globe)
 	}
-	return c.Lat, c.Lon, c.U, globe, nil
+	if c.Unit != nil {
+		v.Unit = referenceText(*c.Unit)
+	}
+	return v, nil
 }

@@ -17,6 +17,10 @@ func ParseValue(r core.Record) (Value, bool) {
 		v.Float, err = binaryFloat(r.Payload)
 		return v, err == nil
 	}
+	if r.Codec&^1 == core.CodecCoordinateEarth {
+		v, err = coordinate(r)
+		return v, err == nil
+	}
 	if r.Codec == core.CodecQuantity {
 		v.Amount, v.Unit, v.Lower, v.Upper, err = quantity(r)
 		return v, err == nil
@@ -28,8 +32,6 @@ func ParseValue(r core.Record) (Value, bool) {
 		v.Text = string(b)
 	case core.CodecUTF8LanguageTextEven:
 		v.Text, v.Lang, err = languageText(r)
-	case core.CodecCoordinateEarth:
-		v.Lat, v.Lon, v.U, v.Globe, err = coordinate(r)
 	case core.CodecUnsignedInteger:
 		v.Uint, err = core.DecodeUintValue(r)
 	case core.CodecSignedDecimal:

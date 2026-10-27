@@ -11,7 +11,8 @@ import (
 )
 
 // set replaces Edge idArg's payload after its Edge Id with fields read as
-// a line of its codec (notation.ParseEdge), keeping its place and ID.
+// a line of its codec (notation.ParseEdge), keeping its place (BODY or
+// HEAD, draft.edgeAt) and ID.
 func (a *app) set(path, idArg string, fields []string) error {
 	id, err := parseID(idArg)
 	if err != nil {
@@ -21,15 +22,15 @@ func (a *app) set(path, idArg string, fields []string) error {
 	if err != nil {
 		return err
 	}
-	i := edgeIndex(d.body, id)
+	part, i := d.edgeAt(id)
 	if i < 0 {
 		return fmt.Errorf("no Edge #%d in %s", id, path)
 	}
-	name := core.CodecName(core.KindEdge, d.body[i].Codec)
+	name := core.CodecName(core.KindEdge, (*part)[i].Codec)
 	e, err := notation.ParseEdge(name+" "+strings.Join(fields, " "), a.context())
 	if err != nil {
 		return err
 	}
-	d.body[i] = edgeRecord(id, e)
+	(*part)[i] = edgeRecord(id, e)
 	return saveDraft(path, d)
 }

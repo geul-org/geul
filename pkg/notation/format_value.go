@@ -10,7 +10,8 @@ import (
 
 // formatValue writes the Value codecs with a short form (package doc): byte
 // strings, language text with a BCP 47 tag, the decimals, unsigned integers,
-// the two time codecs, QUANTITY and the digests. Others are false.
+// the two time codecs, QUANTITY, the two coordinates and the digests.
+// Others are false.
 func formatValue(r core.Record) (string, bool) {
 	name := core.CodecName(core.KindValue, r.Codec)
 	switch even := r.Codec &^ 1; {
@@ -28,6 +29,8 @@ func formatValue(r core.Record) (string, bool) {
 		return formatTime(r)
 	case r.Codec == core.CodecQuantity:
 		return formatQuantity(r)
+	case even == core.CodecCoordinateEarth:
+		return formatCoordinate(r)
 	case r.Codec == core.CodecSHA256Digest || r.Codec == core.CodecSHA1Digest:
 		return name + "(" + hexToken(r.Payload) + ")", true
 	default:

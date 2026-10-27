@@ -4,11 +4,13 @@ package core
 
 import "errors"
 
-// placeDocRecord applies one record to st (GEUL t002 OVERVIEW 구조): BODY may
-// appear once and ends the HEAD; END closes the document; Meta records belong to
-// the HEAD only and Reference/Value/Edge records to the BODY only. A non-Meta
-// record before any HEAD record starts an implicit BODY (BODY omitted because
-// the HEAD is empty). Any record after END is an error.
+// placeDocRecord applies one record to st (document 구조): BODY may appear
+// once and ends the HEAD; END closes the document; Meta records belong to the
+// HEAD only. Before BODY, a SOURCE on the whole document and the QUALIFIERs on
+// it are HEAD records too (placeHeadEdge); any other Reference/Value/Edge
+// record belongs to the BODY. Such a record before any HEAD record starts an
+// implicit BODY (BODY omitted because the HEAD is empty); after a HEAD record
+// it is an error (BODY missing). Any record after END is an error.
 func placeDocRecord(st *docState, r Record) error {
 	if st.ended {
 		return errors.New("geul/core: record after END")
@@ -29,8 +31,9 @@ func placeDocRecord(st *docState, r Record) error {
 			return errors.New("geul/core: Meta record in BODY")
 		}
 		st.doc.Head = append(st.doc.Head, r)
+	case !st.inBody && placeHeadEdge(st, r):
 	case !st.inBody && len(st.doc.Head) > 0:
-		return errors.New("geul/core: non-Meta record in HEAD (missing BODY)")
+		return errors.New("geul/core: record not allowed in HEAD (missing BODY)")
 	default:
 		st.inBody = true
 		st.doc.Body = append(st.doc.Body, r)

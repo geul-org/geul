@@ -9,12 +9,12 @@ import (
 	"github.com/geul-org/gogeul/pkg/inspect"
 )
 
-// referrer decodes d and returns the Edge Id of the first BODY entry that
-// mentions an ID of ids (inspect.Mentions).
+// referrer decodes d and returns the Edge Id of the first HEAD or BODY
+// entry that mentions an ID of ids (inspect.Mentions).
 func referrer(d draft, ids []uint64) (uint64, bool) {
 	b, _ := core.EncodeDocument(d.head, d.body)
 	doc, _ := inspect.Decode(b)
-	for _, e := range doc.Body {
+	for _, e := range append(append([]inspect.Entry{}, doc.Head...), doc.Body...) {
 		if slices.ContainsFunc(inspect.Mentions(e), func(r uint64) bool { return slices.Contains(ids, r) }) {
 			return e.ID, true
 		}

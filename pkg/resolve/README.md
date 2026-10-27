@@ -118,7 +118,7 @@ Key 하나를 받는 순서(GEUL-ORG 위치 해석 순서).
 2. `IMPORT-DOC-*`이 버전을 고정했으면 그 버전.
 3. 고정이 없으면 잠금 기록의 버전.
 4. 잠금도 없으면 최신을 받고(버전 로그로 확인), 받은 버전 ID와 내용 해시를 잠금에 남긴다.
-5. 시점 T를 정한 해석(`asOf`)이면 최신 대신 T에 시행 중인 판본을 고른다(`EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`, 조문별 `RECORD-EFFECTIVE`).
+5. 시점 T를 정한 해석(`asOf`)이면 최신 대신 T에 시행 중인 판본을 고른다(`EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`, 조문별로는 대상 Edge에 붙은 QUALIFIER P580·P582).
 
 - `EXTERNAL-ISSUER-*`는 명세상 "최신을 따른다". 이 패키지에서는 4번 규칙 안의 "최신"으로 다룬다. 같은 문서를 IMPORT로도 가져왔다면 IMPORT의 버전을 쓴다. 잠금 덕분에 지시선언도 재현된다.
 - 지시선언이 가리키는 문서의 IMPORT는 그 문서의 대상을 실제로 따라갈 때만 내려간다(지연 해석).
@@ -186,7 +186,7 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 아직 없는 것:
 
 1. 잠금 기록, 작업공간(`geul.work`), 캐시(받은 문서를 `Dir`에 저장), `GEULLOG`·`GEULNOLOG`·`GEULINSECURE`.
-2. 조문별 시행일 `RECORD-EFFECTIVE`(근거 Edge 디코드 필요). 시행일 없는 판본은 처음부터 시행 중으로 본다(공표 시각 `RECORDED-AT`은 아직 쓰지 않는다).
+2. 조문별 시행 기간(대상 Edge의 QUALIFIER P580·P582). 시행일 없는 판본은 처음부터 시행 중으로 본다(공표 시각 `RECORDED-AT`은 아직 쓰지 않는다).
 3. 상한(깊이·문서 수·크기). 순환은 같은 Key를 한 번만 받으므로 끝나며, 거부하지 않는다.
 4. `core`에 지시·지시선언 Reference 디코드(Issuer·문서 ID·IMPORT ID·LOCAL ID 분리). 지금은 LOCAL만 있다.
 5. 참조 수집(독립 Reference + `inspect.Layout`의 내장 Reference), `EXTERNAL-ISSUER-*` 해석, `Target`.

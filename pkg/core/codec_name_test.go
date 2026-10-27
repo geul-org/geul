@@ -1,5 +1,5 @@
 //ff:func feature=core type=helper control=sequence
-//ff:what TestCodecName — Reference, Meta, Value, execution Edge, ISSUER and unknown codecs
+//ff:what TestCodecName — Reference, Meta (SOURCE, SOURCE-SPAN, ACQUIRED-AT removed), Value, execution and 근거 Edge (SOURCE only), ISSUER and unknown codecs
 package core
 
 import "testing"
@@ -10,6 +10,12 @@ func TestCodecName(t *testing.T) {
 	}
 	if got := CodecName(KindMeta, MetaEffectiveFrom); got != "EFFECTIVE-FROM" {
 		t.Fatalf("effective-from: %q", got)
+	}
+	if got := CodecName(KindMeta, 0x26) + CodecName(KindMeta, 0x27) + CodecName(KindMeta, 0x28); got != "" {
+		t.Fatalf("removed Meta 0x26~0x28 (SOURCE, SOURCE-SPAN, ACQUIRED-AT): %q", got)
+	}
+	if got := CodecName(KindMeta, 0x25); got != "RECORDED-AT" {
+		t.Fatalf("recorded-at: %q", got)
 	}
 	if got := CodecName(KindMeta, 0x15); got != "" {
 		t.Fatalf("reserved: %q", got)
@@ -34,6 +40,12 @@ func TestCodecName(t *testing.T) {
 	}
 	if got := CodecName(KindValue, 0x42); got != "" {
 		t.Fatalf("retired NFC text: %q", got)
+	}
+	if got := CodecName(KindEdge, EdgeSource); got != "SOURCE" {
+		t.Fatalf("source edge: %q", got)
+	}
+	if got := CodecName(KindEdge, 0x21); got != "" {
+		t.Fatalf("근거 0x21 reserved: %q", got)
 	}
 	if got := CodecName(KindValue, 0x28); got != "" {
 		t.Fatalf("reserved value: %q", got)

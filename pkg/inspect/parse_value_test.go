@@ -27,7 +27,7 @@ func TestParseValue(t *testing.T) {
 		{core.EncodeBytesValue(core.CodecGEDCOMDateEven, []byte("JULIAN 1300")), Value{Codec: core.CodecGEDCOMDateEven | 1, Text: "JULIAN 1300"}},
 		{core.EncodeUintValue(7), Value{Codec: core.CodecUnsignedInteger, Uint: 7}},
 		{core.Record{Kind: core.KindValue, Codec: core.CodecBinaryFloat, Payload: []core.Word{0x3C00}}, Value{Codec: core.CodecBinaryFloat, Float: 1}},
-		{core.EncodeCoordinate(core.Coordinate{Lat: 52.5, Lon: 13.4, U: 44}), Value{Codec: core.CodecCoordinateEarth, Lat: 52.5, Lon: 13.4, U: 44}},
+		{core.EncodeCoordinate(core.Coordinate{Lat: 52.5, Lon: 13.4}), Value{Codec: core.CodecCoordinateEarth, Lat: 52.5, Lon: 13.4}},
 		{sd, Value{Codec: core.CodecSignedDecimal, Exp: -1, Coef: 8}},
 		{ud, Value{Codec: core.CodecUnsignedDecimal, Coef: 75}},
 		{core.EncodePosixSeconds(86400), Value{Codec: core.CodecPosixSeconds, Time: time.Unix(86400, 0).UTC()}},

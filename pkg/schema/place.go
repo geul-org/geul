@@ -5,7 +5,9 @@ package schema
 import "github.com/geul-org/gogeul/pkg/core"
 
 // place applies one record after the DOC record to st and parts (D2~D4).
-// Misplaced records are reported and still kept so their own rules are checked.
+// Before BODY, Meta and the HEAD Edges (a SOURCE on the whole document and
+// the QUALIFIERs on it, headEdgeRec) go to the HEAD. Misplaced records are
+// reported and still kept so their own rules are checked.
 func place(st *placeState, parts *docParts, r rec) []Fact {
 	meta := r.R.Kind == core.KindMeta
 	switch {
@@ -24,12 +26,12 @@ func place(st *placeState, parts *docParts, r rec) []Fact {
 	case meta && st.inBody:
 		parts.Body = append(parts.Body, r)
 		return []Fact{factAt("D3", Error, r, "", "BODY에는 Meta가 아닌 레코드", "Meta")}
-	case meta:
+	case meta, !st.inBody && headEdgeRec(st, r):
 		parts.Head = append(parts.Head, r)
 		return nil
 	case !st.inBody && len(parts.Head) > 0:
 		parts.Body = append(parts.Body, r)
-		return []Fact{factAt("D3", Error, r, "", "HEAD에는 Meta만 (BODY 누락)", "Meta가 아닌 레코드")}
+		return []Fact{factAt("D3", Error, r, "", "HEAD에는 Meta와 문서 전체 SOURCE·그 QUALIFIER만 (BODY 누락)", "그 밖의 레코드")}
 	default:
 		st.inBody = true
 		parts.Body = append(parts.Body, r)

@@ -18,9 +18,12 @@ func newAddCmd(a *app) *cobra.Command {
   geul add q42.geul TRIPLE P31 Q42 Q5 normal
   geul add q30.geul TRIPLE P1304 Q30 NONE normal
   geul add q30.geul QUALIFIER P582 #2060 UNKNOWN
-Slot markers: _ ABSENT (not written), UNKNOWN UNKNOWN-VALUE (a value exists,
+Slot markers: ABSENT (not written), UNKNOWN UNKNOWN-VALUE (a value exists,
 not known), NONE NO-VALUE (no value); a field takes one only when its CODEC
-list names it (TRIPLE object, QUALIFIER value).
+list names it (TRIPLE object, QUALIFIER value, SOURCE origin).
+A SOURCE on the whole document (target #0) and the QUALIFIERs on it go to
+the HEAD; Edge Ids are one numbering over HEAD and BODY:
+  geul add d.geul SOURCE #0 Q2013
 With -i, one Edge per line; a line may start with a label, #n (as geul show
 writes it) or #name (letters, digits, _, -), and any line may refer to it:
 it becomes the Edge Id the line gets. A #n that labels no line of the batch

@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=iteration dimension=1
-//ff:what TestPlace — every placement case of D2~D4
+//ff:what TestPlace — every placement case of D2~D4, HEAD SOURCE and QUALIFIER included
 package schema
 
 import (
@@ -36,5 +36,17 @@ func TestPlace(t *testing.T) {
 	}
 	if len(parts.Head) != 1 || len(parts.Body) != 3 {
 		t.Fatalf("parts: %d %d", len(parts.Head), len(parts.Body))
+	}
+	src := recOf(edgeOf(core.EdgeSource, 3, 0x0088, 0, 0x00A0, 42))
+	qual := recOf(edgeOf(core.EdgeQualifier, 4, 0x00A8, 813, 0x0088, 3, 0x00A0, 42))
+	st, parts = &placeState{}, &docParts{}
+	for i, r := range []rec{src, meta(core.MetaSpecVersion), qual, recOf(edgeOf(core.EdgeSource, 5, 0x0088, 4, 0x00A0, 42))} {
+		want := map[int]string{3: "D3"}[i]
+		if got := rulesOf(place(st, parts, r)); got != want {
+			t.Fatalf("HEAD Edge step %d: %q", i, got)
+		}
+	}
+	if len(parts.Head) != 3 || len(parts.Body) != 1 {
+		t.Fatalf("HEAD Edges: %d %d", len(parts.Head), len(parts.Body))
 	}
 }

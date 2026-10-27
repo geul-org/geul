@@ -1,5 +1,5 @@
 //ff:func feature=notation type=decoder control=iteration dimension=1
-//ff:what formatQuantity — QUANTITY(amount, unit, lower, upper) with each part as a token and _ for a part left out
+//ff:what formatQuantity — QUANTITY(amount, unit, lower, upper) with each part as a token and ABSENT for a part left out
 package notation
 
 import (

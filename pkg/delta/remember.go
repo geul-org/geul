@@ -1,11 +1,12 @@
 //ff:func feature=delta type=decoder control=sequence
-//ff:what LocalIDs.remember — note one previous BODY record: an Edge by its content key, a REFERENCE-NODE also by its Object
+//ff:what LocalIDs.remember — note one previous HEAD or BODY record: an Edge by its content key, a REFERENCE-NODE also by its Object
 package delta
 
 import "github.com/geul-org/gogeul/pkg/core"
 
-// remember notes r, a BODY record of the previous version. A record that is
-// not an Edge with a LOCAL Edge Id is ignored (it has no ID to carry).
+// remember notes r, a HEAD or BODY record of the previous version. A record
+// that is not an Edge with a LOCAL Edge Id (a Meta) is ignored (it has no ID
+// to carry).
 func (l *LocalIDs) remember(r core.Record) {
 	id, rest, ok := edgeID(r)
 	if !ok {
@@ -18,6 +19,7 @@ func (l *LocalIDs) remember(r core.Record) {
 	}
 	subject, n, err := core.DecodeRecord(rest)
 	if local, lerr := core.DecodeLocalRef(subject); err == nil && lerr == nil {
-		l.defs[edgeKey(r.Codec, rest[n:])] = [2]uint64{id, local}
+		k := edgeKey(r.Codec, rest[n:])
+		l.defs[k] = append(l.defs[k], [2]uint64{id, local})
 	}
 }

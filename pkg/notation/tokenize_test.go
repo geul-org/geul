@@ -8,8 +8,8 @@ import (
 )
 
 func TestTokenize(t *testing.T) {
-	got, err := tokenize(`#1  LABEL Q42	"a \" b"@en <https://x y> QUANTITY(1, _, (2), "a)b")`)
-	want := []string{"#1", "LABEL", "Q42", `"a \" b"@en`, "<https://x y>", `QUANTITY(1, _, (2), "a)b")`}
+	got, err := tokenize(`#1  LABEL Q42	"a \" b"@en <https://x y> QUANTITY(1, ABSENT, (2), "a)b")`)
+	want := []string{"#1", "LABEL", "Q42", `"a \" b"@en`, "<https://x y>", `QUANTITY(1, ABSENT, (2), "a)b")`}
 	if err != nil || !slices.Equal(got, want) {
 		t.Fatalf("%q %v", got, err)
 	}

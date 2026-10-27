@@ -1,5 +1,5 @@
 //ff:func feature=core type=decoder control=iteration dimension=1
-//ff:what TestPlaceDocRecord — HEAD/BODY/END routing and every placement error
+//ff:what TestPlaceDocRecord — HEAD/BODY/END routing, HEAD SOURCE and QUALIFIER, and every placement error
 package core
 
 import "testing"
@@ -36,5 +36,21 @@ func TestPlaceDocRecord(t *testing.T) {
 	_ = placeDocRecord(head, meta)
 	if err := placeDocRecord(head, edge); err == nil {
 		t.Fatal("non-Meta in HEAD must fail")
+	}
+	q42 := Record{Kind: KindReference, Codec: RefWikidataQID << 3, Payload: []Word{42}}
+	p813 := Record{Kind: KindReference, Codec: RefWikidataPID << 3, Payload: []Word{813}}
+	src := headEdgeFixture(EdgeSource, 1, EncodeLocalRef(0), q42)
+	qual := headEdgeFixture(EdgeQualifier, 2, p813, EncodeLocalRef(1), q42)
+	withSource := &docState{}
+	for _, r := range []Record{src, meta, qual} {
+		if err := placeDocRecord(withSource, r); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if len(withSource.doc.Head) != 3 || withSource.inBody {
+		t.Fatalf("HEAD SOURCE and its QUALIFIER, even first: %+v", withSource)
+	}
+	if err := placeDocRecord(withSource, headEdgeFixture(EdgeSource, 3, EncodeLocalRef(1), q42)); err == nil {
+		t.Fatal("a SOURCE on a record in HEAD must fail (missing BODY)")
 	}
 }

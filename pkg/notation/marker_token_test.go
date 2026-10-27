@@ -9,7 +9,7 @@ import (
 )
 
 func TestMarkerToken(t *testing.T) {
-	for w, want := range map[core.Word]string{core.Absent: "_", core.UnknownValue: "UNKNOWN", core.NoValue: "NONE"} {
+	for w, want := range map[core.Word]string{core.Absent: "ABSENT", core.UnknownValue: "UNKNOWN", core.NoValue: "NONE"} {
 		r, _, _ := core.DecodeRecord([]core.Word{w})
 		if got, ok := markerToken(r); !ok || got != want {
 			t.Fatalf("0x%04X: %q %v", w, got, ok)

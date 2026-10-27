@@ -1,5 +1,5 @@
 //ff:func feature=notation type=decoder control=sequence
-//ff:what TestFormatRecord — _ UNKNOWN NONE for the slot markers (a reserved one as raw words), short forms for Reference and Value, raw words otherwise
+//ff:what TestFormatRecord — ABSENT UNKNOWN NONE for the slot markers (a reserved one as raw words), short forms for Reference and Value, raw words otherwise
 package notation
 
 import (
@@ -9,7 +9,7 @@ import (
 )
 
 func TestFormatRecord(t *testing.T) {
-	if formatRecord(absent()) != "_" || formatRecord(core.EncodeLocalRef(3)) != "#3" || formatRecord(core.EncodeUintValue(2)) != "UNSIGNED-INTEGER(2)" {
+	if formatRecord(absent()) != "ABSENT" || formatRecord(core.EncodeLocalRef(3)) != "#3" || formatRecord(core.EncodeUintValue(2)) != "UNSIGNED-INTEGER(2)" {
 		t.Fatal("short forms")
 	}
 	if got := formatRecord(core.Record{Kind: core.KindReference, Codec: core.RefGeul << 3, Payload: []core.Word{5}}); got != "0x00900005" {

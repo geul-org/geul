@@ -6,7 +6,7 @@ import "testing"
 
 func TestParseCall(t *testing.T) {
 	ctx := Context{Lookup: fakeLookup}
-	for _, s := range []string{"UNSIGNED-INTEGER(5)", `EDTF("1971~")`, "ISSUER-POINTER(0x00010000)", "QUANTITY(1, _, _, _)"} {
+	for _, s := range []string{"UNSIGNED-INTEGER(5)", `EDTF("1971~")`, "ISSUER-POINTER(0x00010000)", "QUANTITY(1, ABSENT, ABSENT, ABSENT)"} {
 		r, err := parseCall(s, ctx)
 		if err != nil || formatRecord(r) != s {
 			t.Errorf("%s: %s %v", s, formatRecord(r), err)

@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what TestHeadEntry — each known Meta gets typed Data; unknown and malformed Meta stay bare
+//ff:what TestHeadEntry — each known Meta gets typed Data; unknown and malformed Meta and HEAD Edges stay bare
 package inspect
 
 import (
@@ -27,5 +27,9 @@ func TestHeadEntry(t *testing.T) {
 	}
 	if e := headEntry(core.Record{Kind: core.KindMeta, Codec: 0x29, Payload: []core.Word{1}}); e.Data != nil || e.Name != "" {
 		t.Fatalf("unknown: %+v", e)
+	}
+	src := core.Record{Kind: core.KindEdge, Codec: core.EdgeSource, Payload: append([]core.Word{0x0088, 1, 0x0088, 0}, at...)}
+	if e := headEntry(src); e.Data != nil || e.Name != "SOURCE" {
+		t.Fatalf("HEAD SOURCE stays a bare Edge: %+v", e)
 	}
 }

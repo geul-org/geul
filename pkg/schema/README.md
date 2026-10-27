@@ -33,7 +33,7 @@
 |---|---|
 | D1 | 첫 레코드가 `DOC-1WORD/2WORD/4WORD`이고, 그 길이가 입력 전체와 같으며, 값이 들어가는 가장 좁은 폭이다. |
 | D2 | `END`가 마지막 레코드다. 뒤에 아무것도 없다. |
-| D3 | HEAD에는 Meta만, BODY에는 Meta가 아닌 레코드만 둔다. `BODY`는 한 번만 둔다. |
+| D3 | HEAD에는 Meta와 HEAD Edge(대상이 `0`(문서 전체)인 `SOURCE`, HEAD `SOURCE`를 대상으로 하는 `QUALIFIER`)만, BODY에는 Meta가 아닌 레코드만 둔다. `BODY`는 한 번만 둔다. HEAD 레코드 뒤에 그 밖의 레코드가 오면 BODY 누락이다. |
 | D4 | `BODY`·`END`는 Payload가 없는 1 WORD다. 문서 안에 `DOC-*`가 다시 나오지 않는다. |
 
 ### R Reference (OVERVIEW Reference)
@@ -57,7 +57,7 @@
 | V5 | UTF8-TEXT는 well-formed UTF-8이고 선두 BOM이 없다. URI·URI-RELATIVE-REF·LANGUAGE-BCP47-CODE·EDTF는 ASCII이고 빈 문자열이 아니다. GEDCOM-DATE는 ASCII 0x20~0x7E이고 비어 있지 않으며 앞뒤 공백이 없다. |
 | V6 | EDTF는 GREGORIAN-DATE로 정확히 쓸 수 있는 날짜(한정자·미상 자릿수·구간 없는 `[-]YYYY-MM-DD`)가 아니다. |
 | V7 | UTF8-LANGUAGE-TEXT는 완전한 LANGUAGE-SHORT-CODE 또는 LANGUAGE-BCP47-CODE 레코드로 시작하고 그 레코드도 Value 규칙을 지킨다. 나머지는 UTF8-TEXT처럼 V4·V5를 따른다. |
-| V8 | COORDINATE-EARTH는 Payload 10 WORD, COORDINATE-GEO는 Quantifier Identified인 완전한 Reference 레코드(천체) 뒤 10 WORD다. 위도·경도는 유한하고 위도 [-90, 90], 경도 [-180, 180](Earth)·[-180, 360](Geo)이다. |
+| V8 | COORDINATE-EARTH는 Payload가 10 WORD(위도·경도 binary64, 불확도 2 WORD binary32) 뒤 Unit 레코드, COORDINATE-GEO는 Quantifier Identified인 완전한 Reference 레코드(천체) 뒤 같은 배치다. 위도·경도는 유한하고 위도 [-90, 90], 경도 [-180, 180](Earth)·[-180, 360](Geo)이다. 불확도는 유한한 +0 이상(-0·NaN·±Inf 아님)이다. Unit은 Quantifier Identified인 Reference 또는 ABSENT(불확도 미상)이고, ABSENT면 불확도는 +0(`0000 0000`)이다. |
 | V9 | QUANTITY는 SIGNED-DECIMAL amount, Reference(자리 표지 제외) 또는 ABSENT(`0x0000`) unit, SIGNED-DECIMAL 또는 없음 표지 lower·upper의 네 레코드뿐이다. 있는 10진수의 coefficient는 최소 WORD다(value/numeric/QUANTITY). |
 
 - ISSUER 형식 Value는 1층에서 Issuer·형식 번호의 존재(F5)만 본다. 레이아웃은 2층이다.
@@ -67,12 +67,13 @@
 | 규칙 | 내용 |
 |---|---|
 | E1 | Payload 첫 요소가 LOCAL Reference(Quantifier `000`)다. 그 LOCAL ID가 Edge Id이며 `0`이 아니다(`0`은 문서 자신). |
-| E2 | Edge Id는 문서 안에서 중복되지 않는다. |
-| E3 | 서술·실행·TOULMIN 직접 코드의 Reserved 구간은 예약이다. |
+| E2 | Edge Id는 문서 안에서 중복되지 않는다. HEAD Edge와 BODY는 한 번호 공간이다. |
+| E3 | 직접 코드의 Reserved 구간은 예약이다. 근거 계열은 `0x20`(SOURCE)만 배정되어 있다. |
 | E4 | core 내장 Codec은 레이아웃이 맞다. `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`(Edge Id 뒤 22·6·7 WORD), `DECLARE`·`FIELD`·`ENUM`·`CODEC`(edge/DECLARE·FIELD·ENUM·CODEC). |
 | E5 | CODEC의 필드는 같은 문서의 FIELD이고, 한 필드에 같은 대상을 두 번 두지 않으며, 날값 필드(폭 ≥ 1)에는 CODEC이 하나뿐이고 와일드카드(LLLL `1111`)나 자리 표지(`0000`~`0007`)가 아니다. 자리 표지 대상만 있는 필드는 없다(edge/CODEC 선택 필드와 자리 표지). 예약 표지 대상 `0003`~`0007`은 Warn이다. 대상 WORD는 LLLL `0000`이거나 `1111` 와일드카드다(E4). |
 | E6 | (Warn) Object가 NO-VALUE(`0x0002`)인 TRIPLE과 같은 Subject·Predicate·rank, 같은 QUALIFIER 묶음(Property=Value)의 TRIPLE이 다른 Object(값 또는 UNKNOWN-VALUE)를 가지면 경고한다. 거부하지 않는다(위키데이터에도 있는 상태, 읽는 쪽이 rank로 고른다). TRIPLE·QUALIFIER는 문법이 고정한 레이아웃으로 자른다. |
 | E7 | TRIPLE·QUALIFIER의 Predicate·Subject(Property·Target)에는 Reference Codec `0000`(자리 표지)이 오지 않고, Object(Value)에는 `0x0001` UNKNOWN-VALUE·`0x0002` NO-VALUE만 온다(ABSENT·예약 표지·Payload 있는 Codec `0000`은 Error). 두 Codec의 필드는 문법이 고정하므로 1층에서 본다. 다른 Codec 필드의 표지 수용은 규격 문서(2층) 몫이다. |
+| E8 | 근거 Edge `SOURCE`(`0x20`, edge/SOURCE): Edge Id 뒤에 대상·원천 레코드 둘뿐이다. 대상은 LOCAL Reference이고 `0`(문서 전체)이거나 BODY의 Edge Id다. 원천은 Reference이고, 자리 표지는 `0x0000` ABSENT와 `0x0001` UNKNOWN-VALUE만 받는다(Value·NO-VALUE·예약 표지는 Error). 대상이 `0`인 `SOURCE`와 HEAD `SOURCE`를 대상으로 하는 `QUALIFIER`가 BODY에 있으면 Error다(HEAD에 둔다). 레이아웃을 문법이 고정하므로 1층에서 본다. |
 
 ### M Meta (OVERVIEW Meta)
 

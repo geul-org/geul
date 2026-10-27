@@ -1,5 +1,5 @@
 //ff:func feature=notation type=encoder control=iteration dimension=1
-//ff:what parseQuantity — QUANTITY from four record tokens: amount, unit, lower, upper (_ for a part left out)
+//ff:what parseQuantity — QUANTITY from four record tokens: amount, unit, lower, upper (ABSENT for a part left out)
 package notation
 
 import (

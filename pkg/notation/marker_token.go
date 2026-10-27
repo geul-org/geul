@@ -1,5 +1,5 @@
 //ff:func feature=notation type=decoder control=iteration dimension=1
-//ff:what markerToken — the token of a named slot marker record (_, UNKNOWN, NONE); false for any other record
+//ff:what markerToken — the token of a named slot marker record (ABSENT, UNKNOWN, NONE); false for any other record
 package notation
 
 import "github.com/geul-org/gogeul/pkg/core"

@@ -13,13 +13,13 @@ func TestFormatValue(t *testing.T) {
 	sd, _ := core.EncodeDecimalValue(true, -2, 120)
 	q, _ := core.EncodeQuantity(core.Quantity{Amount: sd, Unit: absent(), Lower: absent(), Upper: absent()})
 	cases := map[string]core.Record{
-		`"a"`:                        core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("a")),
-		`"Adams"@en`:                 core.EncodeLanguageText(lang, []byte("Adams")),
-		"1.20":                       sd,
-		"UNSIGNED-INTEGER(5)":        core.EncodeUintValue(5),
-		"POSIX-TIMESTAMP-SECONDS(9)": core.EncodePosixSeconds(9),
-		"QUANTITY(1.20, _, _, _)":    q,
-		"SHA1-DIGEST(0x0001)":        {Kind: core.KindValue, Codec: core.CodecSHA1Digest, Payload: []core.Word{1}},
+		`"a"`:                                    core.EncodeBytesValue(core.CodecUTF8TextEven, []byte("a")),
+		`"Adams"@en`:                             core.EncodeLanguageText(lang, []byte("Adams")),
+		"1.20":                                   sd,
+		"UNSIGNED-INTEGER(5)":                    core.EncodeUintValue(5),
+		"POSIX-TIMESTAMP-SECONDS(9)":             core.EncodePosixSeconds(9),
+		"QUANTITY(1.20, ABSENT, ABSENT, ABSENT)": q,
+		"SHA1-DIGEST(0x0001)":                    {Kind: core.KindValue, Codec: core.CodecSHA1Digest, Payload: []core.Word{1}},
 	}
 	for want, r := range cases {
 		if got, ok := formatValue(r); !ok || got != want {

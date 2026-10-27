@@ -75,7 +75,8 @@ geul log me/adams && geul show me/adams
 ```
 
 - 값 표기는 `pkg/notation` 하나다(`show` 출력 = `add` 입력, 왕복 보장).
-- 자리 표지(Reference Codec `0000`, 하위 3비트 = 표지 번호): `_` ABSENT(`0x0000`, 적지 않음), `UNKNOWN` UNKNOWN-VALUE(`0x0001`, 알 수 없음), `NONE` NO-VALUE(`0x0002`, 없음). 필드의 CODEC 목록이 그 WORD를 정확히 둘 때만 받는다(와일드카드·CODEC 없는 필드는 받지 않는다). 예: `geul add d.geul TRIPLE P1304 Q30 NONE normal`, `geul add d.geul QUALIFIER P582 '#2060' UNKNOWN`.
+- 자리 표지(Reference Codec `0000`, 하위 3비트 = 표지 번호): `ABSENT`(`0x0000`, 적지 않음), `UNKNOWN` UNKNOWN-VALUE(`0x0001`, 알 수 없음), `NONE` NO-VALUE(`0x0002`, 없음). 필드의 CODEC 목록이 그 WORD를 정확히 둘 때만 받는다(와일드카드·CODEC 없는 필드는 받지 않는다). 예: `geul add d.geul TRIPLE P1304 Q30 NONE normal`, `geul add d.geul QUALIFIER P582 '#2060' UNKNOWN`.
+- 출처는 근거 Edge `SOURCE`(대상 Edge Id, 원천 Reference·`ABSENT`·`UNKNOWN`)와 그것에 붙는 QUALIFIER다(문법 edge/SOURCE). 예: `geul add d.geul SOURCE '#178' Q5375741`, `geul add d.geul QUALIFIER P813 '#1347' 'GREGORIAN-DATE(2013-12-07)'`. 원천 LOCAL의 성질은 `TRIPLE P1476 '#20' '"…"@en' normal`처럼 쓴다. 문서 전체의 원천은 대상 `#0`으로 쓰고(`geul add d.geul SOURCE '#0' Q2013`), 이 SOURCE와 그것을 대상으로 하는 QUALIFIER는 `add`가 HEAD에 둔다(`show`에서 BODY 위). HEAD·BODY의 Edge Id는 한 번호 공간이다. `schema` E8이 레이아웃·배치를 검사하고, `delta.LocalIDs`가 HEAD·BODY Edge의 번호를, `Node`가 TRIPLE로 기술한 LOCAL 노드의 번호를 이어받는다.
 - 데이터 폴더(`.well-known/geul/`을 담은 루트)는 `--data`·`GEULDATA`·상위 폴더 탐색 순으로 찾는다. 개인키는 `$XDG_CONFIG_HOME/geul/keys/`(데이터 폴더 밖).
 - `serve`와 `build`는 인자가 없으면 데이터 폴더를 쓴다.
 

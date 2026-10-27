@@ -7,7 +7,8 @@ import (
 	"slices"
 )
 
-// rmEdges removes each Edge `#n` of args from the draft at path. Unless
+// rmEdges removes each Edge `#n` of args from the draft at path, from the
+// BODY or the HEAD (draft.edgeAt). Unless
 // force, a remaining record referring to a removed ID (referrer) stops it.
 func rmEdges(path string, args []string, force bool) error {
 	d, err := readDraft(path)
@@ -20,11 +21,11 @@ func rmEdges(path string, args []string, force bool) error {
 		if err != nil {
 			return err
 		}
-		i := edgeIndex(d.body, id)
+		part, i := d.edgeAt(id)
 		if i < 0 {
 			return fmt.Errorf("no Edge #%d in %s", id, path)
 		}
-		d.body = slices.Delete(d.body, i, i+1)
+		*part = slices.Delete(*part, i, i+1)
 		gone = append(gone, id)
 	}
 	if by, ok := referrer(d, gone); ok && !force {

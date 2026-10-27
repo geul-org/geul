@@ -31,7 +31,7 @@ func TestRecordField(t *testing.T) {
 	if ws, err := recordField("NONE", object, Context{}); err != nil || !slices.Equal(ws, []core.Word{core.NoValue}) {
 		t.Fatalf("NONE named: %v %v", ws, err)
 	}
-	for _, tok := range []string{"_", "0x0003"} {
+	for _, tok := range []string{"ABSENT", "0x0003"} {
 		if _, err := recordField(tok, object, Context{}); err == nil {
 			t.Fatalf("%s not named, wildcards do not take it: want error", tok)
 		}

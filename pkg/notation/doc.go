@@ -3,7 +3,7 @@
 // and its fields as tokens; an Edge line starts with its Edge Id as `#n`.
 // Tokens:
 //
-//	_                     slot marker ABSENT 0x0000, 적지 않음 (edge/CODEC 선택 필드)
+//	ABSENT                slot marker ABSENT 0x0000, 적지 않음 (edge/CODEC 선택 필드)
 //	UNKNOWN               slot marker UNKNOWN-VALUE 0x0001, 알 수 없음
 //	NONE                  slot marker NO-VALUE 0x0002, 없음
 //	                      (a record field takes a marker only when its CODEC
@@ -16,7 +16,8 @@
 //	<https://…>           URI
 //	1.20, -3, 12e2        SIGNED-DECIMAL, digits as written
 //	NAME(arg, …)          a Value or Reference by codec name, e.g.
-//	                      GREGORIAN-DATE(1952-03-11), QUANTITY(652, Q828224, _, _)
+//	                      GREGORIAN-DATE(1952-03-11), QUANTITY(652, Q828224, ABSENT, ABSENT),
+//	                      COORDINATE-EARTH(52.5, 13.4, 1, Q209426), COORDINATE-GEO(Q111, 4.5, 137.4, 0, ABSENT)
 //	enum name             a raw field's ENUM name (TRIPLE rank: normal)
 //	0x…                   raw words: a raw field, or a whole record verbatim
 //

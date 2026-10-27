@@ -1,5 +1,5 @@
 //ff:func feature=delta type=encoder control=sequence
-//ff:what TestDefine — a REFERENCE-NODE with an equal Object keeps its Edge Id and LOCAL once; a new Object gets two new IDs
+//ff:what TestDefine — a REFERENCE-NODE with an equal Object keeps its Edge Id and LOCAL once (twins each keep theirs); a new Object gets two new IDs
 package delta
 
 import (
@@ -17,5 +17,13 @@ func TestDefine(t *testing.T) {
 	}
 	if e, loc := l.Define(uri); e != 4 || loc != 5 {
 		t.Fatalf("second: %d %d", e, loc)
+	}
+	twins := encodeDoc(nil, []core.Record{refNodeOf(2, 3, "http://x"), refNodeOf(6, 7, "http://x")})
+	l, _ = NewLocalIDs(twins, 0)
+	if e, loc := l.Define(uri); e != 2 || loc != 3 {
+		t.Fatalf("first twin: %d %d", e, loc)
+	}
+	if e, loc := l.Define(uri); e != 6 || loc != 7 {
+		t.Fatalf("second twin: %d %d", e, loc)
 	}
 }

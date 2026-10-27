@@ -11,9 +11,11 @@ import "time"
 // POSIX-TIMESTAMP-SECONDS (UTC), Uint an UNSIGNED-INTEGER, and Exp/Coef a
 // SIGNED- or UNSIGNED-DECIMAL as written (Coef×10^Exp, quantum kept), Float a
 // BINARY-FLOAT (binaryFloat), and
-// Lat/Lon/U a COORDINATE-EARTH or COORDINATE-GEO, whose body is in Globe
-// (referenceText; empty for Earth), and Amount/Unit/Lower/Upper a QUANTITY
-// (exact decimals and the unit as text; empty when left out).
+// Lat/Lon/Float/Unit a COORDINATE-EARTH or COORDINATE-GEO, whose body is in
+// Globe (referenceText; empty for Earth) and whose uncertainty (binary32,
+// widened) is Float in the unit Unit (referenceText; empty when ABSENT, the uncertainty unknown),
+// and Amount/Unit/Lower/Upper a QUANTITY (exact decimals and the unit as
+// text; empty when left out).
 type Value struct {
 	Codec  uint8
 	Text   string
@@ -25,7 +27,6 @@ type Value struct {
 	Float  float64
 	Lat    float64
 	Lon    float64
-	U      uint32
 	Globe  string
 	Amount string
 	Unit   string

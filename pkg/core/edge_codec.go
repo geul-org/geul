@@ -13,6 +13,12 @@ const (
 	// EdgeQualifier qualifies an Edge: Edge Id, Property, Target, Value
 	// (edge/QUALIFIER). Its Value may be a slot marker UNKNOWN-VALUE or NO-VALUE.
 	EdgeQualifier uint8 = 0x0B
+	// EdgeSource ties a record to its origin: Edge Id, Target (a BODY Edge
+	// Id, or LOCAL 0 for the whole document, which only the HEAD holds),
+	// Origin (a Reference, or the slot marker ABSENT or UNKNOWN-VALUE). It is
+	// the only 근거 Edge (edge/SOURCE); how the record cites it goes in
+	// QUALIFIERs on its Edge Id (HeadEdge).
+	EdgeSource uint8 = 0x20
 	// EdgePublication records one published version: Edge Id, document ID, version ID, content hash.
 	EdgePublication uint8 = 0x18
 	// EdgeDeprecation deprecates a published version: Edge Id, document ID, version ID.

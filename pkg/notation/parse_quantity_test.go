@@ -8,7 +8,7 @@ func TestParseQuantity(t *testing.T) {
 	if _, err := parseQuantity([]string{"1", "Q1", "0", "2"}, Context{}); err != nil {
 		t.Fatal(err)
 	}
-	for _, args := range [][]string{{"1"}, {"1", "word", "_", "_"}, {`"a"`, "_", "_", "_"}} {
+	for _, args := range [][]string{{"1"}, {"1", "word", "ABSENT", "ABSENT"}, {`"a"`, "ABSENT", "ABSENT", "ABSENT"}} {
 		if _, err := parseQuantity(args, Context{}); err == nil {
 			t.Errorf("%v: want error", args)
 		}

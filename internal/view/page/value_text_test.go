@@ -20,7 +20,7 @@ func TestValueText(t *testing.T) {
 		"JULIAN 1300":          {Codec: core.CodecGEDCOMDateEven | 1, Text: "JULIAN 1300"},
 		"7":                    {Codec: core.CodecUnsignedInteger, Uint: 7},
 		"4.5":                  {Codec: core.CodecBinaryFloat, Float: 4.5},
-		"1, 2 ±0.044m":         {Codec: core.CodecCoordinateEarth, Lat: 1, Lon: 2, U: 44},
+		"1, 2 ±0.1 Q11573":     {Codec: core.CodecCoordinateEarth, Lat: 1, Lon: 2, Float: float64(float32(0.1)), Unit: "Q11573"},
 		"0.8 (8e-1)":           {Codec: core.CodecSignedDecimal, Coef: 8, Exp: -1},
 		"750 (75e1)":           {Codec: core.CodecUnsignedDecimal, Coef: 75, Exp: 1},
 		"1970-01-02":           {Codec: core.CodecGregorianDate, Time: time.Unix(86400, 0).UTC()},

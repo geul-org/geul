@@ -5,7 +5,7 @@
 ## 범위
 
 - 프레이밍: TAG WORD와 Length 확장만으로 레코드 경계를 자른다. 스키마가 필요 없다.
-- 문서 구조: `DOC-*`, HEAD(Meta), BODY, `END`. 필드 폭은 Codec과 Length가 정한다(문서 단위 폭 선언 없음).
+- 문서 구조: `DOC-*`, HEAD(Meta, 문서 전체 SOURCE와 그 QUALIFIER — `HeadEdge`), BODY, `END`. 필드 폭은 Codec과 Length가 정한다(문서 단위 폭 선언 없음).
 - 모델: Reference, Value, Edge, Meta. 모르는 레코드는 원본 WORD를 그대로 보존한다.
 - 읽기: `Decode(bytes) → Doc, warns, err`
 - 쓰기: 빌더가 ID와 Length를 정하고 정규형(가장 짧은 폭) 바이트로 쓴다.
