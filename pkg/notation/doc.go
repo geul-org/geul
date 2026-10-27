@@ -3,7 +3,11 @@
 // and its fields as tokens; an Edge line starts with its Edge Id as `#n`.
 // Tokens:
 //
-//	_                     the Absent word 0x0000 (edge/CODEC 선택 필드)
+//	_                     slot marker ABSENT 0x0000, 적지 않음 (edge/CODEC 선택 필드)
+//	UNKNOWN               slot marker UNKNOWN-VALUE 0x0001, 알 수 없음
+//	NONE                  slot marker NO-VALUE 0x0002, 없음
+//	                      (a record field takes a marker only when its CODEC
+//	                      list names that exact WORD: reference/slot-marker)
 //	#12                   LOCAL
 //	Q42, P31              WIKIDATA-QID, WIKIDATA-PID
 //	0x0000/0x…0806[@2]    DOC-POINTER (names allowed when reading: geul.org/quantity)

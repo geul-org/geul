@@ -1,5 +1,5 @@
 //ff:func feature=notation type=encoder control=selection
-//ff:what parseRecord — one token as one embedded record: _, raw words, #n/Qn/Pn, quoted text, <URI>, NAME(…), a document address or a decimal
+//ff:what parseRecord — one token as one embedded record: a slot marker (_, UNKNOWN, NONE), raw words, #n/Qn/Pn, quoted text, <URI>, NAME(…), a document address or a decimal
 package notation
 
 import (
@@ -9,13 +9,15 @@ import (
 	"github.com/geul-org/gogeul/pkg/core"
 )
 
-// parseRecord reads a record token (package doc). `_` is the Absent record.
+// parseRecord reads a record token (package doc). `_`, `UNKNOWN` and `NONE`
+// are the slot markers ABSENT, UNKNOWN-VALUE and NO-VALUE (markerTokens);
+// whether a field takes one is recordField's check.
 func parseRecord(tok string, ctx Context) (core.Record, error) {
 	switch {
 	case tok == "":
 		return core.Record{}, fmt.Errorf("geul/notation: empty token")
-	case tok == "_":
-		r, _, _ := core.DecodeRecord([]core.Word{0})
+	case markerTokens[tok] != 0 || tok == "_":
+		r, _, _ := core.DecodeRecord([]core.Word{markerTokens[tok]})
 		return r, nil
 	case strings.HasPrefix(tok, "0x") && !strings.Contains(tok, "/"):
 		return parseRawRecord(tok)

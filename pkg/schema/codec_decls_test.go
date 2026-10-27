@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=iteration dimension=1
-//ff:what TestCodecDecls — several CODECs on a record field pass; an unknown field, a repeated target and a second, wildcard or 0000 CODEC on a raw field and 0000 alone fail
+//ff:what TestCodecDecls — several CODECs on a record field pass; an unknown field, a repeated target and a second, wildcard or 0000 CODEC on a raw field and 0000 alone fail; a marker on a raw field or markers alone fail; a reserved marker target warns
 package schema
 
 import (
@@ -32,9 +32,15 @@ func TestCodecDecls(t *testing.T) {
 		recs(field(3, 1), codec(4, 3, 0x0F80)),
 		recs(field(3, 1), codec(4, 3, 0x0802), codec(5, 3, 0x0000)),
 		recs(field(2, 0), codec(4, 2, 0x0000)),
+		recs(field(3, 1), codec(4, 3, 0x0802), codec(5, 3, core.UnknownValue)),
+		recs(field(2, 0), codec(4, 2, core.NoValue)),
 	} {
 		if got := rulesOf(codecDecls(body)); got != "E5" {
 			t.Fatalf("case %d: %q", i, got)
 		}
+	}
+	fs := codecDecls(recs(field(2, 0), codec(4, 2, 0x0780), codec(5, 2, 0x0005)))
+	if len(fs) != 1 || fs[0].Severity != Warn {
+		t.Fatalf("reserved marker target: %+v", fs)
 	}
 }

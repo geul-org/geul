@@ -75,6 +75,7 @@ geul log me/adams && geul show me/adams
 ```
 
 - 값 표기는 `pkg/notation` 하나다(`show` 출력 = `add` 입력, 왕복 보장).
+- 자리 표지(Reference Codec `0000`, 하위 3비트 = 표지 번호): `_` ABSENT(`0x0000`, 적지 않음), `UNKNOWN` UNKNOWN-VALUE(`0x0001`, 알 수 없음), `NONE` NO-VALUE(`0x0002`, 없음). 필드의 CODEC 목록이 그 WORD를 정확히 둘 때만 받는다(와일드카드·CODEC 없는 필드는 받지 않는다). 예: `geul add d.geul TRIPLE P1304 Q30 NONE normal`, `geul add d.geul QUALIFIER P582 '#2060' UNKNOWN`.
 - 데이터 폴더(`.well-known/geul/`을 담은 루트)는 `--data`·`GEULDATA`·상위 폴더 탐색 순으로 찾는다. 개인키는 `$XDG_CONFIG_HOME/geul/keys/`(데이터 폴더 밖).
 - `serve`와 `build`는 인자가 없으면 데이터 폴더를 쓴다.
 

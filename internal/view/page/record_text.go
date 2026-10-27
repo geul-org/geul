@@ -1,5 +1,5 @@
 //ff:func feature=page type=helper control=selection
-//ff:what recordText — one record as — (Absent), #n/Qn/Pn, its decoded Value, or its codec name and payload hex
+//ff:what recordText — one record as — (Absent), a slot marker name, #n/Qn/Pn, its decoded Value, or its codec name and payload hex
 package page
 
 import (
@@ -10,6 +10,7 @@ import (
 )
 
 // recordText shows r: the Absent record of a left-out optional field as —,
+// the other named slot markers by name (UNKNOWN-VALUE, NO-VALUE),
 // a LOCAL or Wikidata Reference as #n, Qn or Pn
 // (refText), a Value the library decodes (inspect.ParseValue: text, language
 // text, URI, language tag, EDTF, numbers, dates …) by valueText, else its
@@ -18,6 +19,9 @@ import (
 func recordText(r core.Record) string {
 	if core.IsAbsent(r) {
 		return "—"
+	}
+	if core.IsSlotMarker(r) && core.SlotMarkerName(r.Codec) != "" {
+		return core.SlotMarkerName(r.Codec)
 	}
 	if s, ok := refText(r); ok {
 		return s

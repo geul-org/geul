@@ -1,5 +1,5 @@
 //ff:func feature=core type=helper control=iteration dimension=1
-//ff:what TestCodecMatches — exact targets, any Reference, a Reference codec with any Quantifier, any Value; other Kinds and codecs do not match
+//ff:what TestCodecMatches — exact targets, any Reference, a Reference codec with any Quantifier, any Value; other Kinds and codecs do not match; slot markers only by exact target, never by wildcard
 package core
 
 import "testing"
@@ -24,6 +24,16 @@ func TestCodecMatches(t *testing.T) {
 		{0x0F80, KindEdge, EdgeBind, false},
 		{0x0F84, KindValue, CodecCoordinateEarth, false},
 		{0x084A, KindValue, CodecUTF8LanguageTextEven | 1, false},
+		{0x0780, KindReference, 0, false},
+		{0x0780, KindReference, 1, false},
+		{0x0780, KindReference, 2, false},
+		{0x0781, KindReference, 1, false},
+		{Absent, KindReference, 0, true},
+		{UnknownValue, KindReference, 1, true},
+		{NoValue, KindReference, 2, true},
+		{UnknownValue, KindReference, 2, false},
+		{NoValue, KindReference, 0, false},
+		{UnknownValue, KindValue, 1, false},
 	}
 	for i, c := range cases {
 		if got := CodecMatches(c.t, c.k, c.codec); got != c.want {

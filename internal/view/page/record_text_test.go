@@ -1,5 +1,5 @@
 //ff:func feature=page type=helper control=iteration dimension=1
-//ff:what TestRecordText — the Absent record as —, references by number, decoded Values (text, language text, URI, EDTF, numbers), undecodable ones as codec name and hex, a lone TAG by name
+//ff:what TestRecordText — the Absent record as —, the other slot markers by name, references by number, decoded Values (text, language text, URI, EDTF, numbers), undecodable ones as codec name and hex, a lone TAG by name
 package page
 
 import (
@@ -19,6 +19,8 @@ func TestRecordText(t *testing.T) {
 		"7":                  core.EncodeUintValue(7),
 		"UTF8-TEXT 0x0001":   {Kind: core.KindValue, Codec: 0x41, Payload: []core.Word{1}},
 		"PUBLICATION":        {Kind: core.KindEdge, Codec: 0x18},
+		"UNKNOWN-VALUE":      {Kind: core.KindReference, Codec: 1},
+		"NO-VALUE":           {Kind: core.KindReference, Codec: 2},
 	} {
 		if got := recordText(r); got != want {
 			t.Fatalf("got %q want %q", got, want)

@@ -16,6 +16,11 @@ func newAddCmd(a *app) *cobra.Command {
 		Short: "Append Edges written as geul show lines; prints the Edge Id each one gets",
 		Long: `Each Edge is NAME and its fields, as geul show writes them (no Edge Id):
   geul add q42.geul TRIPLE P31 Q42 Q5 normal
+  geul add q30.geul TRIPLE P1304 Q30 NONE normal
+  geul add q30.geul QUALIFIER P582 #2060 UNKNOWN
+Slot markers: _ ABSENT (not written), UNKNOWN UNKNOWN-VALUE (a value exists,
+not known), NONE NO-VALUE (no value); a field takes one only when its CODEC
+list names it (TRIPLE object, QUALIFIER value).
 With -i, one Edge per line; a line may start with a label, #n (as geul show
 writes it) or #name (letters, digits, _, -), and any line may refer to it:
 it becomes the Edge Id the line gets. A #n that labels no line of the batch

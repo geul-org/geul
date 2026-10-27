@@ -11,7 +11,8 @@ import (
 // tagBits spells out TAG WORD `000K KLLL LCCC CCCC`: the prefix, the Kind, the
 // Length code with the word count it gives (or the extension it calls for) and
 // the Codec with its spec name, else fallback (a profile record name), else
-// hex. A Reference splits the codec into CCCC and the Quantifier QQQ.
+// hex. A Reference splits the codec into CCCC and the Quantifier QQQ (under
+// Codec 0000 the marker number, lowBitsName).
 func tagBits(w core.Word, fallback string) string {
 	k, l, codec := core.Kind((w>>11)&3), uint8((w>>7)&0xF), uint8(w&0x7F)
 	length := fmt.Sprintf("%d WORDs", l+1)
@@ -24,6 +25,9 @@ func tagBits(w core.Word, fallback string) string {
 		length = "Length 확장 2 WORD"
 	}
 	name := core.CodecName(k, codec)
+	if k == core.KindReference && codec>>3 == 0 {
+		name = "자리 표지"
+	}
 	if name == "" {
 		name = fallback
 	}
@@ -32,7 +36,7 @@ func tagBits(w core.Word, fallback string) string {
 	}
 	head := fmt.Sprintf("%03b Proposal\n%02b %s\n%04b %s", uint16(w)>>13, uint8(k), k, l, length)
 	if k == core.KindReference {
-		return fmt.Sprintf("%s\n%04b %s\n%03b %s", head, codec>>3, name, codec&7, core.QuantifierName(codec))
+		return fmt.Sprintf("%s\n%04b %s\n%03b %s", head, codec>>3, name, codec&7, lowBitsName(codec))
 	}
 	return fmt.Sprintf("%s\n%07b %s", head, codec, name)
 }

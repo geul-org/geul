@@ -1,10 +1,8 @@
 //ff:func feature=inspect type=decoder control=selection
-//ff:what walker.field — take one declared field: raw words with their ENUM name, or a record checked against its CODEC targets
+//ff:what walker.field — take one declared field: raw words with their ENUM name, or a record checked against its CODEC targets (a slot marker noted as Marker)
 package inspect
 
 import (
-	"slices"
-
 	"github.com/geul-org/gogeul/pkg/codecspec"
 	"github.com/geul-org/gogeul/pkg/core"
 )
@@ -13,8 +11,9 @@ import (
 // tail fixed fields after it, and adds no part when that is none. A raw field
 // is f.Width words noted with the
 // ENUM name of that code and, under a CODEC, the Value they are the Payload
-// of (rawData); a record field is one record, which must have one of f's
-// CODEC targets when it declares any, noted with its decoded Value.
+// of (rawData); a record field is one record, which must fit f's CODEC
+// targets (core.FieldAccepts), noted with its decoded Value, or as a Marker
+// when it is a slot marker.
 func (w *walker) field(f codecspec.Field) {
 	n := len(w.out)
 	switch {
@@ -37,6 +36,10 @@ func (w *walker) field(f codecspec.Field) {
 		return
 	}
 	r, _, _ := core.DecodeRecord(p.Words)
-	w.bad = len(f.Codecs) > 0 && !slices.ContainsFunc(f.Codecs, func(t core.Word) bool { return core.CodecMatches(t, r.Kind, r.Codec) })
+	w.bad = !core.FieldAccepts(f.Codecs, r)
+	if core.IsSlotMarker(r) {
+		p.Data = Marker{Number: r.Codec, Name: core.SlotMarkerName(r.Codec)}
+		return
+	}
 	p.Data = asData(ParseValue(r))
 }

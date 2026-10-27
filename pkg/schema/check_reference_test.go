@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=iteration dimension=1
-//ff:what TestCheckReference — reserved Quantifier and Codec, pointer, issuer and declaration forms
+//ff:what TestCheckReference — reserved Quantifier with a target fault, pointer, issuer and declaration forms (Codec 0000: TestCheckCodecZero)
 package schema
 
 import (
@@ -13,7 +13,7 @@ func TestCheckReference(t *testing.T) {
 	}
 	cases := map[string]rec{
 		"R1":    ref(0x15, 1),
-		"R1,R1": ref(0x05, 1),
+		"R1,R2": ref(0x2D, 0, 1),
 		"R3":    ref(0x40, 9, 1),
 		"R4":    ref(0x60, 1),
 		"":      ref(0x10, 1),

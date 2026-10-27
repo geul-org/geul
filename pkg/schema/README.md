@@ -40,7 +40,7 @@
 
 | 규칙 | 내용 |
 |---|---|
-| R1 | Codec `0000`, Quantifier `101`~`111`은 예약이다. |
+| R1 | Quantifier `101`~`111`은 예약이다. Codec `0000`은 자리 표지 묶음이라 하위 3비트가 Quantifier가 아니라 표지 번호다. 레코드 자리(HEAD·BODY)의 자리 표지 `0x0000`~`0x0002`는 Error(표지는 그것을 받는 레코드 필드 안에서만 쓴다), 예약 표지 `0x0003`~`0x0007`과 Payload가 있는 Codec `0000`은 예약(Warn)이다. |
 | R2 | 대상 ID는 가장 짧은 폭이다. 값 0은 `0x0000` 1 WORD이고, 그 밖에는 선행 `0x0000` WORD가 없다. |
 | R3 | `EXTERNAL-POINTER-*`: IMPORT ID가 들어가는 가장 좁은 Codec이고, 그 IMPORT ID를 배정한 `IMPORT-DOC`이 HEAD에 있다. 대상 ID는 `0`이 아니다(문서 자신은 `DOC-POINTER`). |
 | R4 | `EXTERNAL-ISSUER-*`: Issuer 폭이 Codec과 맞고 값이 들어가는 가장 짧은 폭이며, 문서 ID 4 WORD 뒤에 대상 ID가 1 WORD 이상 있다. 대상 ID는 `0`이 아니다(문서 자신은 `DOC-POINTER`). 문서 ID `0`은 Issuer의 용어 정의 색인 문서다. |
@@ -58,7 +58,7 @@
 | V6 | EDTF는 GREGORIAN-DATE로 정확히 쓸 수 있는 날짜(한정자·미상 자릿수·구간 없는 `[-]YYYY-MM-DD`)가 아니다. |
 | V7 | UTF8-LANGUAGE-TEXT는 완전한 LANGUAGE-SHORT-CODE 또는 LANGUAGE-BCP47-CODE 레코드로 시작하고 그 레코드도 Value 규칙을 지킨다. 나머지는 UTF8-TEXT처럼 V4·V5를 따른다. |
 | V8 | COORDINATE-EARTH는 Payload 10 WORD, COORDINATE-GEO는 Quantifier Identified인 완전한 Reference 레코드(천체) 뒤 10 WORD다. 위도·경도는 유한하고 위도 [-90, 90], 경도 [-180, 180](Earth)·[-180, 360](Geo)이다. |
-| V9 | QUANTITY는 SIGNED-DECIMAL amount, Reference 또는 없음 표지(`0x0000`) unit, SIGNED-DECIMAL 또는 없음 표지 lower·upper의 네 레코드뿐이다. 있는 10진수의 coefficient는 최소 WORD다(value/numeric/QUANTITY). |
+| V9 | QUANTITY는 SIGNED-DECIMAL amount, Reference(자리 표지 제외) 또는 ABSENT(`0x0000`) unit, SIGNED-DECIMAL 또는 없음 표지 lower·upper의 네 레코드뿐이다. 있는 10진수의 coefficient는 최소 WORD다(value/numeric/QUANTITY). |
 
 - ISSUER 형식 Value는 1층에서 Issuer·형식 번호의 존재(F5)만 본다. 레이아웃은 2층이다.
 
@@ -70,7 +70,9 @@
 | E2 | Edge Id는 문서 안에서 중복되지 않는다. |
 | E3 | 서술·실행·TOULMIN 직접 코드의 Reserved 구간은 예약이다. |
 | E4 | core 내장 Codec은 레이아웃이 맞다. `PUBLICATION`·`DEPRECATION`·`TOMBSTONE`(Edge Id 뒤 22·6·7 WORD), `DECLARE`·`FIELD`·`ENUM`·`CODEC`(edge/DECLARE·FIELD·ENUM·CODEC). |
-| E5 | CODEC의 필드는 같은 문서의 FIELD이고, 한 필드에 같은 대상을 두 번 두지 않으며, 날값 필드(폭 ≥ 1)에는 CODEC이 하나뿐이고 와일드카드(LLLL `1111`)나 `0000`(없음)이 아니다. `0000`만 있는 필드는 없다(edge/CODEC 선택 필드). 대상 WORD는 LLLL `0000`이거나 `1111` 와일드카드다(E4). |
+| E5 | CODEC의 필드는 같은 문서의 FIELD이고, 한 필드에 같은 대상을 두 번 두지 않으며, 날값 필드(폭 ≥ 1)에는 CODEC이 하나뿐이고 와일드카드(LLLL `1111`)나 자리 표지(`0000`~`0007`)가 아니다. 자리 표지 대상만 있는 필드는 없다(edge/CODEC 선택 필드와 자리 표지). 예약 표지 대상 `0003`~`0007`은 Warn이다. 대상 WORD는 LLLL `0000`이거나 `1111` 와일드카드다(E4). |
+| E6 | (Warn) Object가 NO-VALUE(`0x0002`)인 TRIPLE과 같은 Subject·Predicate·rank, 같은 QUALIFIER 묶음(Property=Value)의 TRIPLE이 다른 Object(값 또는 UNKNOWN-VALUE)를 가지면 경고한다. 거부하지 않는다(위키데이터에도 있는 상태, 읽는 쪽이 rank로 고른다). TRIPLE·QUALIFIER는 문법이 고정한 레이아웃으로 자른다. |
+| E7 | TRIPLE·QUALIFIER의 Predicate·Subject(Property·Target)에는 Reference Codec `0000`(자리 표지)이 오지 않고, Object(Value)에는 `0x0001` UNKNOWN-VALUE·`0x0002` NO-VALUE만 온다(ABSENT·예약 표지·Payload 있는 Codec `0000`은 Error). 두 Codec의 필드는 문법이 고정하므로 1층에서 본다. 다른 Codec 필드의 표지 수용은 규격 문서(2층) 몫이다. |
 
 ### M Meta (OVERVIEW Meta)
 

@@ -1,5 +1,5 @@
 //ff:func feature=notation type=decoder control=iteration dimension=1
-//ff:what TestRecordTokens — records with short forms and addresses split; a broken record, a raw-only one and nothing are false
+//ff:what TestRecordTokens — records with short forms and addresses split; a broken record, a raw-only one, a slot marker and nothing are false
 package notation
 
 import (
@@ -14,7 +14,7 @@ func TestRecordTokens(t *testing.T) {
 	if got, ok := recordTokens(ws); !ok || got[0] != "0x0000/0x0000000000000001" {
 		t.Fatal(got)
 	}
-	for _, x := range [][]core.Word{{0x0B86}, {0x0002}, nil} {
+	for _, x := range [][]core.Word{{0x0B86}, {0x0002}, {0x0088, 3, 0x0001}, nil} {
 		if _, ok := recordTokens(x); ok {
 			t.Errorf("%04X: want false", x)
 		}

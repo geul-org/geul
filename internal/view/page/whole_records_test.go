@@ -1,5 +1,5 @@
 //ff:func feature=page type=helper control=sequence
-//ff:what TestWholeRecords — a text record and two records are whole; one word, a partial record and an Edge and reserved codecs are not
+//ff:what TestWholeRecords — a text record and two records are whole; one word, a partial record and an Edge reserved codecs and slot markers are not
 package page
 
 import (
@@ -16,7 +16,7 @@ func TestWholeRecords(t *testing.T) {
 	if !wholeRecords(a) || !wholeRecords(slices.Concat(a, b)) {
 		t.Fatal("whole: want true")
 	}
-	if wholeRecords([]core.Word{0x0088}) || wholeRecords(a[:1]) || wholeRecords(e) || wholeRecords([]core.Word{0xFFFF, 0}) || wholeRecords([]core.Word{0, 2}) {
+	if wholeRecords([]core.Word{0x0088}) || wholeRecords(a[:1]) || wholeRecords(e) || wholeRecords([]core.Word{0xFFFF, 0}) || wholeRecords([]core.Word{0, 2}) || wholeRecords([]core.Word{1, 2}) || wholeRecords(slices.Concat(b, []core.Word{core.NoValue})) {
 		t.Fatal("not whole: want false")
 	}
 }

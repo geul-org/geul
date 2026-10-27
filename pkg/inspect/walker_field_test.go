@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what TestWalkerField — raw words with ENUM names, the rest of the payload, records with their Value, CODEC mismatch and short input marked bad
+//ff:what TestWalkerField — raw words with ENUM names, the rest of the payload, records with their Value, slot markers as Marker where named, CODEC mismatch, unnamed markers and short input marked bad
 package inspect
 
 import (
@@ -25,6 +25,19 @@ func TestWalkerField(t *testing.T) {
 	r.field(codecspec.Field{Name: "empty", Width: int(core.FieldRest)})
 	if r.bad || len(r.out) != 1 {
 		t.Fatalf("empty rest: %+v", r)
+	}
+	m := &walker{ws: []core.Word{core.UnknownValue, core.NoValue}}
+	m.field(codecspec.Field{Name: "object", Codecs: []core.Word{0x0780, core.UnknownValue, core.NoValue}})
+	m.field(codecspec.Field{Name: "object", Codecs: []core.Word{0x0780, core.UnknownValue, core.NoValue}})
+	if m.bad || m.out[0].Data != (Marker{Number: 1, Name: "UNKNOWN-VALUE"}) || m.out[1].Data != (Marker{Number: 2, Name: "NO-VALUE"}) {
+		t.Fatalf("markers: %+v bad %v", m.out, m.bad)
+	}
+	for i, f := range []codecspec.Field{{Codecs: []core.Word{0x0780}}, {}} {
+		w := &walker{ws: []core.Word{core.Absent}}
+		w.field(f)
+		if !w.bad {
+			t.Fatalf("marker %d not named: want bad", i)
+		}
 	}
 	for i, f := range []codecspec.Field{{Width: 3}, {Codecs: []core.Word{0x1018}}} {
 		w := &walker{ws: val}

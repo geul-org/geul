@@ -7,6 +7,12 @@ const (
 	// EdgeBind binds a machine-matched name to a Subject Reference (서술 0x03).
 	// Version list documents name documents with it (edge/BIND, edge/PUBLICATION).
 	EdgeBind uint8 = 0x03
+	// EdgeTriple is one statement: Edge Id, Predicate, Subject, Object, Rank
+	// (edge/TRIPLE). Its Object may be a slot marker UNKNOWN-VALUE or NO-VALUE.
+	EdgeTriple uint8 = 0x0A
+	// EdgeQualifier qualifies an Edge: Edge Id, Property, Target, Value
+	// (edge/QUALIFIER). Its Value may be a slot marker UNKNOWN-VALUE or NO-VALUE.
+	EdgeQualifier uint8 = 0x0B
 	// EdgePublication records one published version: Edge Id, document ID, version ID, content hash.
 	EdgePublication uint8 = 0x18
 	// EdgeDeprecation deprecates a published version: Edge Id, document ID, version ID.
