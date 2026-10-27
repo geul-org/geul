@@ -114,4 +114,4 @@ geul build -o OUT [DIR]                           OUT/.well-known/geul/ 에 정�
 
 ## 라이선스
 
-MIT([LICENSE](LICENSE)). 가져다 쓴 라이브러리 고지는 [NOTICE](NOTICE). 명세와 데이터(geul-dev)는 CC0. CC0가 아닌 자료(표준국어대사전 등)의 내용은 코드, 데이터, 테스트에 넣지 않는다.
+우리 저작물은 CC0 1.0([LICENSE](LICENSE)). 가져다 쓴 라이브러리(cobra 등)와 그래프 JS는 각자의 라이선스를 따르며 고지는 [NOTICE](NOTICE). 명세와 데이터(geul-dev)도 CC0. CC0가 아닌 자료(표준국어대사전 등)의 내용은 코드, 데이터, 테스트에 넣지 않는다.
