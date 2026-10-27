@@ -1,7 +1,7 @@
 # gogeul
 
 GEUL(General Encoding Unified Language) 문서(`.geul`)를 읽고 쓰고, 다른 표현과 서로 바꾸는 Go 라이브러리와 `geul` 명령줄 도구.
-명세는 [geul-org/geul-dev](https://github.com/geul-org/geul-dev)의 `draft/t002/docs/`(OVERVIEW, ISSUER, GEUL-ORG, TOULMIN)를 따른다.
+명세는 [geul-org/geul-dev](https://github.com/geul-org/geul-dev)의 `draft/docs/`(OVERVIEW, ISSUER, GEUL-ORG, TOULMIN)를 따른다.
 
 ```
 go get github.com/geul-org/gogeul          # 라이브러리
@@ -27,7 +27,7 @@ internal/cli/          CLI 명령 (cobra, 명령마다 파일 하나)
 internal/config/       CLI 설정 (플래그 > GEUL… 환경변수 > 설정 파일 > 데이터 폴더 탐색)
 ```
 
-- GEUL과 다른 표현 사이의 코덱(`geulnl`, `wikigeul`, `nlgeul`)은 이 라이브러리가 아니라 TANGEUL 문서로 작성한다(geul-dev `draft/t002/codec/`). 이 라이브러리는 코덱 문서가 부르는 호스트 함수와 그 문서를 실행하는 기반을 제공한다.
+- GEUL과 다른 표현 사이의 코덱(`geulnl`, `wikigeul`, `nlgeul`)은 이 라이브러리가 아니라 TANGEUL 문서로 작성한다(geul-dev `draft/codec/`). 이 라이브러리는 코덱 문서가 부르는 호스트 함수와 그 문서를 실행하는 기반을 제공한다.
 
 ## 흐름
 
@@ -71,17 +71,17 @@ geul log me/adams && geul show me/adams
 
 - 값 표기는 `pkg/notation` 하나다(`show` 출력 = `add` 입력, 왕복 보장).
 - 데이터 폴더(`.well-known/geul/`을 담은 루트)는 `--data`·`GEULDATA`·상위 폴더 탐색 순으로 찾는다. 개인키는 `$XDG_CONFIG_HOME/geul/keys/`(데이터 폴더 밖).
-- 설계·명령 표·미결 사항: geul-dev `draft/t002/README.md`. 실사용 시험·패치 기록: `draft/t002/LOG.md`. 남은 일: `draft/t002/TODO.md`.
+- 설계·명령 표·미결 사항: geul-dev `draft/README.md`. 실사용 시험·패치 기록: `draft/LOG.md`. 남은 일: `draft/TODO.md`.
 
 ## 아카이브
 
-- 로컬 아카이브는 geul-dev 저장소의 `draft/t002/.well-known/geul/`이다. 경로는 GEUL-ORG 공표 주소와 같다.
+- 로컬 아카이브는 geul-dev 저장소의 `draft/.well-known/geul/`이다. 경로는 GEUL-ORG 공표 주소와 같다.
 - 아카이브, 미러, geul.org 덤프는 같은 구조라서 Resolver 하나로 읽는다.
 
 ## 현황 (2026-10-27)
 
 - 됨: core 읽기·쓰기 왕복과 정규형·내용 해시, 파일 Resolver와 IMPORT, schema(0층·Codec 규격 레이아웃), 공표·버전 목록·이름·폐기·삭제, diff 저장과 LOCAL ID 이어받기(NEXT-LOCAL-ID, 지운 ID 재사용 거부), 텍스트 표기, `geul` CLI.
-- 다음(geul-dev `draft/t002/TODO.md`): 버전 문서 PARENT(v2부터), `pkg/verify`(check·publish 공통 검증, Strict), CLI가 다루면 안 되는 Meta·Edge·아카이브 파일 막기, schema LOCAL 해소 검사(F-4), BCP 47 언어 태그 검사.
+- 다음(geul-dev `draft/TODO.md`): 버전 문서 PARENT(v2부터), `pkg/verify`(check·publish 공통 검증, Strict), CLI가 다루면 안 되는 Meta·Edge·아카이브 파일 막기, schema LOCAL 해소 검사(F-4), BCP 47 언어 태그 검사.
 - 보류: 서명(SIGN 영역). 검증 클래스 레코드는 보존만 하고 내용 해시 계산에서 뺀다. `repack`, `push`, geul.org 등록 Issuer.
 
 ## 개발 규칙
