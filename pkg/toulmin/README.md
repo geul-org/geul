@@ -1,6 +1,6 @@
 # toulmin
 
-TOULMIN 코덱(명세: geul-dev `draft/docs/TOULMIN.md`)을 구현한다. toulmin 엔진의 판정·실행 그래프를 GEUL 레코드로 쓰고 읽는다.
+TOULMIN 코덱(명세: geul-dev `files/geul/docs/TOULMIN.md`)을 구현한다. toulmin 엔진의 판정·실행 그래프를 GEUL 레코드로 쓰고 읽는다.
 
 | 묶음 | 내용 |
 |---|---|

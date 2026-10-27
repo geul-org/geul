@@ -1,7 +1,7 @@
 # gogeul
 
 GEUL(General Encoding Unified Language) 문서(`.geul`)를 읽고 쓰고, 다른 표현과 서로 바꾸는 Go 라이브러리와 `geul` 명령줄 도구.
-명세는 [geul-org/geul-dev](https://github.com/geul-org/geul-dev)의 `draft/docs/`(OVERVIEW, ISSUER, GEUL-ORG, TOULMIN)를 따른다.
+명세는 [geul-org/geul-dev](https://github.com/geul-org/geul-dev)의 `files/geul/docs/`(OVERVIEW, ISSUER, GEUL-ORG, TOULMIN)를 따른다.
 
 ```
 go get github.com/geul-org/gogeul          # 라이브러리
