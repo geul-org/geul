@@ -11,13 +11,16 @@ import (
 
 // parseCall reads `NAME(arg, …)`: a byte-string Value from one quoted
 // string, the decimals and integers from one number, the time codecs, QUANTITY
-// from four record tokens, the coordinates (parseCoordinate), the digests from raw words, ISSUER-POINTER from an
+// from four record tokens, FRACTION from two components (parseFraction), the coordinates (parseCoordinate), the digests from raw words, ISSUER-POINTER from an
 // Issuer.
 func parseCall(tok string, ctx Context) (core.Record, error) {
 	i := strings.Index(tok, "(")
 	name, args := strings.ToUpper(tok[:i]), splitArgs(tok[i+1:len(tok)-1])
 	if name == "QUANTITY" {
 		return parseQuantity(args, ctx)
+	}
+	if name == "FRACTION" {
+		return parseFraction(args)
 	}
 	if name == "COORDINATE-EARTH" || name == "COORDINATE-GEO" {
 		return parseCoordinate(args, name == "COORDINATE-GEO", ctx)

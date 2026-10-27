@@ -8,7 +8,8 @@ import "github.com/geul-org/gogeul/pkg/core"
 // (UTF8-TEXT, URI, LANGUAGE-BCP47-CODE, EDTF, GEDCOM-DATE; either pair member)
 // as Text, UTF8-LANGUAGE-TEXT as Text and Lang (languageText), the two coordinates
 // (coordinate), BINARY-FLOAT up to binary64 (binaryFloat), UNSIGNED-INTEGER, the two decimals, the two time
-// codecs, QUANTITY (quantity), SHA-256-DIGEST and SHA1-DIGEST (in hex). ok is
+// codecs, QUANTITY (quantity), SIGNED-INTEGER and FRACTION as Number
+// (numberText), SHA-256-DIGEST and SHA1-DIGEST (in hex). ok is
 // false for any other codec or a malformed payload.
 func ParseValue(r core.Record) (Value, bool) {
 	v := Value{Codec: r.Codec}
@@ -23,6 +24,10 @@ func ParseValue(r core.Record) (Value, bool) {
 	}
 	if r.Codec == core.CodecQuantity {
 		v.Amount, v.Unit, v.Lower, v.Upper, err = quantity(r)
+		return v, err == nil
+	}
+	if r.Codec == core.CodecSignedInteger || r.Codec == core.CodecFraction {
+		v.Number, err = numberText(r)
 		return v, err == nil
 	}
 	switch even := r.Codec &^ 1; even {

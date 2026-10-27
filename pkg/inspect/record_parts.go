@@ -5,11 +5,11 @@ package inspect
 import "github.com/geul-org/gogeul/pkg/core"
 
 // recordParts takes every remaining record as a Record part named by its spec
-// name ("record" when unnamed). The caller has checked the run with recordRun.
+// name (core.RecordName; "record" when unnamed). The caller has checked the run with recordRun.
 func recordParts(w *walker) {
 	for w.pos < len(w.ws) && !w.bad {
 		r, _, _ := core.DecodeRecord(w.ws[w.pos:])
-		name := core.CodecName(r.Kind, r.Codec)
+		name := core.RecordName(r)
 		if name == "" {
 			name = "record"
 		}

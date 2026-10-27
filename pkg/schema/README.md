@@ -58,7 +58,8 @@
 | V6 | EDTF는 GREGORIAN-DATE로 정확히 쓸 수 있는 날짜(한정자·미상 자릿수·구간 없는 `[-]YYYY-MM-DD`)가 아니다. |
 | V7 | UTF8-LANGUAGE-TEXT는 완전한 LANGUAGE-SHORT-CODE 또는 LANGUAGE-BCP47-CODE 레코드로 시작하고 그 레코드도 Value 규칙을 지킨다. 나머지는 UTF8-TEXT처럼 V4·V5를 따른다. |
 | V8 | COORDINATE-EARTH는 Payload가 10 WORD(위도·경도 binary64, 불확도 2 WORD binary32) 뒤 Unit 레코드, COORDINATE-GEO는 Quantifier Identified인 완전한 Reference 레코드(천체) 뒤 같은 배치다. 위도·경도는 유한하고 위도 [-90, 90], 경도 [-180, 180](Earth)·[-180, 360](Geo)이다. 불확도는 유한한 +0 이상(-0·NaN·±Inf 아님)이다. Unit은 Quantifier Identified인 Reference 또는 ABSENT(불확도 미상)이고, ABSENT면 불확도는 +0(`0000 0000`)이다. |
-| V9 | QUANTITY는 SIGNED-DECIMAL amount, Reference(자리 표지 제외) 또는 ABSENT(`0x0000`) unit, SIGNED-DECIMAL 또는 없음 표지 lower·upper의 네 레코드뿐이다. 있는 10진수의 coefficient는 최소 WORD다(value/numeric/QUANTITY). |
+| V9 | QUANTITY는 수치 amount, Reference(자리 표지 제외) 또는 ABSENT(`0x0000`) unit, 수치 또는 ABSENT lower·upper의 네 레코드뿐이다. 수치는 SIGNED-INTEGER·UNSIGNED-INTEGER·BINARY-FLOAT·FRACTION·SIGNED-DECIMAL·UNSIGNED-DECIMAL의 닫힌 목록이다. 있는 수치는 정규형이다: 정수·coefficient 최소 WORD, BINARY-FLOAT 1/2/4/8 WORD의 유한값(NaN·±Infinity 아님), FRACTION은 V10(value/numeric/QUANTITY). |
+| V10 | FRACTION은 SIGNED-INTEGER 또는 SIGNED-DECIMAL numerator와 UNSIGNED-INTEGER 또는 UNSIGNED-DECIMAL denominator의 두 레코드뿐이다. 성분은 최소 WORD이고, 지수 0인 DECIMAL 성분(정수 원문은 INTEGER)과 값이 0인 분모는 Error다. 약분 여부는 보지 않는다(표기 보존, value/numeric/FRACTION). |
 
 - ISSUER 형식 Value는 1층에서 Issuer·형식 번호의 존재(F5)만 본다. 레이아웃은 2층이다.
 

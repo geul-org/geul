@@ -6,19 +6,28 @@ package core
 // Variable-length byte strings come in even/odd pairs: the low bit is 1 when
 // the byte count is odd and the last word carries a 0x00 pad byte.
 const (
+	// CodecSignedInteger is a minimal-word big-endian two's-complement integer.
+	CodecSignedInteger uint8 = 0x01
 	// CodecUnsignedInteger is a minimal-word big-endian unsigned integer.
 	CodecUnsignedInteger uint8 = 0x02
 	// CodecBinaryFloat is an IEEE 754 binary16/32/64/128 by Payload width 1/2/4/8.
 	CodecBinaryFloat uint8 = 0x03
 	// CodecCoordinateEarth is a WGS 84 point: latitude and longitude as
-	// binary64 degrees, then the uncertainty radius as uint32 millimetres.
+	// binary64 degrees, the uncertainty radius as binary32, then the unit of
+	// the uncertainty as a Reference record (ABSENT: unknown).
 	CodecCoordinateEarth uint8 = 0x04
 	// CodecCoordinateGeo is CodecCoordinateEarth on a given body: a globe
 	// Reference record first.
 	CodecCoordinateGeo uint8 = 0x05
-	// CodecQuantity is an amount (SIGNED-DECIMAL) with a unit Reference and
-	// lower and upper bounds, each left out as the Absent record.
+	// CodecQuantity is a numeric amount (SIGNED-/UNSIGNED-INTEGER,
+	// BINARY-FLOAT, FRACTION, SIGNED-/UNSIGNED-DECIMAL) with a unit Reference
+	// and lower and upper bounds, the unit and bounds left out as the Absent
+	// record.
 	CodecQuantity uint8 = 0x06
+	// CodecFraction is a fraction kept as written: a SIGNED-INTEGER or
+	// SIGNED-DECIMAL numerator record, then an UNSIGNED-INTEGER or
+	// UNSIGNED-DECIMAL denominator record, not reduced.
+	CodecFraction uint8 = 0x07
 	// CodecSignedDecimal is a signed 32-bit exponent E plus a minimal-word
 	// two's-complement coefficient C, value C×10^E.
 	CodecSignedDecimal uint8 = 0x10

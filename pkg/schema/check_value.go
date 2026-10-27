@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=selection
-//ff:what checkValue — V1~V9 for one Value record
+//ff:what checkValue — V1~V10 for one Value record
 package schema
 
 import (
@@ -17,12 +17,14 @@ func checkValue(r rec) []Fact {
 		return nil
 	case c == 0x00:
 		return checkBool(r)
-	case c == 0x01 || c == core.CodecUnsignedInteger:
-		return checkInteger(r, r.R.Payload, c == 0x01, "Payload")
+	case c == core.CodecSignedInteger || c == core.CodecUnsignedInteger:
+		return checkInteger(r, r.R.Payload, c == core.CodecSignedInteger, "Payload")
 	case c == core.CodecCoordinateEarth || c == core.CodecCoordinateGeo:
 		return checkCoordinate(r)
 	case c == core.CodecQuantity:
 		return checkQuantity(r)
+	case c == core.CodecFraction:
+		return checkFraction(r)
 	case c == 0x03:
 		return checkWidth(r, 1, 2, 4, 8)
 	case c == core.CodecSignedDecimal || c == core.CodecUnsignedDecimal:

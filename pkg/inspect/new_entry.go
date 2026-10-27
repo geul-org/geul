@@ -5,12 +5,13 @@ package inspect
 import "github.com/geul-org/gogeul/pkg/core"
 
 // newEntry returns the uninterpreted Entry of r: the record, its words (a
-// decoded record always re-encodes) and the core name of its codec, or of the
+// decoded record always re-encodes) and its core name (core.RecordName: a
+// Value ISSUER format by its format name, else the codec name), or the name of the
 // slot marker it is (core.SlotMarkerName; misplaced as a record, which schema
 // reports).
 func newEntry(r core.Record) Entry {
 	ws, _ := core.EncodeRecord(r)
-	name := core.CodecName(r.Kind, r.Codec)
+	name := core.RecordName(r)
 	if core.IsSlotMarker(r) {
 		name = core.SlotMarkerName(r.Codec)
 	}

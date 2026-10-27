@@ -8,9 +8,10 @@ import (
 )
 
 // DecodeQuantity reads the four records of a QUANTITY Value r
-// (value/numeric/QUANTITY): the amount must be a SIGNED-DECIMAL Value, the
-// unit a Reference (or Absent), each bound a SIGNED-DECIMAL Value or Absent,
-// and the payload must end right after the fourth record.
+// (value/numeric/QUANTITY): the amount must be a numeric Value
+// (quantityNumber), the unit a Reference (or Absent), each bound a numeric
+// Value or Absent, and the payload must end right after the fourth record.
+// Canonical inner records and a finite BINARY-FLOAT are schema V9.
 func DecodeQuantity(r Record) (Quantity, error) {
 	if r.Kind != KindValue || r.Codec != CodecQuantity {
 		return Quantity{}, fmt.Errorf("geul/core: expected a QUANTITY Value, got kind %d codec 0x%02X", r.Kind, r.Codec)

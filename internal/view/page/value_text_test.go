@@ -1,5 +1,5 @@
 //ff:func feature=page type=helper control=iteration dimension=1
-//ff:what TestValueText — quoted text, language text with its language, bare language tag, URI, EDTF and GEDCOM-DATE, integer, date, time, digest, decimal with its exact form
+//ff:what TestValueText — quoted text, language text with its language, bare language tag, URI, EDTF and GEDCOM-DATE, integers, FRACTION, date, time, digest, decimal with its exact form
 package page
 
 import (
@@ -28,6 +28,8 @@ func TestValueText(t *testing.T) {
 		"0x00ff":               {Codec: core.CodecSHA256Digest, Text: "0x00ff"},
 		"652 Q1 [651, 653]":    {Codec: core.CodecQuantity, Amount: "652", Unit: "Q1", Lower: "651", Upper: "653"},
 		"0x01ff":               {Codec: core.CodecSHA1Digest, Text: "0x01ff"},
+		"-5":                   {Codec: core.CodecSignedInteger, Number: "-5"},
+		"23.45/1256.1":         {Codec: core.CodecFraction, Number: "23.45/1256.1"},
 	}
 	for want, v := range cases {
 		if got := valueText(v); got != want {

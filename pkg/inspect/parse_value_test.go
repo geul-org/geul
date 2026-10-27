@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what TestParseValue — every known codec decodes (byte strings incl. URI, EDTF, GEDCOM-DATE, language text; coordinates; binary float; integer, decimal, time, digest); unknown codecs and bad payloads do not
+//ff:what TestParseValue — every known codec decodes (byte strings incl. URI, EDTF, GEDCOM-DATE, language text; coordinates; binary float; integers, FRACTION, decimal, time, digest); unknown codecs and bad payloads do not
 package inspect
 
 import (
@@ -35,6 +35,8 @@ func TestParseValue(t *testing.T) {
 		{core.Record{Kind: core.KindValue, Codec: core.CodecSHA256Digest, Payload: make([]core.Word, 16)}, Value{Codec: core.CodecSHA256Digest, Text: "0x" + strings.Repeat("0", 64)}},
 		{core.Record{Kind: core.KindValue, Codec: core.CodecSHA1Digest, Payload: make([]core.Word, 10)}, Value{Codec: core.CodecSHA1Digest, Text: "0x" + strings.Repeat("0", 40)}},
 		{qty, Value{Codec: core.CodecQuantity, Amount: "1.20"}},
+		{core.Record{Kind: core.KindValue, Codec: core.CodecSignedInteger, Payload: []core.Word{0xFFFB}}, Value{Codec: core.CodecSignedInteger, Number: "-5"}},
+		{core.Record{Kind: core.KindValue, Codec: core.CodecFraction, Payload: []core.Word{0x0881, 2, 0x0882, 3}}, Value{Codec: core.CodecFraction, Number: "2/3"}},
 	}
 	for _, c := range cases {
 		if got, ok := ParseValue(c.r); !ok || got != c.want {
@@ -54,6 +56,9 @@ func TestParseValue(t *testing.T) {
 	}
 	if _, ok := ParseValue(core.Record{Kind: core.KindValue, Codec: 0x41}); ok {
 		t.Fatal("bad odd text: want not ok")
+	}
+	if _, ok := ParseValue(core.Record{Kind: core.KindValue, Codec: core.CodecFraction}); ok {
+		t.Fatal("broken fraction: want not ok")
 	}
 	if _, ok := ParseValue(core.Record{Kind: core.KindValue, Codec: core.CodecBinaryFloat, Payload: make([]core.Word, 8)}); ok {
 		t.Fatal("binary128: want not ok")

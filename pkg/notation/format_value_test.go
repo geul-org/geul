@@ -1,5 +1,5 @@
 //ff:func feature=notation type=decoder control=iteration dimension=1
-//ff:what TestFormatValue — each short form; broken payloads and codecs without one are false
+//ff:what TestFormatValue — each short form (integers, FRACTION included); broken payloads and codecs without one are false
 package notation
 
 import (
@@ -20,6 +20,8 @@ func TestFormatValue(t *testing.T) {
 		"POSIX-TIMESTAMP-SECONDS(9)":             core.EncodePosixSeconds(9),
 		"QUANTITY(1.20, ABSENT, ABSENT, ABSENT)": q,
 		"SHA1-DIGEST(0x0001)":                    {Kind: core.KindValue, Codec: core.CodecSHA1Digest, Payload: []core.Word{1}},
+		"SIGNED-INTEGER(-1)":                     {Kind: core.KindValue, Codec: core.CodecSignedInteger, Payload: []core.Word{0xFFFF}},
+		"FRACTION(2, 3)":                         {Kind: core.KindValue, Codec: core.CodecFraction, Payload: []core.Word{0x0881, 2, 0x0882, 3}},
 	}
 	for want, r := range cases {
 		if got, ok := formatValue(r); !ok || got != want {

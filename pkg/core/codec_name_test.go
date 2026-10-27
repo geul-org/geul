@@ -1,5 +1,5 @@
 //ff:func feature=core type=helper control=sequence
-//ff:what TestCodecName — Reference, Meta (SOURCE, SOURCE-SPAN, ACQUIRED-AT removed), Value, execution and 근거 Edge (SOURCE only), ISSUER and unknown codecs
+//ff:what TestCodecName — Reference, Meta (SOURCE, SOURCE-SPAN, ACQUIRED-AT removed), Value (FRACTION 0x07), execution and 근거 Edge (SOURCE only), ISSUER and unknown codecs
 package core
 
 import "testing"
@@ -34,6 +34,12 @@ func TestCodecName(t *testing.T) {
 	}
 	if got := CodecName(KindValue, CodecUTF8LanguageTextEven|1); got != "UTF8-LANGUAGE-TEXT" {
 		t.Fatalf("language text: %q", got)
+	}
+	if got := CodecName(KindValue, CodecFraction) + " " + CodecName(KindValue, CodecSignedInteger); got != "FRACTION SIGNED-INTEGER" {
+		t.Fatalf("fraction: %q", got)
+	}
+	if got := CodecName(KindValue, 0x08); got != "" {
+		t.Fatalf("reserved 0x08: %q", got)
 	}
 	if got := CodecName(KindValue, CodecCoordinateGeo); got != "COORDINATE-GEO" {
 		t.Fatalf("geo: %q", got)

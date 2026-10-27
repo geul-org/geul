@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=sequence
-//ff:what TestCheckQuantity — a good QUANTITY passes; a wrong layout and a non-minimal coefficient are V9
+//ff:what TestCheckQuantity — decimal, integer and FRACTION amounts pass; a wrong layout, a non-minimal coefficient and a NaN BINARY-FLOAT amount are V9
 package schema
 
 import (
@@ -15,6 +15,11 @@ func TestCheckQuantity(t *testing.T) {
 	if fs := checkQuantity(recOf(good)); fs != nil {
 		t.Fatalf("good: %+v", fs)
 	}
+	frac := core.Record{Kind: core.KindValue, Codec: core.CodecFraction, Payload: []core.Word{0x0881, 2, 0x0882, 3}}
+	good, _ = core.EncodeQuantity(core.Quantity{Amount: frac, Unit: absent, Lower: core.Record{Kind: core.KindValue, Codec: core.CodecSignedInteger, Payload: []core.Word{0}}, Upper: absent})
+	if fs := checkQuantity(recOf(good)); fs != nil {
+		t.Fatalf("fraction: %+v", fs)
+	}
 	if rulesOf(checkQuantity(recOf(core.Record{Kind: core.KindValue, Codec: core.CodecQuantity, Payload: []core.Word{0}}))) != "V9" {
 		t.Fatal("layout: want V9")
 	}
@@ -22,5 +27,10 @@ func TestCheckQuantity(t *testing.T) {
 	bad, _ := core.EncodeQuantity(core.Quantity{Amount: loose, Unit: absent, Lower: absent, Upper: absent})
 	if rulesOf(checkQuantity(recOf(bad))) != "V9" {
 		t.Fatal("non-minimal: want V9")
+	}
+	nan := core.Record{Kind: core.KindValue, Codec: core.CodecBinaryFloat, Payload: []core.Word{0x7FC0, 0}}
+	bad, _ = core.EncodeQuantity(core.Quantity{Amount: nan, Unit: absent, Lower: absent, Upper: absent})
+	if rulesOf(checkQuantity(recOf(bad))) != "V9" {
+		t.Fatal("NaN: want V9")
 	}
 }

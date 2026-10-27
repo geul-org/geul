@@ -1,7 +1,7 @@
 # gogeul
 
 GEUL(General Encoding Unified Language) 문서(`.geul`)를 읽고 쓰고, 다른 표현과 서로 바꾸는 Go 라이브러리와 `geul` 명령줄 도구.
-명세는 [geul-org/geul-dev](https://github.com/geul-org/geul-dev)의 `files/geul/docs/`(OVERVIEW, ISSUER, GEUL-ORG, TOULMIN)를 따른다.
+명세는 [geul.org 문법](https://geul.org/ko/grammar/)(SSOT)을 따른다. geul-dev의 `files/geul/docs/`는 옛 명세 원본으로 참고만 한다.
 
 ```
 go get github.com/geul-org/gogeul          # 라이브러리
@@ -76,6 +76,7 @@ geul log me/adams && geul show me/adams
 
 - 값 표기는 `pkg/notation` 하나다(`show` 출력 = `add` 입력, 왕복 보장).
 - 자리 표지(Reference Codec `0000`, 하위 3비트 = 표지 번호): `ABSENT`(`0x0000`, 적지 않음), `UNKNOWN` UNKNOWN-VALUE(`0x0001`, 알 수 없음), `NONE` NO-VALUE(`0x0002`, 없음). 필드의 CODEC 목록이 그 WORD를 정확히 둘 때만 받는다(와일드카드·CODEC 없는 필드는 받지 않는다). 예: `geul add d.geul TRIPLE P1304 Q30 NONE normal`, `geul add d.geul QUALIFIER P582 '#2060' UNKNOWN`.
+- 수: `1.20`(SIGNED-DECIMAL, 자릿수 그대로), `SIGNED-INTEGER(-3)`, `UNSIGNED-INTEGER(5)`, `FRACTION(2, 3)`·`FRACTION(23.45, 1256.1)`(약분하지 않는다. 성분이 정수면 INTEGER, 소수점·지수가 있으면 DECIMAL), `QUANTITY(FRACTION(2, 3), ABSENT, ABSENT, ABSENT)`. QUANTITY의 양·경계는 정수·BINARY-FLOAT(유한값)·FRACTION·10진수다(`schema` V9·V10). 값 비교는 `core.NumberRat`(정확한 유리수: `2/4` = `1/2` = `0.5`).
 - 출처는 근거 Edge `SOURCE`(대상 Edge Id, 원천 Reference·`ABSENT`·`UNKNOWN`)와 그것에 붙는 QUALIFIER다(문법 edge/SOURCE). 예: `geul add d.geul SOURCE '#178' Q5375741`, `geul add d.geul QUALIFIER P813 '#1347' 'GREGORIAN-DATE(2013-12-07)'`. 원천 LOCAL의 성질은 `TRIPLE P1476 '#20' '"…"@en' normal`처럼 쓴다. 문서 전체의 원천은 대상 `#0`으로 쓰고(`geul add d.geul SOURCE '#0' Q2013`), 이 SOURCE와 그것을 대상으로 하는 QUALIFIER는 `add`가 HEAD에 둔다(`show`에서 BODY 위). HEAD·BODY의 Edge Id는 한 번호 공간이다. `schema` E8이 레이아웃·배치를 검사하고, `delta.LocalIDs`가 HEAD·BODY Edge의 번호를, `Node`가 TRIPLE로 기술한 LOCAL 노드의 번호를 이어받는다.
 - 데이터 폴더(`.well-known/geul/`을 담은 루트)는 `--data`·`GEULDATA`·상위 폴더 탐색 순으로 찾는다. 개인키는 `$XDG_CONFIG_HOME/geul/keys/`(데이터 폴더 밖).
 - `serve`와 `build`는 인자가 없으면 데이터 폴더를 쓴다.

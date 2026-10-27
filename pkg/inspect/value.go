@@ -14,8 +14,9 @@ import "time"
 // Lat/Lon/Float/Unit a COORDINATE-EARTH or COORDINATE-GEO, whose body is in
 // Globe (referenceText; empty for Earth) and whose uncertainty (binary32,
 // widened) is Float in the unit Unit (referenceText; empty when ABSENT, the uncertainty unknown),
-// and Amount/Unit/Lower/Upper a QUANTITY (exact decimals and the unit as
-// text; empty when left out).
+// Amount/Unit/Lower/Upper a QUANTITY (exact numbers and the unit as
+// text; empty when left out), and Number a SIGNED-INTEGER (digits, any size)
+// or a FRACTION (n/d as written, not reduced).
 type Value struct {
 	Codec  uint8
 	Text   string
@@ -32,4 +33,5 @@ type Value struct {
 	Unit   string
 	Lower  string
 	Upper  string
+	Number string
 }

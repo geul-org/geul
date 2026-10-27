@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what TestQuantity — 652 Qn [651, 653] and a unitless 1.20 read as text; a bad QUANTITY and a non-minimal bound fail
+//ff:what TestQuantity — 652 Qn [651, 653], a unitless 1.20 and integer/FRACTION/BINARY-FLOAT parts read as text; a bad QUANTITY and a non-minimal bound fail
 package inspect
 
 import (
@@ -20,6 +20,13 @@ func TestQuantity(t *testing.T) {
 	r, _ = core.EncodeQuantity(core.Quantity{Amount: dec(-2, 120), Unit: absent, Lower: absent, Upper: absent})
 	if a, u, l, h, err := quantity(r); err != nil || a != "1.20" || u != "" || l != "" || h != "" {
 		t.Fatalf("unitless: %q %q %q %q %v", a, u, l, h, err)
+	}
+	frac := core.Record{Kind: core.KindValue, Codec: core.CodecFraction, Payload: []core.Word{0x0881, 2, 0x0882, 3}}
+	one := core.Record{Kind: core.KindValue, Codec: core.CodecSignedInteger, Payload: []core.Word{1}}
+	bf := core.Record{Kind: core.KindValue, Codec: core.CodecBinaryFloat, Payload: []core.Word{0x3C00}}
+	r, _ = core.EncodeQuantity(core.Quantity{Amount: frac, Unit: absent, Lower: one, Upper: bf})
+	if a, _, l, h, err := quantity(r); err != nil || a != "2/3" || l != "1" || h != "1" {
+		t.Fatalf("numbers: %q %q %q %v", a, l, h, err)
 	}
 	if _, _, _, _, err := quantity(core.Record{Kind: core.KindValue, Codec: core.CodecQuantity}); err == nil {
 		t.Fatal("empty: want error")

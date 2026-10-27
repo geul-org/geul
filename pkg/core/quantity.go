@@ -3,9 +3,11 @@
 package core
 
 // Quantity is the body of a QUANTITY Value (value/numeric/QUANTITY): the
-// amount as a SIGNED-DECIMAL Value, the unit as a Reference, and the lower
-// and upper bounds as SIGNED-DECIMAL Values. A unit or bound that is left out
-// (no unit, no bounds) is the Absent record (IsAbsent).
+// amount as a numeric Value record (SIGNED-/UNSIGNED-INTEGER, BINARY-FLOAT,
+// FRACTION, SIGNED-/UNSIGNED-DECIMAL; quantityNumber), the unit as a
+// Reference, and the lower and upper bounds as numeric Values of the same
+// codecs. A unit or bound that is left out (no unit, no bounds) is the Absent
+// record (IsAbsent).
 type Quantity struct {
 	Amount Record
 	Unit   Record

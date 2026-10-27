@@ -14,13 +14,16 @@ import (
 
 // valueText shows a Value: UTF8-TEXT quoted, UTF8-LANGUAGE-TEXT quoted with its
 // language ("Paris"@fr), a URI, BCP 47 tag, EDTF or GEDCOM-DATE string bare, an integer in
-// decimal, a BINARY-FLOAT in shortest form, a coordinate by coordinateText, a quantity by quantityText, a date or POSIX time in ISO 8601 (UTC), a digest in hex, and a decimal as a number followed by its exact C e E form.
+// decimal, a SIGNED-INTEGER and a FRACTION (n/d) as written, a BINARY-FLOAT in shortest form, a coordinate by coordinateText, a quantity by quantityText, a date or POSIX time in ISO 8601 (UTC), a digest in hex, and a decimal as a number followed by its exact C e E form.
 func valueText(v inspect.Value) string {
 	if v.Codec == core.CodecBinaryFloat {
 		return strconv.FormatFloat(v.Float, 'g', -1, 64)
 	}
 	if v.Codec == core.CodecQuantity {
 		return quantityText(v)
+	}
+	if v.Codec == core.CodecSignedInteger || v.Codec == core.CodecFraction {
+		return v.Number
 	}
 	switch v.Codec &^ 1 {
 	case core.CodecUTF8TextEven:

@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=iteration dimension=1
-//ff:what TestCheckValue — each Value branch and the reserved code
+//ff:what TestCheckValue — each Value branch (FRACTION V10 included) and the reserved code
 package schema
 
 import (
@@ -34,6 +34,9 @@ func TestCheckValue(t *testing.T) {
 		{v(0x04, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0), ""},
 		{v(0x05), "V8"},
 		{v(0x06), "V9"},
+		{v(0x07), "V10"},
+		{v(0x07, 0x0881, 2, 0x0882, 3), ""},
+		{v(0x08), "V1"},
 		{v(0x42, 0x4142), "V1"},
 		{v(0x4A, 0x08C6, 0x656E), ""},
 	}

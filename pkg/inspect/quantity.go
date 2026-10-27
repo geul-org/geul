@@ -1,12 +1,13 @@
 //ff:func feature=inspect type=decoder control=sequence
-//ff:what quantity — the amount, unit and bounds of a QUANTITY Value as text: exact decimals, Qn unit, empty when left out
+//ff:what quantity — the amount, unit and bounds of a QUANTITY Value as text: exact numbers, Qn unit, empty when left out
 package inspect
 
 import "github.com/geul-org/gogeul/pkg/core"
 
 // quantity reads a QUANTITY Value (core.DecodeQuantity) as text: the amount
-// and each present bound as exact decimals (decimalString), the unit by
-// referenceText; a left-out unit or bound is empty.
+// and each present bound as exact numbers (numberText: integer, decimal with
+// its quantum, BINARY-FLOAT, FRACTION n/d), the unit by referenceText; a
+// left-out unit or bound is empty.
 func quantity(r core.Record) (amount, unit, lower, upper string, err error) {
 	q, err := core.DecodeQuantity(r)
 	if err != nil {
@@ -16,11 +17,7 @@ func quantity(r core.Record) (amount, unit, lower, upper string, err error) {
 		if core.IsAbsent(d) {
 			return "", nil
 		}
-		e, c, err := core.DecodeSignedDecimalBig(d)
-		if err != nil {
-			return "", err
-		}
-		return decimalString(e, c), nil
+		return numberText(d)
 	}
 	if !core.IsAbsent(q.Unit) {
 		unit = referenceText(q.Unit)

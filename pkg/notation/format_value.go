@@ -2,15 +2,12 @@
 //ff:what formatValue — a Value record as a token in its short form; false when the notation has none
 package notation
 
-import (
-	"strconv"
-
-	"github.com/geul-org/gogeul/pkg/core"
-)
+import "github.com/geul-org/gogeul/pkg/core"
 
 // formatValue writes the Value codecs with a short form (package doc): byte
-// strings, language text with a BCP 47 tag, the decimals, unsigned integers,
-// the two time codecs, QUANTITY, the two coordinates and the digests.
+// strings, language text with a BCP 47 tag, the decimals, the integers (any
+// size), the two time codecs, QUANTITY, FRACTION, the two coordinates and the
+// digests.
 // Others are false.
 func formatValue(r core.Record) (string, bool) {
 	name := core.CodecName(core.KindValue, r.Codec)
@@ -22,13 +19,14 @@ func formatValue(r core.Record) (string, bool) {
 		return formatLanguageText(r)
 	case r.Codec == core.CodecSignedDecimal || r.Codec == core.CodecUnsignedDecimal:
 		return formatDecimal(r)
-	case r.Codec == core.CodecUnsignedInteger:
-		n, err := core.DecodeUintValue(r)
-		return name + "(" + strconv.FormatUint(n, 10) + ")", err == nil
+	case r.Codec == core.CodecSignedInteger || r.Codec == core.CodecUnsignedInteger:
+		return formatInteger(r)
 	case r.Codec == core.CodecGregorianDate || r.Codec == core.CodecPosixSeconds:
 		return formatTime(r)
 	case r.Codec == core.CodecQuantity:
 		return formatQuantity(r)
+	case r.Codec == core.CodecFraction:
+		return formatFraction(r)
 	case even == core.CodecCoordinateEarth:
 		return formatCoordinate(r)
 	case r.Codec == core.CodecSHA256Digest || r.Codec == core.CodecSHA1Digest:

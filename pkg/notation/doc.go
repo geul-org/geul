@@ -16,6 +16,8 @@
 //	<https://…>           URI
 //	1.20, -3, 12e2        SIGNED-DECIMAL, digits as written
 //	NAME(arg, …)          a Value or Reference by codec name, e.g.
+//	                      SIGNED-INTEGER(-3), UNSIGNED-INTEGER(5), FRACTION(2, 3), FRACTION(23.45, 1256.1)
+//	                      (a FRACTION component is an INTEGER as digits, a DECIMAL with a point or exponent),
 //	                      GREGORIAN-DATE(1952-03-11), QUANTITY(652, Q828224, ABSENT, ABSENT),
 //	                      COORDINATE-EARTH(52.5, 13.4, 1, Q209426), COORDINATE-GEO(Q111, 4.5, 137.4, 0, ABSENT)
 //	enum name             a raw field's ENUM name (TRIPLE rank: normal)

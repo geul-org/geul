@@ -14,7 +14,8 @@ import (
 // a LOCAL or Wikidata Reference as #n, Qn or Pn
 // (refText), a Value the library decodes (inspect.ParseValue: text, language
 // text, URI, language tag, EDTF, numbers, dates …) by valueText, else its
-// codec name ("codec 0x42" for an unnamed or retired codec) and payload hex
+// record name (core.RecordName: a Value ISSUER format by its format name;
+// "codec 0x42" for an unnamed or retired codec) and payload hex
 // (a lone TAG WORD, such as a codec BIND Subject, as the codec name only).
 func recordText(r core.Record) string {
 	if core.IsAbsent(r) {
@@ -27,7 +28,7 @@ func recordText(r core.Record) string {
 		return s
 	}
 	v, ok := inspect.ParseValue(r)
-	name := core.CodecName(r.Kind, r.Codec)
+	name := core.RecordName(r)
 	if name == "" {
 		name = fmt.Sprintf("codec 0x%02x", r.Codec)
 	}

@@ -1,9 +1,10 @@
 //ff:func feature=notation type=encoder control=selection
-//ff:what parseValueArg — the one argument of a Value call by codec: quoted bytes, a decimal, an integer, a date, seconds or digest words
+//ff:what parseValueArg — the one argument of a Value call by codec: quoted bytes, a decimal, an integer of any size, a date, seconds or digest words
 package notation
 
 import (
 	"fmt"
+	"math/big"
 	"strconv"
 
 	"github.com/geul-org/gogeul/pkg/core"
@@ -17,9 +18,12 @@ func parseValueArg(c uint8, arg string) (core.Record, error) {
 		return core.EncodeBytesValue(even, []byte(s)), err
 	case c == core.CodecSignedDecimal || c == core.CodecUnsignedDecimal:
 		return parseDecimalValue(c, arg)
-	case c == core.CodecUnsignedInteger:
-		n, err := strconv.ParseUint(arg, 10, 64)
-		return core.EncodeUintValue(n), err
+	case c == core.CodecSignedInteger || c == core.CodecUnsignedInteger:
+		n, ok := new(big.Int).SetString(arg, 10)
+		if !ok {
+			return core.Record{}, fmt.Errorf("geul/notation: %q is not an integer", arg)
+		}
+		return core.EncodeIntegerBig(c == core.CodecSignedInteger, n)
 	case c == core.CodecGregorianDate:
 		return parseDate(arg)
 	case c == core.CodecPosixSeconds:
