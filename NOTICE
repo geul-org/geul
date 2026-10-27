@@ -41,3 +41,37 @@ Apache-2.0 notice (applies to spf13/cobra and inconshreveable/mousetrap):
 Binaries also contain the Go standard library (BSD-3-Clause,
 Copyright (c) 2009 The Go Authors), including the golang.org/x packages it
 vendors.
+
+--------------------------------------------------------------------------------
+JavaScript (embedded in the binary, served and baked under /.well-known/geul/_static/)
+--------------------------------------------------------------------------------
+Files in internal/view/static/vendor/, taken from npm registry tarballs with their
+sha512 integrity checked. Full license texts: internal/view/static/vendor/LICENSES.md.
+
+* cytoscape  3.30.2  (vendor/cytoscape.min.js)
+    License:     MIT
+    Copyright:   Copyright (c) 2016-2024, The Cytoscape Consortium.
+    URL:         https://github.com/cytoscape/cytoscape.js
+
+* dagre  0.8.5  (vendor/dagre.min.js)
+    License:     MIT
+    Copyright:   Copyright (c) 2012-2014 Chris Pettitt
+    URL:         https://github.com/dagrejs/dagre
+
+* cytoscape-dagre  2.5.0  (vendor/cytoscape-dagre.js)
+    License:     MIT
+    Copyright:   Copyright (c) 2016-2018, 2020, 2022, The Cytoscape Consortium.
+    URL:         https://github.com/cytoscape/cytoscape.js-dagre
+
+Bundled inside vendor/dagre.min.js (part of the dagre 0.8.5 distribution):
+
+* graphlib  2.1.8
+    License:     MIT
+    Copyright:   Copyright (c) 2012-2014 Chris Pettitt
+    URL:         https://github.com/dagrejs/graphlib
+
+* lodash  4.x  (individual lodash/* modules)
+    License:     MIT
+    Copyright:   Copyright OpenJS Foundation and other contributors
+                 <https://openjsf.org/>
+    URL:         https://github.com/lodash/lodash

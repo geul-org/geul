@@ -1,5 +1,5 @@
 //ff:func feature=core type=encoder control=sequence
-//ff:what TestEncodeSpecVersion — t002 encodes as 0x1890 0x0002
+//ff:what TestEncodeSpecVersion — v1 encodes as 0x1890 0x0001
 package core
 
 import (
@@ -8,7 +8,7 @@ import (
 )
 
 func TestEncodeSpecVersion(t *testing.T) {
-	if ws, err := EncodeRecord(EncodeSpecVersion(SpecVersion)); err != nil || !reflect.DeepEqual(ws, []Word{0x1890, 0x0002}) {
+	if ws, err := EncodeRecord(EncodeSpecVersion(SpecVersion)); err != nil || !reflect.DeepEqual(ws, []Word{0x1890, 0x0001}) {
 		t.Fatalf("got %04X %v", ws, err)
 	}
 }

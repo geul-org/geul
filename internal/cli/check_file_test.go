@@ -13,7 +13,7 @@ import (
 
 func TestCheckFile(t *testing.T) {
 	dir := t.TempDir()
-	ok, _ := core.EncodeDocument([]core.Record{core.EncodeSpecVersion(2)}, nil)
+	ok, _ := core.EncodeDocument([]core.Record{core.EncodeSpecVersion(core.SpecVersion)}, nil)
 	good := filepath.Join(dir, "g.geul")
 	os.WriteFile(good, ok, 0o644)
 	if fs, err := checkFile(good); err != nil || len(fs) != 0 {

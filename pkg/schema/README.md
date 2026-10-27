@@ -79,7 +79,7 @@
 | M1 | 표에 없는 직접 코드는 예약이다. Meta에는 ISSUER 코드가 없다. |
 | M2 | `DOC-ID`는 하나이고, Payload는 `DOC-POINTER`(Issuer, 문서 ID ≠ 0, 버전 0) Reference 하나다. |
 | M3 | `IMPORT-DOC`: Payload는 `DOC-POINTER` Reference 하나와 그 뒤의 IMPORT ID다. IMPORT ID가 최소 폭이고 문서 안에서 중복되지 않는다. |
-| M4 | `SPEC-VERSION`·`PROFILE`·`DEFAULT-LANGUAGE`은 각각 하나다. `SPEC-VERSION`의 Payload는 내장 Value 없이 가장 짧은 폭의 unsigned 정수다(t002 = `0x0002`). 나머지는 내장 Value가 해당 형식이다. |
+| M4 | `SPEC-VERSION`·`PROFILE`·`DEFAULT-LANGUAGE`은 각각 하나다. `SPEC-VERSION`의 Payload는 내장 Value 없이 가장 짧은 폭의 unsigned 정수다(v1 = `0x0001`). 나머지는 내장 Value가 해당 형식이다. |
 | M5 | `EFFECTIVE-FROM`·`EFFECTIVE-UNTIL`은 각각 하나이고 GREGORIAN-DATE 또는 POSIX-TIMESTAMP-SECONDS다. 둘 다 있으면 FROM이 UNTIL보다 앞선다. |
 | M6 | `PARENT`는 SHA-256-DIGEST Value 하나다. M4~M6이 검사하는 Meta의 내장 Value는 V 규칙도 통과한다. 그 밖의 Meta Payload는 2층이다. |
 | M7 | `DELTA-BASE`는 2 WORD 버전 ID ≥ 1, `DELTA-REMOVE`는 서로 다른 LOCAL Reference 1개 이상, `NEXT-LOCAL-ID`는 최소 폭 unsigned ≥ 1이다(meta/lineage). 놓일 자리(diff 문서, 버전 목록)는 아직 검사하지 않는다. |

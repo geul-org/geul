@@ -18,7 +18,7 @@ func TestDecodeHead(t *testing.T) {
 	entries, profile := decodeHead(head)
 	imp, ok := entries[0].Data.(ImportDoc)
 	sv, _ := entries[2].Data.(Value)
-	if len(entries) != 3 || !ok || imp.ID != 3 || profile != "p-1.0" || sv.Uint != 2 {
+	if len(entries) != 3 || !ok || imp.ID != 3 || profile != "p-1.0" || sv.Uint != 1 {
 		t.Fatalf("got %+v %q", entries, profile)
 	}
 }

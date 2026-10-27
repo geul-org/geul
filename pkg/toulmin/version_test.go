@@ -5,7 +5,7 @@ package toulmin
 import "testing"
 
 func TestVersion(t *testing.T) {
-	if SpecVersion != 2 || ProfileName != "tangeul" {
+	if SpecVersion != 1 || ProfileName != "tangeul" {
 		t.Errorf("stamp: got %d %q", SpecVersion, ProfileName)
 	}
 	if CodebookVersionMajor != 1 || CodebookVersionMinor != 0 {

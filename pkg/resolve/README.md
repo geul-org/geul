@@ -195,7 +195,7 @@ func (g *Graph) Target(from *Node, ref core.Record) (*Node, inspect.Entry, error
 
 ## 임시 공표 위치
 
-geul.org가 서비스되기 전까지 명세 저장소의 `draft/.well-known/geul/`을 공표 트리로 쓴다. `GEULPROXY=file://<geul-dev>/draft,off`로 가리킨다. 기본값은 그대로 `https://geul.org`다.
+geul.org가 서비스되기 전까지 geul.org 웹사이트 저장소의 `artifacts/geul/.well-known/geul/`을 공표 트리로 쓴다. `GEULPROXY=file://<geul-dev>/draft/geul-org/artifacts/geul,off`로 가리킨다. 기본값은 그대로 `https://geul.org`다.
 
 - 지금 있는 문서는 해석 시험용 견본이다. Issuer `0x0000`, 문서 `0xffff000000000001`(A v1·v2), `…0002`(B, A v1 고정), `…0003`(C, B 최신·A v2 고정).
 - `TestResolverResolveDraft`가 이 트리를 읽는다. 이 모듈만 따로 받은 경우에는 건너뛴다.

@@ -9,6 +9,9 @@ required:
     delta: "버전 diff와 LOCAL ID 이어받기 — 직전 스냅숏에서 같은 서술에 같은 번호(auto increment), diff 생성·적용 (명세 meta/lineage/DELTA-BASE·DELTA-REMOVE·NEXT-LOCAL-ID)"
     notation: "텍스트 표기 — 레코드 한 줄 ↔ GEUL 레코드(geul CLI show·add·meta). 짧은 형식이 없으면 날 WORD로 써서 왕복 보장"
     cli: "geul 명령줄 도구 — cobra 명령 정의, 인자 해석과 출력만(로직은 pkg)"
+    page: "뷰어 페이지 — inspect.Document → 페이지 모델(HEAD·BODY 행, 필드, 참조·역참조, SOURCE 구간, 그래프) → HTML"
+    server: "뷰어 HTTP 서버(geul serve) — 요청마다 .geul을 읽어 페이지(브라우저)나 바이트(Accept application/vnd.geul)·목록으로 응답"
+    build: "정적 굽기(geul build) — 트리를 원본·뷰어 페이지·목록·스크립트 파일로 써서 웹 호스트(S3+CloudFront)에 올린다"
     config: "geul CLI 설정 — 플래그·환경변수(GEUL…)·설정 파일·데이터 폴더 탐색의 우선순위 해석"
   type:
     model: "data type definition"
@@ -18,6 +21,9 @@ required:
     resolver: "document location/fetch implementation"
     helper: "internal utility function"
     command: "cobra 명령 엔트리포인트"
+    handler: "HTTP 핸들러"
+    builder: "inspect 결과 → 페이지 모델"
+    renderer: "페이지 모델 → HTML·JSON"
 
 optional:
   level:

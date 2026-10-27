@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{.Title}} · geul</title>
+<style>
+:root{--bg:#fbfbfa;--fg:#1d1d1b;--mute:#6b6b66;--line:#e4e3de;--panel:#ffffff;--accent:#2f5bd3;--mark:#ffe58a;--sel:#eef2ff;
+--node:#1f7a4d;--link:#8a4fbf;--ctl:#a05a00;--text:#5a5a55;--raw:#b3261e;--hex:#7a7a74;
+--g-case:#2f5bd3;--g-rule:#1f7a4d;--g-counter:#b3261e;--g-except:#a05a00;--g-decl:#8c8c86;--g-spec:#8a4fbf;--g-entry:#0b7c86;
+--head:49px;--lw:340px;--dw:440px;font:14px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI","Noto Sans KR",sans-serif;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root{--bg:#161615;--fg:#e8e7e2;--mute:#9a9992;--line:#2c2c2a;--panel:#1d1d1c;--accent:#8aa8ff;--mark:#6b5a12;--sel:#232a40;
+--node:#5fc896;--link:#c49af0;--ctl:#e0a050;--text:#a9a9a2;--raw:#ff8a80;--hex:#8c8c86;
+--g-case:#8aa8ff;--g-rule:#5fc896;--g-counter:#ff8a80;--g-except:#e0a050;--g-decl:#8c8c86;--g-spec:#c49af0;--g-entry:#5cc8d0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);overflow:hidden}
+header{height:var(--head);display:flex;gap:16px;align-items:center;padding:0 16px;background:var(--panel);border-bottom:1px solid var(--line)}
+h1{font-size:16px;margin:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.profile{color:var(--mute);font-family:ui-monospace,monospace;font-size:12px}
+.tools{margin-left:auto;display:flex;gap:10px;align-items:center}
+button{white-space:nowrap;font:inherit;font-size:12px;padding:4px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--fg);cursor:pointer}
+body.src #srcBtn{border-color:var(--accent);color:var(--accent)}
+.app{display:grid;grid-template-columns:var(--lw) var(--dw) minmax(0,1fr);height:calc(100vh - var(--head))}
+.side{overflow:auto;--sph:33px;border-right:1px solid var(--line);background:var(--panel);padding-bottom:24px}
+.side summary{position:sticky;top:var(--sph);z-index:1;background:var(--panel);cursor:pointer;padding:8px 12px 6px;font-size:12px;letter-spacing:.06em;color:var(--mute);font-weight:600;border-bottom:1px solid var(--line)}
+.side summary small{font-weight:400}
+.item{display:flex;gap:8px;align-items:baseline;padding:3px 12px 3px calc(12px + var(--d,0) * 14px);cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:3px solid transparent}
+.item:hover{background:var(--bg)}
+.item{scroll-margin-top:36px}
+.item.sel{background:var(--sel);border-left-color:var(--accent)}
+.item .id{font-family:ui-monospace,monospace;font-size:12px;color:var(--accent);min-width:2.6em;text-align:right}
+.item .name{font-family:ui-monospace,monospace;font-size:11.5px}
+.item b{font-weight:600;overflow:hidden;text-overflow:ellipsis}
+.item .sum{font-size:12px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;min-width:0}
+.node .name{color:var(--node)}.link .name{color:var(--link)}.control .name,.section .name{color:var(--ctl)}
+.text .name,.value .name,.source .name,.meta .name{color:var(--text)}.raw .name{color:var(--raw)}
+.section{font-weight:600}
+main{display:flex;flex-direction:column;min-width:0;min-height:0}
+.bar{display:flex;flex-wrap:wrap;gap:4px 14px;align-items:center;padding:6px 12px;font-size:12px;color:var(--mute);border-bottom:1px solid var(--line)}
+.bar span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:4px;vertical-align:-1px;background:var(--c)}
+.bar span.ln::before{height:2px;vertical-align:3px}
+.bar span.sh::before{background:none;border:1.5px solid var(--c)}.bar span.ell::before{border-radius:50%}.bar span.dia::before{transform:rotate(45deg) scale(.8)}
+#graph{flex:1;min-height:0}
+.empty{flex:1;display:grid;place-items:center;color:var(--mute)}
+.dside{overflow:auto;border-right:1px solid var(--line);background:var(--panel)}
+#sideClose{display:none}
+.side .ph,.dside .ph{position:sticky;top:0;z-index:2;height:33px;display:flex;align-items:center;background:var(--panel);padding:0 6px 0 12px;font-size:12px;letter-spacing:.06em;color:var(--mute);font-weight:600;border-bottom:1px solid var(--line)}
+.ph .x{margin-left:auto;border:0;background:none;padding:0 8px;font-size:18px;line-height:1;color:var(--mute)}.ph .x:hover{color:var(--fg)}
+#menuBtn{display:none;font-size:16px;line-height:1;padding:4px 9px}
+body.nodet .app{grid-template-columns:var(--lw) minmax(0,1fr)}body.nodet .dside{display:none}body.nodet #srcpane{left:var(--lw)}
+#detail{padding:10px 14px 24px}
+#detail .hint{color:var(--mute)}
+.dh{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;margin-bottom:10px}
+.dh .name{font-family:ui-monospace,monospace;font-size:13px}
+.dh b{font-size:15px}
+.dh .id{font-family:ui-monospace,monospace;color:var(--accent)}
+.f{display:block;margin:0 0 4px;overflow-wrap:anywhere}
+.f i{font-style:normal;color:var(--mute);font-size:12px;margin-right:2px}
+.back{color:var(--mute);font-size:12px;margin-top:8px;line-height:1.8}
+.words{display:flex;flex-direction:column;gap:14px;margin-top:14px;font-family:ui-monospace,monospace;font-size:12px;color:var(--hex)}
+.box{position:relative;display:flex;flex-direction:column;gap:1px;border:1px solid var(--line);border-radius:6px;padding:12px 8px 6px}
+.box>.cap{position:absolute;top:-8px;left:8px;padding:0 4px;background:var(--panel);font-size:10px;letter-spacing:.05em;color:var(--mute)}
+.box.head{border-color:var(--accent)}.box.head>.cap{color:var(--accent)}
+.box.rec{border-style:dashed;margin:6px 0 4px}.box.rec>.cap{color:var(--link)}
+.wl{display:grid;grid-template-columns:3.4em 5.6em 1fr;gap:8px;align-items:baseline;line-height:1.5}
+.wl .nm{color:var(--mute);font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wl .nt{color:var(--text);font-size:11px;white-space:pre-line}
+.wl .nt.txt{color:var(--fg);font-weight:700}
+.wl.tg .wd{color:var(--fg);font-weight:600}
+.tag{color:var(--fg);font-weight:600}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
+#srcpane{position:fixed;top:var(--head);left:calc(var(--lw) + var(--dw));bottom:0;width:min(560px,45vw);display:none;flex-direction:column;background:var(--panel);border-left:1px solid var(--line);box-shadow:6px 0 16px rgba(0,0,0,.08);z-index:3}
+body.src #srcpane{display:flex}
+#srcpane .ph{display:flex;align-items:center;padding:8px 12px;font-size:12px;letter-spacing:.06em;color:var(--mute);font-weight:600;border-bottom:1px solid var(--line)}
+#srcpane .ph button{margin-left:auto}
+.dh .srcview{font-size:11px;padding:2px 8px}
+pre{margin:0;padding:12px;white-space:pre-wrap;word-break:break-word;font:13px/1.55 ui-monospace,"D2Coding",monospace;overflow:auto;flex:1;min-height:0;position:relative}
+mark{background:var(--mark);color:inherit;border-radius:2px}
+#browse{position:fixed;top:var(--head);right:0;bottom:0;width:min(360px,90vw);display:none;flex-direction:column;background:var(--panel);border-left:1px solid var(--line);box-shadow:-6px 0 16px rgba(0,0,0,.12);z-index:4}
+body.browse #browse{display:flex}
+body.browse #browseBtn{border-color:var(--accent);color:var(--accent)}
+#browse .ph{display:flex;align-items:center;padding:8px 12px;font-size:12px;letter-spacing:.06em;color:var(--mute);font-weight:600;border-bottom:1px solid var(--line)}
+#browse .ph button{margin-left:auto}
+#browsePath{padding:6px 12px;font:12px ui-monospace,monospace;color:var(--mute);word-break:break-all;border-bottom:1px solid var(--line)}
+#browseList{overflow:auto;flex:1;min-height:0;margin:0;padding:6px 0;list-style:none}
+.tree ul{list-style:none;margin:0;padding-left:14px}
+.tree li>ul{display:none}.tree li.open>ul{display:block}
+.tree a,.tree .empty{display:block;padding:2px 12px;font:12.5px/1.6 ui-monospace,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tree .empty{color:var(--mute)}
+.tree a.dir{color:var(--fg)}.tree a.dir::before{content:"▸ ";color:var(--mute)}.tree li.open>a.dir::before{content:"▾ "}
+.tree a.file::before{content:"· ";color:var(--mute)}
+.tree a.here{background:var(--sel);border-left:3px solid var(--accent);padding-left:9px;font-weight:600}
+@media (max-width:800px){header{gap:10px;padding:0 10px}#menuBtn{display:block}
+.app{display:flex;height:calc(100dvh - var(--head))}main{flex:1}
+.side{position:fixed;top:var(--head);left:0;bottom:0;width:min(340px,85vw);z-index:6;display:none;border-right:1px solid var(--line);box-shadow:6px 0 16px rgba(0,0,0,.12);}
+#sideClose{display:block}body.list .side{display:block}body.list #menuBtn{border-color:var(--accent);color:var(--accent)}
+.dside,body.nodet .dside{position:fixed;top:var(--head);left:0;right:0;bottom:0;z-index:5;display:none;border-right:0}body.det .dside{display:block}
+#srcpane,body.nodet #srcpane{left:0;width:100vw;z-index:7}#browse{z-index:8}}
+</style>
+</head>
+<body>
+<header>
+<button id="menuBtn" type="button" title="목록">☰</button><h1>{{.Title}}</h1>{{if .Profile}}<span class="profile">{{.Profile}}</span>{{end}}
+<div class="tools">{{if .HasSource}}<button id="srcBtn" type="button">SOURCE</button>{{end}}{{if .Browse}}<button id="browseBtn" type="button" title=".well-known/geul 탐색">탐색</button>{{end}}</div>
+</header>
+<div class="app">
+<nav class="side" id="side">
+<div class="ph">목록<button type="button" class="x" id="sideClose" title="닫기">×</button></div>
+<details open><summary>HEAD <small>{{len .Head}}</small></summary>{{range .Head}}{{template "item" .}}{{end}}</details>
+<details open><summary>NODE <small>{{len .Nodes}}</small></summary>{{range .Nodes}}{{template "item" .}}{{end}}</details>
+<details open><summary>EDGE <small>{{len .Edges}}</small></summary>{{range .Edges}}{{template "item" .}}{{end}}</details>
+</nav>
+<aside class="dside"><div class="ph">상세<button type="button" class="x" id="detClose" title="닫기">×</button></div><section id="detail"><span class="hint">목록이나 그래프에서 레코드를 고른다</span></section></aside>
+<main>
+{{if .Graph.Nodes}}<div class="bar">{{if .Graph.RDF}}<span class="sh dia" style="--c:var(--link)">Edge</span><span class="sh ell" style="--c:var(--node)">Reference</span><span class="sh" style="--c:var(--text)">Value</span>{{else}}<span style="--c:var(--g-case)">case</span><span style="--c:var(--g-rule)">rule</span><span style="--c:var(--g-counter)">counter</span><span style="--c:var(--g-except)">except</span><span style="--c:var(--g-spec)">spec</span><span style="--c:var(--g-entry)">entry</span><span style="--c:var(--g-decl)">decl</span><span class="ln" style="--c:var(--g-counter)">attacks</span><span class="ln" style="--c:var(--link)">run·do·check</span><span class="ln" style="--c:var(--g-except)">supersedes</span><span class="ln" style="--c:var(--mute)">def</span>{{end}}<label><input type="checkbox" id="isolated"> 연결 없는 노드 <em id="isocount"></em></label></div>
+<div id="graph"></div>
+<script type="application/json" id="graphdata">{{.Graph}}</script>
+<script src="/.well-known/geul/_static/cytoscape.min.js"></script><script src="/.well-known/geul/_static/dagre.min.js"></script><script src="/.well-known/geul/_static/cytoscape-dagre.js"></script>
+{{else}}<div class="empty">그래프로 그릴 NODE가 없다</div>{{end}}
+</main>
+{{if .Browse}}<aside id="browse"><div class="ph">탐색<button type="button" id="browseClose">닫기</button></div><div id="browsePath"></div><ul id="browseList" class="tree"></ul></aside>{{end}}
+{{if .HasSource}}<aside id="srcpane"><div class="ph">SOURCE<button type="button" id="srcClose">닫기</button></div><pre id="src"></pre><script type="application/json" id="srcdata">{{.Source}}</script></aside>{{end}}
+</div>
+<script>
+(function(){
+var pre=document.getElementById('src'),bytes=null,dec=new TextDecoder(),cy=null,mark=null;
+if(pre){var s=JSON.parse(document.getElementById('srcdata').textContent);bytes=new TextEncoder().encode(s);pre.textContent=s;}
+function revealMark(){if(mark&&document.body.classList.contains('src'))pre.scrollTop=Math.max(0,mark.offsetTop-pre.clientHeight/3);}
+function highlight(el){
+  if(!pre)return;
+  if(!el||!el.dataset.off){pre.textContent=dec.decode(bytes);mark=null;return;}
+  var o=+el.dataset.off,n=+el.dataset.len;mark=document.createElement('mark');
+  mark.textContent=dec.decode(bytes.slice(o,o+n));
+  pre.replaceChildren(dec.decode(bytes.slice(0,o)),mark,dec.decode(bytes.slice(o+n)));
+  revealMark();
+}
+function initGraph(){
+  var gd=document.getElementById('graphdata');
+  if(!gd||!window.cytoscape)return;
+  var g=JSON.parse(gd.textContent),cs=getComputedStyle(document.documentElement);
+  function v(n){return cs.getPropertyValue(n).trim()}
+  var el=g.nodes.map(function(n){return{data:n,classes:n.class}}).concat(g.edges.map(function(e){return{data:e,classes:e.class}}));
+  var st=[
+    {selector:'node',style:{label:'data(label)',shape:'round-rectangle',width:'label',height:'label',padding:'7px','font-size':11,'text-valign':'center','text-halign':'center','text-wrap':'wrap','text-max-width':160,color:v('--fg'),'background-color':v('--panel'),'border-width':1.5,'border-color':v('--g-decl')}},
+    {selector:'edge',style:{width:1.3,'curve-style':'bezier','target-arrow-shape':'triangle','arrow-scale':.8,'line-color':v('--mute'),'target-arrow-color':v('--mute'),opacity:.8}},
+    {selector:'edge.attack',style:{'line-color':v('--g-counter'),'target-arrow-color':v('--g-counter'),'line-style':'dashed','target-arrow-shape':'tee'}},
+    {selector:'edge.run',style:{'line-color':v('--link'),'target-arrow-color':v('--link')}},
+    {selector:'edge.supersede',style:{'line-color':v('--g-except'),'target-arrow-color':v('--g-except'),'line-style':'dotted'}},
+    {selector:'node:selected',style:{'border-width':3,'border-color':v('--accent')}},
+    {selector:'edge:selected',style:{'line-color':v('--accent'),'target-arrow-color':v('--accent'),width:3,opacity:1}}
+  ];
+  if(g.rdf)st.splice(2,0,
+    {selector:'node.hub',style:{shape:'diamond',padding:'16px','border-color':v('--link'),'font-size':10}},
+    {selector:'node.res',style:{shape:'ellipse',padding:'10px','border-color':v('--node')}},
+    {selector:'node.lit',style:{shape:'rectangle','border-color':v('--text'),'background-color':v('--bg')}},
+    {selector:'edge[label]',style:{label:'data(label)','font-size':9,color:v('--mute'),'text-background-color':v('--bg'),'text-background-opacity':1,'text-background-padding':'1px'}},
+    {selector:'edge.tail',style:{'target-arrow-shape':'none'}},
+    {selector:'edge.id',style:{'target-arrow-shape':'none','line-style':'dotted','line-color':v('--link')}});
+  ['case','rule','counter','except','spec','entry'].forEach(function(c){st.splice(1,0,{selector:'node.'+c,style:{'border-color':v('--g-'+c),'border-width':2}})});
+  st.splice(1,0,{selector:'node.case',style:{'background-color':v('--sel')}});
+  cy=cytoscape({container:document.getElementById('graph'),elements:el,style:st,wheelSensitivity:.2,maxZoom:1.5});
+  var lone=cy.nodes().filter(function(n){return n.degree()===0});
+  document.getElementById('isocount').textContent='('+lone.length+')';
+  function lay(){
+    lone.style('display',document.getElementById('isolated').checked?'element':'none');
+    cy.elements(':visible').layout({name:'dagre',rankDir:'LR',nodeSep:14,rankSep:70,edgeSep:8}).run();
+    cy.fit(cy.elements(':visible'),20);
+  }
+  document.getElementById('isolated').addEventListener('change',lay);
+  lay();
+  cy.on('tap','node,edge',function(ev){go(ev.target.data('row')||ev.target.id())});
+}
+// History: opening the detail or the list pushes one entry, so Back closes it.
+// Moving between records while the detail is open replaces that entry.
+function go(id){
+  var st=history.state||{},open=location.hash.length>1||st.list;
+  history[open?'replaceState':'pushState']({det:1},'','#'+id);render();
+}
+function closeDetail(){
+  if((history.state||{}).det)history.back();
+  else{history.replaceState(null,'',location.pathname+location.search);render();}
+}
+function openList(){history.pushState({list:1},'',location.href);render();}
+function closeList(){if((history.state||{}).list)history.back();else document.body.classList.remove('list');}
+function render(){
+  var b=document.body.classList,id=decodeURIComponent(location.hash.slice(1));
+  b.toggle('list',!!(history.state||{}).list);
+  if(id){select(id);return;}
+  select('');
+  if(b.contains('det')){
+    b.remove('det');b.add('nodet');
+    document.getElementById('detail').innerHTML='<span class="hint">목록이나 그래프에서 레코드를 고른다</span>';
+    if(cy)cy.resize();
+  }
+}
+function select(id){
+  document.querySelectorAll('.item.sel').forEach(function(x){x.classList.remove('sel')});
+  var el=id?document.getElementById(id):null,det=document.getElementById('detail');
+  if(cy){
+    cy.elements().unselect();
+    var t=id?cy.getElementById(id):null;
+    if(t&&t.nonempty()&&t.visible()){t.select();cy.animate({center:{eles:t}},{duration:200});}
+  }
+  if(!el||!el.classList.contains('item')){highlight(null);return;}
+  var b=document.body.classList,was=b.contains('nodet');b.remove('nodet');b.add('det');if(was&&cy)cy.resize();
+  el.classList.add('sel');el.closest('details').open=true;el.scrollIntoView({block:'nearest'});
+  det.innerHTML=el.querySelector('template').innerHTML;
+  if(!pre)det.querySelectorAll('.srcview').forEach(function(b){b.remove()});
+  highlight(el);
+}
+document.getElementById('side').addEventListener('click',function(ev){
+  var it=ev.target.closest('.item');if(it)go(it.id);
+});
+window.addEventListener('popstate',render);
+document.getElementById('menuBtn').addEventListener('click',function(){if(document.body.classList.contains('list'))closeList();else openList()});
+document.getElementById('sideClose').addEventListener('click',closeList);
+document.getElementById('detClose').addEventListener('click',closeDetail);
+var sb=document.getElementById('srcBtn');
+if(sb){
+  sb.addEventListener('click',function(){document.body.classList.toggle('src');revealMark()});
+  document.getElementById('srcClose').addEventListener('click',function(){document.body.classList.remove('src')});
+}
+document.getElementById('detail').addEventListener('click',function(ev){
+  var a=ev.target.closest('a[href^="#"]');if(a){ev.preventDefault();go(decodeURIComponent(a.getAttribute('href').slice(1)));return;}
+  if(pre&&ev.target.closest('.srcview')){document.body.classList.add('src');revealMark();}
+});
+initGraph();
+highlight(null);
+render();
+})();
+</script>
+{{if .Browse}}<script>
+(function(){
+var top='/.well-known/geul/',tree=document.getElementById('browseList'),where=document.getElementById('browsePath'),loaded=false;
+function get(u){return fetch(u+'index.json').then(function(r){return r.ok?r.json():Promise.reject(r.status)})}
+function node(e){
+  var li=document.createElement('li'),a=document.createElement('a'),dir=/\/$/.test(e.URL);
+  li.dataset.url=e.URL;a.href=e.URL;a.className=dir?'dir':'file';a.textContent=e.Name.replace(/\/$/,'');
+  if(e.ID)a.title=e.ID;
+  if(e.URL===location.pathname)a.classList.add('here');
+  if(dir)a.addEventListener('click',function(ev){ev.preventDefault();toggle(li)});
+  li.appendChild(a);return li;
+}
+function fill(ul,u){
+  return get(u).then(function(d){
+    ul.replaceChildren();
+    (d.Entries||[]).forEach(function(e){ul.appendChild(node(e))});
+    if(!(d.Entries||[]).length){var s=document.createElement('li');s.className='empty';s.textContent='(비어 있음)';ul.appendChild(s)}
+    return ul;
+  });
+}
+function toggle(li){
+  var ul=li.querySelector(':scope>ul');
+  if(ul){li.classList.toggle('open');return Promise.resolve(ul)}
+  ul=document.createElement('ul');li.appendChild(ul);li.classList.add('open');
+  return fill(ul,li.dataset.url);
+}
+function expand(ul,url){
+  var li=[].find.call(ul.children,function(c){return c.dataset.url===url});
+  if(!li)return Promise.reject('경로 없음');
+  return li.classList.contains('open')?Promise.resolve(li.querySelector(':scope>ul')):toggle(li);
+}
+function reveal(){
+  var dirs=location.pathname.slice(top.length).split('/').slice(0,-1),p=Promise.resolve(tree),u=top;
+  dirs.forEach(function(seg){u+=seg+'/';var at=u;p=p.then(function(ul){return expand(ul,at)})});
+  return p.then(function(){var h=tree.querySelector('a.here');if(h)h.scrollIntoView({block:'center'})});
+}
+function open(){
+  where.textContent=top;
+  if(loaded)return;
+  loaded=true;
+  fill(tree,top).then(reveal).catch(function(e){where.textContent=top+' — 목록을 읽지 못했다 ('+e+')'});
+}
+function close(){document.body.classList.remove('browse')}
+document.getElementById('browseBtn').addEventListener('click',function(){if(document.body.classList.toggle('browse'))open()});
+document.getElementById('browseClose').addEventListener('click',close);
+document.addEventListener('keydown',function(ev){if(ev.key==='Escape')close()});
+})();
+</script>{{end}}
+</body>
+</html>
+{{define "item"}}<div class="item {{.Class}}" id="{{.Anchor}}" style="--d:{{.Depth}}"{{if .HasSpan}} data-off="{{.SpanOff}}" data-len="{{.SpanLen}}"{{end}}><span class="id">{{if .ID}}#{{.ID}}{{else}}{{.Index}}{{end}}</span><span class="name">{{.Name}}</span>{{if .Label}}<b>{{.Label}}</b>{{end}}{{if .Summary}}<span class="sum">{{.Summary}}</span>{{end}}<template><div class="dh"><span class="name">{{.Name}}</span>{{if .Label}}<b>{{.Label}}</b>{{end}}{{if .ID}}<span class="id">#{{.ID}}</span>{{end}}{{if .HasSpan}}<span class="f"><i>span</i> @{{.SpanOff}}+{{.SpanLen}}</span><button type="button" class="srcview">원문 보기</button>{{end}}</div><div>{{template "fields" .Fields}}</div>{{if .Back}}<div class="back">← {{range .Back}}{{template "ref" .}} {{end}}</div>{{end}}<div class="words"><div class="box head"><span class="cap">HEAD</span>{{range .HeadParts}}{{template "part" .}}{{end}}</div>{{if .BodyParts}}<div class="box"><span class="cap">PAYLOAD</span>{{range .BodyParts}}{{template "field" .}}{{end}}</div>{{end}}</div></template></div>{{end}}
+{{define "part"}}{{if .Record}}<div class="box rec"><span class="cap">{{.Name}}</span>{{range .Lines}}{{template "line" .}}{{end}}</div>{{else}}{{range .Lines}}{{template "line" .}}{{end}}{{end}}{{end}}
+{{define "field"}}{{if .Record}}{{template "part" .}}{{else}}<div class="box rec"><span class="cap">{{.Name}}</span>{{range .Lines}}<div class="wl"><span class="wd">{{.Word}}</span><span class="nm">{{if ne .Name $.Name}}{{.Name}}{{end}}</span>{{if .Note}}<span class="nt">{{.Note}}</span>{{end}}</div>{{end}}</div>{{end}}{{end}}
+{{define "line"}}<div class="wl{{if .Tag}} tg{{end}}"><span class="wd">{{.Word}}</span><span class="nm">{{.Name}}</span>{{if .Note}}<span class="nt{{if .Text}} txt{{end}}">{{.Note}}</span>{{end}}</div>{{end}}
+{{define "fields"}}{{range .}}<span class="f"><i>{{.Key}}</i>{{if .Text}} {{.Text}}{{end}}{{range .Refs}} {{template "ref" .}}{{end}}</span>{{end}}{{end}}
+{{define "ref"}}<a href="#e{{.ID}}">#{{.ID}}{{if .Label}} {{.Label}}{{end}}</a>{{end}}

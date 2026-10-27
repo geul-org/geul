@@ -1,5 +1,5 @@
 //ff:func feature=resolve type=resolver control=iteration dimension=1
-//ff:what TestResolverResolveDraft — a root importing a draft/.well-known/geul codec spec document resolves through a custom GEULPROXY file:// source
+//ff:what TestResolverResolveDraft — a root importing a geul-org/artifacts/geul/.well-known/geul codec spec document resolves through a custom GEULPROXY file:// source
 package resolve
 
 import (
@@ -12,14 +12,14 @@ import (
 )
 
 // TestResolverResolveDraft reads the codec spec documents published in the GEUL
-// spec repository at draft/.well-known/geul/ (the temporary stand-in for
+// archive at geul-dev draft/geul-org/artifacts/geul/.well-known/geul/ (the stand-in for
 // geul.org/.well-known/geul/): a root document imports the PUBLICATION spec
 // document (latest) and pins the FIELD one at version 1. It is skipped when this
-// module is checked out on its own, without the spec repository around it.
+// module is checked out on its own, without geul-dev draft/ around it.
 func TestResolverResolveDraft(t *testing.T) {
-	root, _ := filepath.Abs("../../..")
+	root, _ := filepath.Abs("../../../geul-org/artifacts/geul")
 	if _, err := os.Stat(filepath.Join(root, ".well-known", "geul")); err != nil {
-		t.Skip("draft/.well-known/geul not present")
+		t.Skip("geul-org/artifacts/geul/.well-known/geul not present")
 	}
 	c, err := ConfigFromEnv(func(k string) string {
 		return map[string]string{"GEULPROXY": "file://" + root + ",off"}[k]

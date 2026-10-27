@@ -25,6 +25,10 @@ pkg/schema/            형식 검증 (0층 → Codec 규격 → 격틀)
 cmd/geul/              geul CLI 진입점
 internal/cli/          CLI 명령 (cobra, 명령마다 파일 하나)
 internal/config/       CLI 설정 (플래그 > GEUL… 환경변수 > 설정 파일 > 데이터 폴더 탐색)
+internal/view/page/    뷰어 페이지 (inspect.Document → 페이지 모델·그래프 → HTML, page.html 내장)
+internal/view/server/  geul serve의 HTTP 서버 (페이지·바이트·목록, Accept 협상)
+internal/view/build/   geul build의 정적 굽기 (server의 페이지·목록을 그대로 쓴다)
+internal/view/static/  그래프 JS(vendor/, MIT)를 내장해 /.well-known/geul/_static/으로 제공·굽기
 ```
 
 - GEUL과 다른 표현 사이의 코덱(`geulnl`, `wikigeul`, `nlgeul`)은 이 라이브러리가 아니라 TANGEUL 문서로 작성한다(geul-dev `draft/codec/`). 이 라이브러리는 코덱 문서가 부르는 호스트 함수와 그 문서를 실행하는 기반을 제공한다.
@@ -42,7 +46,7 @@ internal/config/       CLI 설정 (플래그 > GEUL… 환경변수 > 설정 파
 ## 원칙
 
 - core는 외부 의존과 네트워크 I/O가 없다. 다른 패키지가 core에 의존하고, 반대 방향은 없다.
-- `pkg/*`는 외부 모듈에 의존하지 않는다. cobra는 `cmd/geul`·`internal/cli`만 쓴다. 예외 예정: BCP 47 검사용 `golang.org/x/text`(BSD-3).
+- `pkg/*`는 외부 모듈에 의존하지 않는다. cobra는 `cmd/geul`·`internal/cli`만, 그래프 JS는 `internal/view`만 쓴다. 예외 예정: BCP 47 검사용 `golang.org/x/text`(BSD-3).
 - 디코딩은 IMPORT를 조회하지 않는다. 조회는 `resolve`의 명시적 단계이고, 위치는 Resolver로 주입한다.
 - 쓰기는 빌더로만 한다. 폭과 ID는 빌더가 정한다. 같은 내용은 같은 바이트가 된다.
 - 결과는 `doc, warns, err`로 돌려준다. 경고를 실패로 볼지는 호출하는 쪽이 정한다.
@@ -59,6 +63,7 @@ internal/config/       CLI 설정 (플래그 > GEUL… 환경변수 > 설정 파
 | 작성(초안 파일) | `new`, `open`, `add [-i]`, `def`, `set`, `rm [--force]`, `meta [--unset]` |
 | 공표 | `publish [--amend] [--name]`, `delta`, `deprecate`, `tombstone --reason`, `name` |
 | Issuer·설정 | `issuer new\|ls\|show`(Ed25519, 16 WORD Issuer), `env [-w\|-u]` |
+| 뷰어 | `serve [--addr]`(브라우저로 보기), `build -o`(정적 웹 호스트용 굽기) |
 
 ```
 geul issuer new --name me
@@ -71,11 +76,27 @@ geul log me/adams && geul show me/adams
 
 - 값 표기는 `pkg/notation` 하나다(`show` 출력 = `add` 입력, 왕복 보장).
 - 데이터 폴더(`.well-known/geul/`을 담은 루트)는 `--data`·`GEULDATA`·상위 폴더 탐색 순으로 찾는다. 개인키는 `$XDG_CONFIG_HOME/geul/keys/`(데이터 폴더 밖).
+- `serve`와 `build`는 인자가 없으면 데이터 폴더를 쓴다.
+
+## 뷰어 (`serve`, `build`)
+
+2026-10-27 뷰어 저장소 geul-org/gogeulve(옛 visualeditor, 명령 `ve`·`geulve`)를 이 모듈로 합쳤다.
+
+```
+geul serve [--addr host:port] [FILE.geul|DIR]   브라우저로 보기 (기본 127.0.0.1, 빈 포트)
+geul build -o OUT [DIR]                           OUT/.well-known/geul/ 에 정적 파일로 굽기
+```
+
+- 주소는 공표 주소의 형식 지정(GEUL-ORG)을 따른다. `<path>.geul`은 언제나 바이트(`application/vnd.geul`)다. 확장자 없는 `<path>`는 `Accept`가 `application/vnd.geul`이면 바이트, 아니면(브라우저) 뷰어 페이지다(`Vary: Accept`). 디렉터리는 목록, `<dir>/index.json`은 같은 목록의 JSON(탐색 패널용)이다. 이름 경로(`geul.org/quantity`)는 ID 경로로 넘긴다.
+- 디코드·해석은 `pkg/inspect`가 한다. 뷰어는 배치하고 그리기만 한다. JS는 화면 조작만 하고 코덱을 모른다. 외부 네트워크에 접속하지 않는다(CSP `script-src 'self' 'unsafe-inline'`).
+- `build` 출력: `<path>.geul`(원본), `<path>`(뷰어 페이지, 확장자 없음, text/html), `<dir>/index.html`·`index.json`, `_static/`. 호스트가 할 일: 확장자 없는 `<path>`에 `Accept: application/vnd.geul`이면 `<path>.geul`을 준다(CloudFront Function), `Vary: Accept`·CSP 헤더. 이름 경로와 최신판 302는 아직 없다(CloudFront KeyValueStore로 옮길 예정). 출력 루트가 원본 트리이거나 그 안이면 거부하고, 디코드되지 않는 문서가 있으면 멈춘다.
+- 그래프 뷰는 Cytoscape.js 3.30.2, dagre 0.8.5(graphlib 2.1.8·lodash 모듈 포함), cytoscape-dagre 2.5.0(모두 MIT). npm tarball의 sha512를 대조했고 고지는 `internal/view/static/vendor/LICENSES.md`와 [NOTICE](NOTICE)에 있다.
+
 - 설계·명령 표·미결 사항: geul-dev `draft/README.md`. 실사용 시험·패치 기록: `draft/LOG.md`. 남은 일: `draft/TODO.md`.
 
 ## 아카이브
 
-- 로컬 아카이브는 geul-dev 저장소의 `draft/.well-known/geul/`이다. 경로는 GEUL-ORG 공표 주소와 같다.
+- 로컬 아카이브는 geul.org 웹사이트 저장소의 `artifacts/geul/.well-known/geul/`(geul-dev `draft/geul-org/` 아래)이다. 경로는 GEUL-ORG 공표 주소와 같다.
 - 아카이브, 미러, geul.org 덤프는 같은 구조라서 Resolver 하나로 읽는다.
 
 ## 현황 (2026-10-27)
