@@ -1,3 +1,15 @@
 session.json
 tsma-results.jsonl
 **/.tsma/
+
+# 비밀 (보안 점검 2026-10-27)
+.env*
+*.key
+*.pem
+keys/
+
+# 바이너리
+/geul
+cmd/geul/geul
+geulve
+ve
