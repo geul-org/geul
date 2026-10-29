@@ -38,6 +38,14 @@ func TestCheckCoordinate(t *testing.T) {
 		{core.EncodeCoordinate(core.Coordinate{Lat: 91, Lon: 1}), "V8"},
 		{core.EncodeCoordinate(core.Coordinate{Lat: 1, Lon: 200}), "V8"},
 		{geo(q(111, 0), 1, 361), "V8"},
+		{geo(q(111, 0), -10, -340), ""},
+		{geo(q(111, 0), 1, -360), ""},
+		{geo(q(111, 0), 1, 360), ""},
+		{geo(q(111, 0), 1, -360.000001), "V8"},
+		{geo(q(111, 0), 1, 360.000001), "V8"},
+		{core.EncodeCoordinate(core.Coordinate{Lat: 1, Lon: -180}), ""},
+		{core.EncodeCoordinate(core.Coordinate{Lat: 1, Lon: 180}), ""},
+		{core.EncodeCoordinate(core.Coordinate{Lat: 1, Lon: -181}), "V8"},
 	}
 	for i, c := range cases {
 		if got := rulesOf(checkCoordinate(recOf(c.r))); got != c.want {
