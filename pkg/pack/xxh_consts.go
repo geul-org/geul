@@ -1,0 +1,10 @@
+package pack
+
+// XXH64 primes (xxHash specification).
+const (
+	xxP1 uint64 = 11400714785074694791
+	xxP2 uint64 = 14029467366897019727
+	xxP3 uint64 = 1609587929392839161
+	xxP4 uint64 = 9650029242287828579
+	xxP5 uint64 = 2870177450012600261
+)
