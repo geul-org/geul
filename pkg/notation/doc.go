@@ -12,7 +12,10 @@
 //	Q42, P31              WIKIDATA-QID, WIKIDATA-PID
 //	0x0000/0x…0806[@2]    DOC-POINTER (names allowed when reading: geul.org/quantity)
 //	0x0000/0x…0806#3      EXTERNAL-ISSUER-* (Issuer document's LOCAL)
-//	"text", "text"@en     UTF8-TEXT, UTF8-LANGUAGE-TEXT
+//	"text", "text"@en     UTF8-TEXT, UTF8-LANGUAGE-TEXT (language LANGUAGE-BCP47-CODE)
+//	"text"@@pt-BR         UTF8-LANGUAGE-TEXT whose language is a LANGUAGE-SHORT-CODE,
+//	                      by its GEUL Language Registry tag (the 0848 codec spec's ENUM);
+//	                      "text"@@0x4130 is the code itself (written so without the registry)
 //	<https://…>           URI
 //	1.20, -3, 12e2        SIGNED-DECIMAL, digits as written
 //	NAME(arg, …)          a Value or Reference by codec name, e.g.

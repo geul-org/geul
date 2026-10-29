@@ -1,5 +1,5 @@
 //ff:func feature=notation type=decoder control=iteration dimension=1
-//ff:what FormatEntry — one interpreted record as a line: #id NAME tokens for an Edge, NAME tokens otherwise, raw words when it has no readable name
+//ff:what FormatEntry — one interpreted record as a line: #id NAME tokens for an Edge, NAME tokens otherwise, raw words when it has no readable name; short language codes by registry tag
 package notation
 
 import (
@@ -13,7 +13,9 @@ import (
 // Id `#n`, its codec name and one token per field after the Edge Id; any
 // other record as its codec name and its fields. A record whose name does not
 // read back to its codec (codecOf), that carries an Issuer or format number,
-// or an Edge that does not open with a LOCAL Edge Id is its raw words.
+// or an Edge that does not open with a LOCAL Edge Id is its raw words. A
+// LANGUAGE-SHORT-CODE language is written as its registry tag when e.Langs
+// names it (namedLanguageToken).
 func FormatEntry(e inspect.Entry) string {
 	raw := hexToken(e.Words)
 	c, ok := codecOf(e.Record.Kind, e.Name)
@@ -30,7 +32,9 @@ func FormatEntry(e inspect.Entry) string {
 		tokens, parts = []string{id, e.Name}, parts[1:]
 	}
 	for _, p := range parts {
-		tokens = append(tokens, partTokens(p)...)
+		for _, tok := range partTokens(p) {
+			tokens = append(tokens, namedLanguageToken(tok, e.Langs))
+		}
 	}
 	return strings.Join(tokens, " ")
 }

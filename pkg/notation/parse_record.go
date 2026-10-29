@@ -24,7 +24,7 @@ func parseRecord(tok string, ctx Context) (core.Record, error) {
 	case tok[0] == '#' || (tok[0] == 'Q' || tok[0] == 'P') && len(tok) > 1 && tok[1] >= '0' && tok[1] <= '9':
 		return parseNumbered(tok, ctx)
 	case tok[0] == '"':
-		return parseText(tok)
+		return parseText(tok, ctx)
 	case tok[0] == '<' && strings.HasSuffix(tok, ">"):
 		return core.EncodeBytesValue(codecURIEven, []byte(tok[1:len(tok)-1])), nil
 	case strings.HasSuffix(tok, ")") && strings.Contains(tok, "("):

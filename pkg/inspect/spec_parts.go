@@ -17,7 +17,7 @@ func specParts(e Entry) ([]Part, bool) {
 	if !ok {
 		return nil, false
 	}
-	w := &walker{ws: e.Record.Payload, tail: tail}
+	w := &walker{ws: e.Record.Payload, tail: tail, langs: e.Langs}
 	if e.Record.Kind == core.KindEdge {
 		w.rec("ID")
 	}

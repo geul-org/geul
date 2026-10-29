@@ -1,5 +1,5 @@
-//ff:func feature=notation type=decoder control=sequence
-//ff:what formatLanguageText — a UTF8-LANGUAGE-TEXT with a BCP 47 language as "text"@tag; false for another language code
+//ff:func feature=notation type=decoder control=selection
+//ff:what formatLanguageText — a UTF8-LANGUAGE-TEXT as "text"@tag (LANGUAGE-BCP47-CODE) or "text"@@0xNNNN (LANGUAGE-SHORT-CODE, named later by FormatEntry)
 package notation
 
 import (
@@ -8,13 +8,21 @@ import (
 	"github.com/geul-org/gogeul/pkg/core"
 )
 
-// formatLanguageText writes the text quoted and its LANGUAGE-BCP47-CODE tag
-// after `@`. A short language code has no short form (false).
+// formatLanguageText writes the text quoted and its language after it: a
+// LANGUAGE-BCP47-CODE tag after `@`, a LANGUAGE-SHORT-CODE after `@@` as its
+// code in hex (FormatEntry puts the registry tag in its place,
+// namedLanguageToken). A record that does not decode is false.
 func formatLanguageText(r core.Record) (string, bool) {
 	lang, text, err := core.DecodeLanguageText(r)
-	if err != nil || lang.Kind != core.KindValue || lang.Codec&^1 != core.CodecLanguageBCP47Even {
+	switch {
+	case err != nil || lang.Kind != core.KindValue:
+		return "", false
+	case lang.Codec == codecLanguageShort && len(lang.Payload) == 1:
+		return strconv.Quote(string(text)) + "@@" + core.FormatID(lang.Payload), true
+	case lang.Codec&^1 == core.CodecLanguageBCP47Even:
+		tag, err := core.DecodeBytesValue(lang, core.CodecLanguageBCP47Even)
+		return strconv.Quote(string(text)) + "@" + string(tag), err == nil
+	default:
 		return "", false
 	}
-	tag, err := core.DecodeBytesValue(lang, core.CodecLanguageBCP47Even)
-	return strconv.Quote(string(text)) + "@" + string(tag), err == nil
 }

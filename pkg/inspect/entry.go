@@ -14,6 +14,8 @@ import (
 // form. ID is the record's Edge Id and Refs the non-zero Edge Ids it
 // references in field order; both are empty when Data carries none. Spec is
 // the codec spec fields of the record's codec (edge/DECLARE), nil when undeclared.
+// Langs is the GEUL Language Registry the specs carry (codecspec.Spec.Languages:
+// LANGUAGE-SHORT-CODE code in hex to its BCP 47 tag), nil without it.
 type Entry struct {
 	Record core.Record
 	Words  []core.Word
@@ -22,4 +24,5 @@ type Entry struct {
 	ID     uint64
 	Refs   []uint64
 	Spec   []codecspec.Field
+	Langs  map[string]string
 }

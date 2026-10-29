@@ -12,8 +12,9 @@ import (
 // is f.Width words noted with the
 // ENUM name of that code and, under a CODEC, the Value they are the Payload
 // of (rawData); a record field is one record, which must fit f's CODEC
-// targets (core.FieldAccepts), noted with its decoded Value, or as a Marker
-// when it is a slot marker.
+// targets (core.FieldAccepts), noted with its decoded Value (a
+// LANGUAGE-SHORT-CODE language named by the registry, namedLanguage), or as a
+// Marker when it is a slot marker.
 func (w *walker) field(f codecspec.Field) {
 	n := len(w.out)
 	switch {
@@ -41,5 +42,5 @@ func (w *walker) field(f codecspec.Field) {
 		p.Data = Marker{Number: r.Codec, Name: core.SlotMarkerName(r.Codec)}
 		return
 	}
-	p.Data = asData(ParseValue(r))
+	p.Data = asData(namedLanguage(r, w.langs))
 }

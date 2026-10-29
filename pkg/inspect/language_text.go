@@ -10,8 +10,8 @@ import (
 
 // languageText decodes a UTF8-LANGUAGE-TEXT Value into its text and its
 // language: a LANGUAGE-BCP47-CODE as the tag, a LANGUAGE-SHORT-CODE as its
-// code in hex (the registry that names it is not built yet). Another language
-// record is an error.
+// code in hex (the registry tag is the codec spec's, namedLanguage). Another
+// language record is an error.
 func languageText(r core.Record) (string, string, error) {
 	lang, text, err := core.DecodeLanguageText(r)
 	if err != nil {
