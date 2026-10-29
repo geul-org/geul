@@ -14,7 +14,7 @@ import (
 func treeLabels(t resolve.Store, p string) map[string]string {
 	labels := issuerLabels(t)
 	segs := strings.Split(strings.Trim(strings.TrimPrefix(p, wellKnown), "/"), "/")
-	for id, n := range invertNames(documentNames(t, segs[0])) {
+	for id, n := range documentLabels(t, segs[0]) {
 		labels[id] = n
 	}
 	return labels

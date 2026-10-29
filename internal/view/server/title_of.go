@@ -15,7 +15,7 @@ import (
 func titleOf(t resolve.Store, p string) string {
 	segs := strings.Split(strings.TrimPrefix(p, wellKnown), "/")
 	if len(segs) > 2 {
-		if n, ok := invertNames(documentNames(t, segs[0]))[segs[1]]; ok {
+		if n, ok := documentLabels(t, segs[0])[segs[1]]; ok {
 			segs[1] = n
 		}
 	}
