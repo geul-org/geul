@@ -16,9 +16,9 @@ func (w *writer) finish() error {
 	}
 	m := &manifest{gen: w.res.Generation + 1, created: w.o.Now().Unix(), objects: w.objs,
 		issuers: w.issuers, named: ns, pLayers: pl, hLayers: hl}
+	m.dicts = w.dicts
 	if w.prev != nil {
 		m.prev, _ = parseHashHex(w.prev.name)
-		m.dicts = w.carryDicts()
 	}
 	mb := encodeManifest(m)
 	sum := sha256.Sum256(mb)

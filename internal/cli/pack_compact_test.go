@@ -16,17 +16,17 @@ func TestPackCompact(t *testing.T) {
 	src := h.data
 	h.packed()
 	var out bytes.Buffer
-	if err := packCompact(h.data, &out); err != nil || strings.Count(out.String(), "generation 2") != 2 {
+	if err := packCompact(h.data, packOptions(), &out); err != nil || strings.Count(out.String(), "generation 2") != 2 {
 		t.Fatal(err, out.String())
 	}
-	if err := packCompact(src, &out); err == nil {
+	if err := packCompact(src, packOptions(), &out); err == nil {
 		t.Fatal("directory archive")
 	}
 	objs, _ := filepath.Glob(filepath.Join(h.data, ".well-known", "geul", "*", "o", "*.gpk"))
 	for _, o := range objs {
 		os.Remove(o)
 	}
-	if err := packCompact(h.data, &out); err == nil {
+	if err := packCompact(h.data, packOptions(), &out); err == nil {
 		t.Fatal("missing objects")
 	}
 }

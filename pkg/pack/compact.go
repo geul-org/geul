@@ -11,7 +11,7 @@ import (
 // OBJECTS lists only them, so older objects are no longer referenced (delete
 // them after the retention period). The generation chain continues.
 func Compact(ctx context.Context, out string, o BuildOptions) (BuildResult, error) {
-	r, err := openPrev(ctx, out, o.Codec)
+	r, err := openPrev(ctx, out)
 	if err == nil && r == nil {
 		err = errors.New("geul/pack: nothing to compact (no latest.txt)")
 	}

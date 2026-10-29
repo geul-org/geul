@@ -6,7 +6,7 @@ package pack
 func (w *writer) writeBlocks(bs []block) ([]Loc, error) {
 	locs := make([]Loc, len(bs))
 	for i, b := range bs {
-		frame, err := w.o.Codec.Compress(encodeBlock(b))
+		frame, err := w.o.Codec.Compress(encodeBlock(b), nil)
 		if err == nil && w.cur != nil && !w.cur.fits(len(frame), w.o.PackSize) {
 			err = w.closeObject(nil)
 		}

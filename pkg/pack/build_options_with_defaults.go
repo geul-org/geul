@@ -4,7 +4,8 @@ package pack
 
 import "time"
 
-// withDefaults returns o with defaults; fan-outs below 2 would never shrink a level.
+// withDefaults returns o with defaults; fan-outs below 2 would never shrink a
+// level. Codec stays nil: the writer follows the set (followCodec).
 func (o BuildOptions) withDefaults() BuildOptions {
 	if o.PackSize <= 0 {
 		o.PackSize = DefaultPackSize
@@ -14,9 +15,6 @@ func (o BuildOptions) withDefaults() BuildOptions {
 	o.HFanout = defaultInt(o.HFanout, 2, DefaultHFanout)
 	o.HRoot = defaultInt(o.HRoot, 1, DefaultHRoot)
 	o.HLayers = defaultInt(o.HLayers, 1, DefaultHLayers)
-	if o.Codec == nil {
-		o.Codec = Stored{}
-	}
 	if o.Now == nil {
 		o.Now = time.Now
 	}

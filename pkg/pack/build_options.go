@@ -12,6 +12,9 @@ import (
 // put path's bytes, every deleted path's absence and, for a Full batch, the
 // path set. Check runs after that on the new generation. Fresh rewrites every
 // record into new objects (compaction): the new OBJECTS lists only them.
+// Codec nil follows the set: Zstd when its current generation has a
+// dictionary or a compressed record, Stored otherwise (and for a new set).
+// Batch.Get may be called from several goroutines when Codec is Zstd.
 type BuildOptions struct {
 	PackSize int64
 	PLeaf    int

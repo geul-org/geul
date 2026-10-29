@@ -1,5 +1,5 @@
 //ff:func feature=pack type=encoder control=sequence
-//ff:what TestZstdFrame — header bytes, raw blocks split at 128 KiB, empty input, and a round trip through Stored
+//ff:what TestZstdFrame — header bytes, raw blocks split at 128 KiB, empty input, and a round trip through the zstd decoder
 package pack
 
 import (
@@ -17,7 +17,7 @@ func TestZstdFrame(t *testing.T) {
 	if len(f) != 14+3*3+len(big)+4 {
 		t.Fatal(len(f))
 	}
-	got, err := Stored{}.Decompress(f, nil)
+	got, err := plainDecoder().DecodeAll(f, nil)
 	if err != nil || !bytes.Equal(got, big) {
 		t.Fatal(err)
 	}

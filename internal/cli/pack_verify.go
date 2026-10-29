@@ -11,7 +11,7 @@ import (
 // packVerify checks object hashes and index ↔ inventory agreement, then
 // prints one line per set.
 func packVerify(dir string, w io.Writer) error {
-	a, err := openArchive(dir)
+	a, err := openArchive(dir, packOptions())
 	if err != nil {
 		return err
 	}

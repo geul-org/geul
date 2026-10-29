@@ -11,9 +11,9 @@ import (
 )
 
 // openPrev opens out's latest generation for a writer.
-func openPrev(ctx context.Context, out string, c Codec) (*Reader, error) {
+func openPrev(ctx context.Context, out string) (*Reader, error) {
 	if _, err := os.Stat(filepath.Join(out, latestFile)); errors.Is(err, fs.ErrNotExist) {
 		return nil, nil
 	}
-	return Open(ctx, FileStore{Root: out}, Options{Codec: c})
+	return Open(ctx, FileStore{Root: out}, Options{})
 }

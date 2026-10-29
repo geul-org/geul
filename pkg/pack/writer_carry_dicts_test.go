@@ -1,5 +1,5 @@
 //ff:func feature=pack type=writer control=sequence
-//ff:what TestWriterCarryDicts — renumbered previous DICTS; none on Fresh
+//ff:what TestWriterCarryDicts — renumbered previous DICTS; none on Fresh or for a new set
 package pack
 
 import "testing"
@@ -13,5 +13,8 @@ func TestWriterCarryDicts(t *testing.T) {
 	w.o.Fresh = true
 	if d := w.carryDicts(); d != nil {
 		t.Fatal(d)
+	}
+	if d := (&writer{}).carryDicts(); d != nil {
+		t.Fatal("new set", d)
 	}
 }

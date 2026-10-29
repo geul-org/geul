@@ -1,5 +1,5 @@
 //ff:func feature=cli type=helper control=sequence
-//ff:what TestAppArchive — opened once and kept; a directory archive is remembered as nil
+//ff:what TestAppArchive — opened once and kept; a directory archive is remembered as nil; a bad GEULCOMPRESS fails
 package cli
 
 import (
@@ -27,5 +27,10 @@ func TestAppArchive(t *testing.T) {
 	}
 	if again, _ := a.archive(h.data); again != arch {
 		t.Fatal("not kept")
+	}
+	bad := &app{}
+	bad.cfg, _ = config.Load(config.Env{Getenv: func(k string) string { return map[string]string{"GEULCOMPRESS": "x"}[k] }, Cwd: t.TempDir(), ConfigDir: t.TempDir()})
+	if _, err := bad.archive(h.data); err == nil {
+		t.Fatal("bad GEULCOMPRESS")
 	}
 }

@@ -10,7 +10,7 @@ import (
 
 // packUnpack restores dir's pack archive as out/.well-known/geul/.
 func packUnpack(dir, out string, w io.Writer) error {
-	a, err := openArchive(dir)
+	a, err := openArchive(dir, packOptions())
 	if err != nil {
 		return err
 	}

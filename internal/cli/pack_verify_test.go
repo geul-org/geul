@@ -15,7 +15,7 @@ func TestPackVerify(t *testing.T) {
 	h.doc()
 	single := filepath.Join(t.TempDir(), "single")
 	var out bytes.Buffer
-	packBuild(h.data, single, true, &out)
+	packBuild(h.data, single, true, packOptions(), &out)
 	out.Reset()
 	if err := packVerify(single, &out); err != nil || !strings.HasPrefix(out.String(), ". generation 1") {
 		t.Fatal(err, out.String())

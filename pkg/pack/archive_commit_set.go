@@ -16,6 +16,6 @@ func (a *Archive) commitSet(ctx context.Context, s *packSet, b *Batch) (BuildRes
 	if err != nil || !res.Changed {
 		return res, err
 	}
-	s.r, err = Open(ctx, FileStore{Root: s.dir}, Options{Codec: a.o.Codec, Manifest: res.Manifest})
+	s.r, err = Open(ctx, FileStore{Root: s.dir}, Options{Manifest: res.Manifest})
 	return res, err
 }

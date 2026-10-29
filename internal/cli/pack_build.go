@@ -13,8 +13,8 @@ import (
 
 // packBuild converts the directory archive src holds (or is) into pack sets
 // under out/.well-known/geul/; an existing pack archive there gets its next
-// generations. out must be another folder.
-func packBuild(src, out string, single bool, w io.Writer) error {
+// generations. out must be another folder. o.Codec stores the records.
+func packBuild(src, out string, single bool, o pack.BuildOptions, w io.Writer) error {
 	root, err := treeRoot(src)
 	if err != nil {
 		return err
@@ -31,10 +31,10 @@ func packBuild(src, out string, single bool, w io.Writer) error {
 	var rs []pack.BuildResult
 	if single {
 		var r pack.BuildResult
-		r, err = pack.Build(context.Background(), root, wk, packOptions())
+		r, err = pack.Build(context.Background(), root, wk, o)
 		rs = append(rs, r)
 	} else {
-		rs, err = pack.Split(context.Background(), root, wk, packOptions())
+		rs, err = pack.Split(context.Background(), root, wk, o)
 	}
 	if err != nil {
 		return err

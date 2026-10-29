@@ -4,7 +4,7 @@ package pack
 
 // finishData writes the inventory (one checksummed zstd frame) and closes the pack.
 func (w *writer) finishData() error {
-	inv, err := w.o.Codec.Compress(encodeInventory(w.inv))
+	inv, err := w.o.Codec.Compress(encodeInventory(w.inv), nil)
 	if err != nil {
 		return err
 	}

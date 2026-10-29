@@ -8,11 +8,11 @@ import (
 )
 
 func TestOpenPrev(t *testing.T) {
-	if r, err := openPrev(context.Background(), t.TempDir(), nil); r != nil || err != nil {
+	if r, err := openPrev(context.Background(), t.TempDir()); r != nil || err != nil {
 		t.Fatal(r, err)
 	}
 	_, out := built(t, small())
-	if r, err := openPrev(context.Background(), out, nil); err != nil || r.Generation() != 1 {
+	if r, err := openPrev(context.Background(), out); err != nil || r.Generation() != 1 {
 		t.Fatal(err)
 	}
 }

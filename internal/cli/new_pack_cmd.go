@@ -1,5 +1,5 @@
 //ff:func feature=cli type=command control=sequence
-//ff:what newPackCmd — geul pack: convert a directory archive to pack sets and back, verify and compact them
+//ff:what newPackCmd — geul pack: convert a directory archive to pack sets and back, verify and compact them (--compress picks the codec)
 package cli
 
 import "github.com/spf13/cobra"
@@ -13,9 +13,15 @@ func newPackCmd(a *app) *cobra.Command {
 (m/<sha256>.gpm manifests, o/<sha256>.gpx indexes, o/<sha256>.gpk data packs) and
 latest.txt, one set per Issuer (<Issuer>/latest.txt) or one at the top. Commands
 that write to a data folder holding a pack archive add a generation per changed
-set after the command succeeds.`,
+set after the command succeeds.
+
+Records are stored raw unless compression is asked for: --compress (build,
+compact) or GEULCOMPRESS (every write) set to none, zstd, zstd:LEVEL (1-22,
+default 19), zstd:nodict or zstd:LEVEL:nodict. zstd trains one dictionary per
+set when it pays off. Unset, a set keeps the codec it has. Reading never needs
+the setting.`,
 	}
-	var out string
+	var out, compress string
 	var single bool
 	build := &cobra.Command{
 		Use:   "build -o OUT [DIR]",
@@ -26,11 +32,16 @@ set after the command succeeds.`,
 			if err != nil {
 				return err
 			}
-			return packBuild(src, out, single, a.out)
+			o, err := a.writeOptions(compress)
+			if err != nil {
+				return err
+			}
+			return packBuild(src, out, single, o, a.out)
 		},
 	}
 	build.Flags().StringVarP(&out, "out", "o", "", "output data folder")
 	build.Flags().BoolVar(&single, "single", false, "one set at the top instead of one per Issuer")
+	build.Flags().StringVar(&compress, "compress", "", compressUsage)
 	build.MarkFlagRequired("out")
 	unpack := &cobra.Command{
 		Use:   "unpack -o OUT [DIR]",
@@ -67,9 +78,14 @@ set after the command succeeds.`,
 			if err != nil {
 				return err
 			}
-			return packCompact(src, a.out)
+			o, err := a.writeOptions(compress)
+			if err != nil {
+				return err
+			}
+			return packCompact(src, o, a.out)
 		},
 	}
+	compact.Flags().StringVar(&compress, "compress", "", compressUsage)
 	cmd.AddCommand(build, unpack, verify, compact)
 	return cmd
 }

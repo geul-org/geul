@@ -27,7 +27,7 @@ func (w *writer) planPut(path string) (*put, error) {
 			return nil, nil
 		}
 	}
-	pu := &put{path: path, ref: parsePath(path), sum: w.sums[path]}
+	pu := &put{path: path, ref: parsePath(path), sum: w.sums[path], n: len(data)}
 	pu.ch, pu.chOK = contentHash(data)
 	return pu, nil
 }

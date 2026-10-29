@@ -1,5 +1,5 @@
 //ff:func feature=pack type=writer control=iteration dimension=1
-//ff:what TestWriteTo — no change makes no generation; a broken latest.txt, Get errors, mkdir failures, data and finish failures are returned
+//ff:what TestWriteTo — no change makes no generation; a broken latest.txt, Get errors, mkdir failures, data and finish failures, and a set whose codec cannot be read, are returned
 package pack
 
 import (
@@ -36,5 +36,11 @@ func TestWriteTo(t *testing.T) {
 	}
 	if res, err := writeTo(ctx, out, b, small(), never()); err != nil || res.Generation != 2 {
 		t.Fatal(res, err)
+	}
+	fresh := small()
+	fresh.Fresh = true
+	os.Remove(objPath(t, opened(t, out), out, kindIndex))
+	if _, err := writeTo(ctx, out, b, fresh, never()); err == nil {
+		t.Fatal("follow the codec")
 	}
 }

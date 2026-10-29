@@ -15,27 +15,27 @@ func TestPackBuild(t *testing.T) {
 	h.doc()
 	var out bytes.Buffer
 	split := filepath.Join(t.TempDir(), "split")
-	if err := packBuild(h.data, split, false, &out); err != nil || strings.Count(out.String(), "generation 1") != 2 {
+	if err := packBuild(h.data, split, false, packOptions(), &out); err != nil || strings.Count(out.String(), "generation 1") != 2 {
 		t.Fatal(err, out.String())
 	}
 	single := filepath.Join(t.TempDir(), "single")
-	if err := packBuild(filepath.Join(h.data, ".well-known", "geul"), single, true, &out); err != nil {
+	if err := packBuild(filepath.Join(h.data, ".well-known", "geul"), single, true, packOptions(), &out); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := os.Stat(filepath.Join(single, ".well-known", "geul", "latest.txt")); err != nil {
 		t.Fatal(err)
 	}
-	if err := packBuild(h.data, h.data, false, &out); err == nil {
+	if err := packBuild(h.data, h.data, false, packOptions(), &out); err == nil {
 		t.Fatal("same folder")
 	}
-	if err := packBuild(split, t.TempDir(), false, &out); err == nil {
+	if err := packBuild(split, t.TempDir(), false, packOptions(), &out); err == nil {
 		t.Fatal("already packed")
 	}
-	if err := packBuild(t.TempDir(), t.TempDir(), false, &out); err == nil {
+	if err := packBuild(t.TempDir(), t.TempDir(), false, packOptions(), &out); err == nil {
 		t.Fatal("no tree")
 	}
 	os.WriteFile(filepath.Join(h.data, ".well-known", "geul", "h", "0x"+strings.Repeat("0", 64)+".geul"), []byte("x"), 0o644)
-	if err := packBuild(h.data, filepath.Join(t.TempDir(), "bad"), true, &out); err == nil {
+	if err := packBuild(h.data, filepath.Join(t.TempDir(), "bad"), true, packOptions(), &out); err == nil {
 		t.Fatal("bad h/ copy")
 	}
 }

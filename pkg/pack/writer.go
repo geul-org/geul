@@ -6,7 +6,8 @@ import "context"
 
 // writer builds one generation in out. base is the previous live state
 // (path → Loc, empty when Fresh), remap renumbers carried locations when
-// OBJECTS is rebuilt, cur is the one object open at a time.
+// OBJECTS is rebuilt, cur is the one object open at a time. o.Codec is never
+// nil once open ran (writeTo resolves it).
 type writer struct {
 	ctx     context.Context
 	out     string
@@ -26,5 +27,7 @@ type writer struct {
 	cur     *objWriter
 	curNum  uint32
 	inv     inventory
+	dicts   []dictEntry // DICTS of the new generation: carried, then the one trained now
+	dict    *Dict       // the dictionary new records use (nil: none)
 	res     BuildResult
 }

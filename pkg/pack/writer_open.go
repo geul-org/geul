@@ -1,5 +1,5 @@
 //ff:func feature=pack type=writer control=sequence
-//ff:what writer.open — load the previous generation: live state, Issuer table, OBJECTS to carry and whether to rewrite all layers
+//ff:what writer.open — load the previous generation: live state, Issuer table, OBJECTS and DICTS to carry and whether to rewrite all layers
 package pack
 
 // open prepares w from out's latest generation. Every layer is rewritten
@@ -7,7 +7,7 @@ package pack
 // and when the H layers reached HLayers; otherwise OBJECTS only grows, so the
 // kept H layers' object numbers stay valid.
 func (w *writer) open() error {
-	prev, err := openPrev(w.ctx, w.out, w.o.Codec)
+	prev, err := openPrev(w.ctx, w.out)
 	if err != nil {
 		return err
 	}
@@ -31,5 +31,6 @@ func (w *writer) open() error {
 	} else {
 		w.objs = append([]object(nil), prev.m.objects...)
 	}
+	w.dicts = w.carryDicts()
 	return nil
 }

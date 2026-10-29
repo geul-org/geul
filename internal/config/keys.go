@@ -8,7 +8,9 @@ package config
 // GEULCACHE the cache of fetched documents, GEULISSUER the default Issuer of
 // `geul new`, GEULREMOTE where `push` sends, GEULFORMAT the output (text or
 // json), GEULSTORE how a new data folder stores its archive (pack sets by
-// default; dir for the directory tree), GEULPACK pack sets to read before
-// GEULPROXY (comma-separated https:// bases or local set directories). The
-// rest are resolve's (GEULPROXY …).
-var Keys = []string{"GEULDATA", "GEULENV", "GEULCACHE", "GEULISSUER", "GEULREMOTE", "GEULFORMAT", "GEULSTORE", "GEULPACK", "GEULPROXY", "GEULPRIVATE", "GEULNOLOG", "GEULLOG", "GEULINSECURE", "GEULWORK"}
+// default; dir for the directory tree), GEULCOMPRESS how new pack records
+// are stored (none, zstd, zstd:LEVEL, zstd:nodict; unset keeps each set's
+// codec, raw for a new set), GEULPACK pack sets to read before GEULPROXY
+// (comma-separated https:// bases or local set directories). The rest are
+// resolve's (GEULPROXY …).
+var Keys = []string{"GEULDATA", "GEULENV", "GEULCACHE", "GEULISSUER", "GEULREMOTE", "GEULFORMAT", "GEULSTORE", "GEULCOMPRESS", "GEULPACK", "GEULPROXY", "GEULPRIVATE", "GEULNOLOG", "GEULLOG", "GEULINSECURE", "GEULWORK"}

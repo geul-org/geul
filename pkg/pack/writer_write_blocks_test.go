@@ -11,7 +11,7 @@ func TestWriterWriteBlocks(t *testing.T) {
 	out := t.TempDir()
 	never().MkdirAll(out + "/o")
 	bs := chunk([]kv{{"a", Loc{Off: 64}}, {"b", Loc{Off: 65}}}, blkHLeaf, 1)
-	w := &writer{out: out, fs: never(), o: BuildOptions{PackSize: 64 + 30}.withDefaults()}
+	w := &writer{out: out, fs: never(), o: BuildOptions{PackSize: 64 + 30, Codec: Stored{}}.withDefaults()}
 	locs, err := w.writeBlocks(bs)
 	if err != nil || locs[1].Obj != 1 || locs[0].Enc != encZstd || len(w.objs) != 1 {
 		t.Fatal(locs, err)

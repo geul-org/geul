@@ -19,7 +19,7 @@ func (a *Archive) Compact(ctx context.Context) ([]BuildResult, error) {
 		}
 		res, err := Compact(ctx, s.dir, a.o)
 		if err == nil {
-			s.r, err = Open(ctx, FileStore{Root: s.dir}, Options{Codec: a.o.Codec, Manifest: res.Manifest})
+			s.r, err = Open(ctx, FileStore{Root: s.dir}, Options{Manifest: res.Manifest})
 		}
 		if err != nil {
 			return out, err

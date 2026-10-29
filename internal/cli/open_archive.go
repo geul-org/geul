@@ -10,8 +10,8 @@ import (
 	"github.com/geul-org/gogeul/pkg/pack"
 )
 
-// openArchive opens the pack sets under dir.
-func openArchive(dir string) (*pack.Archive, error) {
+// openArchive opens the pack sets under dir; o applies to writes (compact).
+func openArchive(dir string, o pack.BuildOptions) (*pack.Archive, error) {
 	root, err := treeRoot(dir)
 	if err != nil {
 		return nil, err
@@ -20,5 +20,5 @@ func openArchive(dir string) (*pack.Archive, error) {
 	if !pack.IsPacked(wk) {
 		return nil, fmt.Errorf("%s: not a pack archive (convert it with geul pack build)", wk)
 	}
-	return pack.OpenDir(context.Background(), wk, packOptions())
+	return pack.OpenDir(context.Background(), wk, o)
 }

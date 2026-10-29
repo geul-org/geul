@@ -47,7 +47,8 @@ const (
 	maxDepth   = 16        // directory depth guard against cycles
 	maxBlock   = 128 << 10 // zstd Block_Maximum_Size
 	zstdMagic  = 0xFD2FB528
-	hashChunk  = 8 << 20 // read size when hashing a whole object
+	dictMagic  = 0xEC30A437 // formatted zstd dictionary (RFC 8878 5)
+	hashChunk  = 8 << 20    // read size when hashing a whole object
 
 	// DefaultPackSize is the target size of one data pack or index object (1 GiB).
 	DefaultPackSize = 1 << 30
@@ -63,4 +64,25 @@ const (
 	DefaultHLayers = 8
 	// DefaultCacheBlocks is how many directory blocks a Reader keeps.
 	DefaultCacheBlocks = 4096
+
+	// DefaultZstdLevel is the zstd level of Zstd (§6: 19; klauspost/compress
+	// runs it at its best speed setting).
+	DefaultZstdLevel = 19
+	// DefaultDictSize is the size of a newly trained dictionary (110 KiB, §9.3).
+	DefaultDictSize = 110 << 10
+	// DefaultDictSamples is how many records a dictionary is trained and tried on.
+	DefaultDictSamples = 4096
+	// DefaultWorkers is how many records a writer compresses at once (each
+	// best-level worker holds about 250 MB with a dictionary).
+	DefaultWorkers = 4
+	// FirstDictID is the first zstd dictionary ID a writer gives (§4.6: 32768 ≤ ID < 2^31).
+	FirstDictID = 1 << 15
+
+	minZstd        = 256      // shorter input stays a raw-block frame (always single-segment, so it keeps its content size)
+	dictMinSamples = 32       // fewer records train no dictionary
+	dictTrainBytes = 16 << 20 // training input cap
+	dictStatCount  = 256      // samples the dictionary's entropy tables are fitted on
+	coverDmer      = 8        // bytes per counted substring when choosing dictionary content
+	coverSegment   = 256      // bytes per chosen dictionary segment
+	encodeBatch    = 64       // records per worker in one parallel encode round
 )

@@ -9,14 +9,14 @@ import (
 func TestOpenArchive(t *testing.T) {
 	h := newHarness(t)
 	h.doc()
-	if _, err := openArchive(h.data); err == nil {
+	if _, err := openArchive(h.data, packOptions()); err == nil {
 		t.Fatal("directory archive: want error")
 	}
-	if _, err := openArchive(t.TempDir()); err == nil {
+	if _, err := openArchive(t.TempDir(), packOptions()); err == nil {
 		t.Fatal("no tree: want error")
 	}
 	h.packed()
-	if a, err := openArchive(h.data); err != nil || len(a.Sets()) != 2 {
+	if a, err := openArchive(h.data, packOptions()); err != nil || len(a.Sets()) != 2 {
 		t.Fatal(err)
 	}
 }

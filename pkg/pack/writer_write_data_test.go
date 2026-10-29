@@ -1,5 +1,5 @@
 //ff:func feature=pack type=writer control=sequence
-//ff:what TestWriterWriteData — records go into packs split at PackSize (an oversized record alone); a failing record stops it
+//ff:what TestWriterWriteData — records go into packs split at PackSize (an oversized record alone); a failing record or dictionary sample stops it
 package pack
 
 import (
@@ -23,5 +23,13 @@ func TestWriterWriteData(t *testing.T) {
 	w.b.Get = memGet(nil)
 	if err := w.writeData(); err == nil {
 		t.Fatal("get")
+	}
+	paths, sget := synth(40)
+	w = testWriter(t, out, Batch{Put: paths, Get: sget})
+	w.o.Codec = &Zstd{DictSize: 4096}
+	w.plan()
+	w.b.Get = memGet(nil)
+	if err := w.writeData(); err == nil {
+		t.Fatal("dictionary samples")
 	}
 }

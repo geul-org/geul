@@ -11,7 +11,7 @@ import (
 func TestWriterWriteLayer(t *testing.T) {
 	out := t.TempDir()
 	never().MkdirAll(out + "/o")
-	w := &writer{out: out, fs: never(), o: BuildOptions{}.withDefaults()}
+	w := &writer{out: out, fs: never(), o: BuildOptions{Codec: Stored{}}.withDefaults()}
 	var kvs []kv
 	for _, c := range "abcde" {
 		kvs = append(kvs, kv{strings.Repeat(string(c), 32), Loc{Off: 64}})

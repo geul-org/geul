@@ -12,7 +12,7 @@ func OpenDir(ctx context.Context, wk string, o BuildOptions) (*Archive, error) {
 		return nil, err
 	}
 	for _, s := range sets {
-		if s.r, err = Open(ctx, FileStore{Root: s.dir}, Options{Codec: o.Codec}); err != nil {
+		if s.r, err = Open(ctx, FileStore{Root: s.dir}, Options{}); err != nil {
 			return nil, err
 		}
 	}

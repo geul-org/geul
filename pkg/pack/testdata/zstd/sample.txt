@@ -1,0 +1,12 @@
+<record kind="LABEL" label="entity 433 part 0" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="CLAIM" label="entity 433 part 1" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="ALIAS" label="entity 433 part 2" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="LABEL" label="entity 433 part 3" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="CLAIM" label="entity 433 part 4" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="ALIAS" label="entity 433 part 5" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="LABEL" label="entity 433 part 6" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="CLAIM" label="entity 433 part 7" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="ALIAS" label="entity 433 part 8" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="LABEL" label="entity 433 part 9" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="CLAIM" label="entity 433 part 10" lang="en" source="wikidata dump 2026-10-19"/>
+<record kind="ALIAS" label="entity 433 part 11" lang="en" source="wikidata dump 2026-10-19"/>

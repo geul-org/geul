@@ -9,7 +9,7 @@ func (w *writer) verify(name string) error {
 	if !w.o.Verify && w.o.Check == nil {
 		return nil
 	}
-	r, err := Open(w.ctx, FileStore{Root: w.out}, Options{Manifest: name, Codec: w.o.Codec})
+	r, err := Open(w.ctx, FileStore{Root: w.out}, Options{Manifest: name})
 	if err == nil && w.o.Verify {
 		err = w.verifyPaths(r)
 	}

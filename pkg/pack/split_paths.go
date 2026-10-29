@@ -2,7 +2,6 @@
 //ff:what splitPaths — group an archive's paths into Issuer sets: Issuer paths by Issuer, h/ copies with the Issuer of the document they copy, the rest home
 package pack
 
-
 // splitPaths assigns every path to a set name (Issuer hex, or "" when the
 // archive has no Issuer paths).
 func splitPaths(base string, paths []string) (map[string][]string, error) {

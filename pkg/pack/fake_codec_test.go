@@ -2,7 +2,7 @@
 //ff:what fakeCodec — a Codec that fails or returns a fixed frame, for writer branches
 package pack
 
-// fakeCodec returns out (or err) from Compress and decodes with Stored.
+// fakeCodec returns out (or err) from Compress.
 type fakeCodec struct {
 	out []byte
 	err error

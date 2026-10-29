@@ -1,5 +1,5 @@
 //ff:func feature=cli type=helper control=iteration dimension=1
-//ff:what printResults — one line per written pack set: generation, records, shared h/ paths, deletions, objects and bytes
+//ff:what printResults — one line per written pack set: generation, records (zstd ones), shared h/ paths, deletions, objects, bytes, new dictionary
 package cli
 
 import (
@@ -19,7 +19,7 @@ func printResults(w io.Writer, rs []pack.BuildResult) {
 			fmt.Fprintf(w, "geul: generation %d unchanged\n", r.Generation)
 			continue
 		}
-		fmt.Fprintf(w, "geul: generation %d %s: %d records, %d shared h/, %d deleted, %d objects, %d bytes\n",
-			r.Generation, r.Manifest, r.Records, r.Shared, r.Deleted, len(r.Objects), r.Bytes)
+		fmt.Fprintf(w, "geul: generation %d %s: %d records (%d zstd), %d shared h/, %d deleted, %d objects, %d bytes%s\n",
+			r.Generation, r.Manifest, r.Records, r.Compressed, r.Shared, r.Deleted, len(r.Objects), r.Bytes, dictNote(r.Dict))
 	}
 }

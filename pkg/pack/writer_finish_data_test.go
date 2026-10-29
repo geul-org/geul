@@ -11,6 +11,7 @@ func TestWriterFinishData(t *testing.T) {
 	out := t.TempDir()
 	never().MkdirAll(out + "/o")
 	w := &writer{out: out, fs: never(), o: small().withDefaults()}
+	w.o.Codec = Stored{}
 	w.startData()
 	if err := w.finishData(); err != nil || len(w.objs) != 1 {
 		t.Fatal(err)

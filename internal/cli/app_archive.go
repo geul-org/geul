@@ -10,7 +10,7 @@ import (
 )
 
 // archive opens root's archive the first time and keeps it, so staged writes
-// stay visible to every later read of the run.
+// stay visible to every later read of the run. Its writes use GEULCOMPRESS.
 func (a *app) archive(root string) (*pack.Archive, error) {
 	if a.arch != nil || a.dirs {
 		return a.arch, nil
@@ -20,7 +20,11 @@ func (a *app) archive(root string) (*pack.Archive, error) {
 		a.dirs = true
 		return nil, nil
 	}
-	arch, err := pack.OpenDir(context.Background(), wk, packOptions())
+	o, err := a.writeOptions("")
+	if err != nil {
+		return nil, err
+	}
+	arch, err := pack.OpenDir(context.Background(), wk, o)
 	a.arch = arch
 	return arch, err
 }

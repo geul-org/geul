@@ -5,11 +5,14 @@ package cli
 import (
 	"context"
 	"io"
+
+	"github.com/geul-org/gogeul/pkg/pack"
 )
 
-// packCompact compacts dir's pack archive; older objects stay on disk until removed.
-func packCompact(dir string, w io.Writer) error {
-	a, err := openArchive(dir)
+// packCompact compacts dir's pack archive with o (its Codec nil keeps each
+// set's codec); older objects stay on disk until removed.
+func packCompact(dir string, o pack.BuildOptions, w io.Writer) error {
+	a, err := openArchive(dir, o)
 	if err != nil {
 		return err
 	}

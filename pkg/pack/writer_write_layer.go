@@ -22,7 +22,7 @@ func (w *writer) writeLayer(kvs []kv, leaf byte, leafSize, fanout, rootMax int) 
 		}
 		bs = parents(bs, locs, leaf+1, n)
 	}
-	root, err := w.o.Codec.Compress(encodeBlock(bs[0]))
+	root, err := w.o.Codec.Compress(encodeBlock(bs[0]), nil)
 	if err != nil {
 		return nil, err
 	}

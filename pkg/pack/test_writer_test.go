@@ -14,5 +14,6 @@ func testWriter(t *testing.T, out string, b Batch) *writer {
 	if err := w.open(); err != nil {
 		t.Fatal(err)
 	}
+	w.o.Codec, _ = w.followCodec()
 	return w
 }

@@ -8,6 +8,7 @@ func TestWriterStartData(t *testing.T) {
 	out := t.TempDir()
 	never().MkdirAll(out + "/o")
 	w := &writer{out: out, fs: never(), o: small().withDefaults()}
+	w.o.Codec = Stored{}
 	if err := w.startData(); err != nil || w.cur == nil {
 		t.Fatal(err)
 	}
