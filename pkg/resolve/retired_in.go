@@ -9,7 +9,9 @@ import "github.com/geul-org/gogeul/pkg/inspect"
 // next, the version list's NEXT-LOCAL-ID. A new statement takes its ID from
 // NEXT-LOCAL-ID and a dropped ID is never used again (meta/lineage/
 // NEXT-LOCAL-ID), so such an ID was dropped before or skipped. prev nil means
-// no stored version, so every ID below next counts.
+// no stored version, so every ID below next counts. #0 is the document itself
+// (the Target of a HEAD SOURCE, edge/SOURCE), never an issued ID, so it is
+// never retired.
 func retiredIn(prev, b []byte, next uint64) (uint64, bool) {
 	pd, _ := inspect.Decode(prev)
 	bd, _ := inspect.Decode(b)
@@ -18,7 +20,7 @@ func retiredIn(prev, b []byte, next uint64) (uint64, bool) {
 		kept[id] = true
 	}
 	for _, id := range inspect.LocalIDs(bd) {
-		if id < next && !kept[id] {
+		if id != 0 && id < next && !kept[id] {
 			return id, true
 		}
 	}
