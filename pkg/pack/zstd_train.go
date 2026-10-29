@@ -6,12 +6,13 @@ import "github.com/klauspost/compress/zstd"
 
 // Train builds a dictionary from samples. The content is chosen
 // deterministically (coverHistory), so the same samples give the same bytes;
-// klauspost's own trainer (package dict) does not. CompatV155 keeps it usable
+// klauspost's own trainer (package dict) does not. Content samples are cut to
+// one block (statSamples). CompatV155 keeps it usable
 // by zstd 1.5.5 and older.
 func (z *Zstd) Train(samples [][]byte, id uint32) (*Dict, error) {
 	b, err := zstd.BuildDict(zstd.BuildDictOptions{
 		ID:         id,
-		Contents:   samples[:min(len(samples), dictStatCount)],
+		Contents:   statSamples(samples),
 		History:    coverHistory(samples, z.dictSize()),
 		Offsets:    [3]int{1, 4, 8},
 		CompatV155: true,
