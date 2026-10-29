@@ -15,10 +15,16 @@ func formatReference(r core.Record) (string, bool) {
 		return formatNumbered(c, r.Payload)
 	case c == core.RefDocPointer:
 		issuer, doc, ver, err := core.DecodeDocPointer(r)
-		return docAddress(issuer, doc, uint32(ver[0])<<16|uint32(ver[1])), err == nil
+		if err != nil {
+			return "", false
+		}
+		return docAddress(issuer, doc, uint32(ver[0])<<16|uint32(ver[1])), true
 	case c == core.RefIssuerPointer:
 		issuer, err := core.DecodeIssuerPointer(r)
-		return "ISSUER-POINTER(" + core.FormatID(issuer) + ")", err == nil
+		if err != nil {
+			return "", false
+		}
+		return "ISSUER-POINTER(" + core.FormatID(issuer) + ")", true
 	case c >= core.RefExternalIssuer1Word:
 		return formatExternalIssuer(r)
 	default:

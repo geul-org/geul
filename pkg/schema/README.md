@@ -75,6 +75,7 @@
 | E6 | (Warn) Object가 NO-VALUE(`0x0002`)인 TRIPLE과 같은 Subject·Predicate·rank, 같은 QUALIFIER 묶음(Property=Value)의 TRIPLE이 다른 Object(값 또는 UNKNOWN-VALUE)를 가지면 경고한다. 거부하지 않는다(위키데이터에도 있는 상태, 읽는 쪽이 rank로 고른다). TRIPLE·QUALIFIER는 문법이 고정한 레이아웃으로 자른다. |
 | E7 | TRIPLE·QUALIFIER의 Predicate·Subject(Property·Target)에는 Reference Codec `0000`(자리 표지)이 오지 않고, Object(Value)에는 `0x0001` UNKNOWN-VALUE·`0x0002` NO-VALUE만 온다(ABSENT·예약 표지·Payload 있는 Codec `0000`은 Error). 두 Codec의 필드는 문법이 고정하므로 1층에서 본다. 다른 Codec 필드의 표지 수용은 규격 문서(2층) 몫이다. |
 | E8 | 근거 Edge `SOURCE`(`0x20`, edge/SOURCE): Edge Id 뒤에 대상·원천 레코드 둘뿐이다. 대상은 LOCAL Reference이고 `0`(문서 전체)이거나 BODY의 Edge Id다. 원천은 Reference이고, 자리 표지는 `0x0000` ABSENT와 `0x0001` UNKNOWN-VALUE만 받는다(Value·NO-VALUE·예약 표지는 Error). 대상이 `0`인 `SOURCE`와 HEAD `SOURCE`를 대상으로 하는 `QUALIFIER`가 BODY에 있으면 Error다(HEAD에 둔다). 레이아웃을 문법이 고정하므로 1층에서 본다. |
+| E9 | ENUM(edge/ENUM)의 필드는 같은 문서의 날값 FIELD(폭 ≥ 1)이고, 코드값은 정확히 그 폭이며, 한 필드에서 같은 코드값을 두 번 선언하지 않는다. 디코딩되지 않는 ENUM은 E4다. |
 
 ### M Meta (OVERVIEW Meta)
 
