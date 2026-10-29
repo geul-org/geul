@@ -10,9 +10,30 @@ This product includes software developed by third parties.
 --------------------------------------------------------------------------------
 Go (module: github.com/geul-org/gogeul)
 --------------------------------------------------------------------------------
-The library packages (pkg/...) have no third-party dependencies. The following
-third-party packages are compiled into / linked with the geul command-line
-tool (cmd/geul, internal/cli) only:
+pkg/pack (the pack storage format) uses github.com/klauspost/compress for
+zstd compression, decompression and dictionaries; it is compiled into every
+program that imports pkg/pack, including the geul command-line tool. The other
+library packages (pkg/...) have no third-party dependencies.
+
+* github.com/klauspost/compress  v1.20.3  (packages zstd, zstd/internal/xxhash,
+  fse, huff0, internal/snapref, internal/cpuinfo, internal/le, internal/regmask)
+    License:     BSD-3-Clause
+    Copyright:   Copyright (c) 2012 The Go Authors. All rights reserved.
+                 Copyright (c) 2019 Klaus Post. All rights reserved.
+    URL:         https://github.com/klauspost/compress
+  zstd/internal/xxhash:
+    License:     MIT
+    Copyright:   Copyright (c) 2016 Caleb Spare
+    URL:         https://github.com/cespare/xxhash
+  internal/snapref:
+    License:     BSD-3-Clause
+    Copyright:   Copyright (c) 2011 The Snappy-Go Authors. All rights reserved.
+  The module's LICENSE file holds the full texts. Parts of the module under
+  other terms (gzhttp Apache-2.0, s2 command-line tools) are not compiled into
+  gogeul.
+
+The following third-party packages are compiled into / linked with the geul
+command-line tool (cmd/geul, internal/cli) only:
 
 * github.com/spf13/cobra  v1.10.2
     License:     Apache-2.0
