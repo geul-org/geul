@@ -18,6 +18,9 @@ import (
 // keyName is a local Issuer name: a-z, 0-9 and inner '-'.
 var keyName = regexp.MustCompile(`^[a-z0-9]+(-[a-z0-9]+)*$`)
 
+// issuerFromKey derives the Issuer of a new key; tests replace it.
+var issuerFromKey = core.IssuerFromKey
+
 // issuerNew writes `<keysDir>/<name>.pem` (PKCS #8, mode 0600, folder 0700)
 // for a new key whose ID is a canonical 16-word Issuer (core.IssuerFromKey).
 // An existing name is refused.
@@ -30,7 +33,7 @@ func (a *app) issuerNew(name string) error {
 		return fmt.Errorf("issuer %q exists", name)
 	}
 	pub, priv, _ := ed25519.GenerateKey(rand.Reader)
-	issuer, err := core.IssuerFromKey(core.SigEd25519, pub)
+	issuer, err := issuerFromKey(core.SigEd25519, pub)
 	if err != nil {
 		return err
 	}

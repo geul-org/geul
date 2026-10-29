@@ -1,8 +1,9 @@
 //ff:func feature=toulmin type=encoder control=sequence
-//ff:what TestEncodeSource — SOURCE golden bytes plus the bad SPAN width error
+//ff:what TestEncodeSource — a Value error is returned; SOURCE golden bytes plus the bad SPAN width error
 package toulmin
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
@@ -18,5 +19,10 @@ func TestEncodeSource(t *testing.T) {
 	}
 	if _, err := EncodeSource(TextPacket{}, Wire{Span: 3}); err == nil {
 		t.Fatal("span width 3: want error")
+	}
+	defer func(orig func([]core.Word, core.Record) ([]core.Word, error)) { putValue = orig }(putValue)
+	putValue = func([]core.Word, core.Record) ([]core.Word, error) { return nil, errors.New("too long") }
+	if _, err := EncodeSource(TextPacket{TID: 1, Bytes: []byte("ab")}, Wire{Span: 2}); err == nil {
+		t.Fatal("value error: want error")
 	}
 }

@@ -2,10 +2,7 @@
 //ff:what IssuerFromKey — the 16-word Issuer ID of a public key: SHA-256("GEUL-ISSUER-v1" ‖ algorithm ID ‖ key)
 package core
 
-import (
-	"crypto/sha256"
-	"errors"
-)
+import "crypto/sha256"
 
 // IssuerFromKey computes a self-issued Issuer ID (OVERVIEW 16 WORD Issuer 생성
 // 규칙): SHA-256 of "GEUL-ISSUER-v1", the algorithm ID (2 bytes, high byte
@@ -17,9 +14,5 @@ func IssuerFromKey(alg Word, pub []byte) ([]Word, error) {
 	h.Write([]byte("GEUL-ISSUER-v1"))
 	h.Write([]byte{byte(alg >> 8), byte(alg)})
 	h.Write(pub)
-	ws, _ := ReadWords(h.Sum(nil))
-	if !IssuerCanonical(ws) {
-		return nil, errors.New("geul/core: key hashes below 2^64; it makes no 16-word Issuer")
-	}
-	return ws, nil
+	return issuerOfDigest(h.Sum(nil))
 }

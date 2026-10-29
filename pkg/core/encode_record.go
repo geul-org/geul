@@ -27,9 +27,5 @@ func EncodeRecord(r Record) ([]Word, error) {
 		body = append(body, Word(r.Format))
 	}
 	body = append(body, r.Payload...)
-	tag, err := encodeTag(r.Kind, r.Codec, len(body))
-	if err != nil {
-		return nil, err
-	}
-	return append(tag, body...), nil
+	return prependTag(r.Kind, r.Codec, len(body), body)
 }
