@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=iteration dimension=1
-//ff:what TestCheckLanguageText — valid language and text pass; a missing or wrong language record, a bad language record, bad UTF-8 and bad padding fail
+//ff:what TestCheckLanguageText — valid language and text (a leading U+FEFF too) pass; a missing or wrong language record, a bad language record, bad UTF-8 and bad padding fail
 package schema
 
 import (
@@ -16,6 +16,7 @@ func TestCheckLanguageText(t *testing.T) {
 		want string
 	}{
 		{core.EncodeLanguageText(en, []byte("DNA")), ""},
+		{core.EncodeLanguageText(en, []byte("\ufeffAbecásia (GE)")), ""},
 		{core.EncodeLanguageText(core.Record{Kind: core.KindValue, Codec: 0x48, Payload: []core.Word{7}}, []byte("가")), ""},
 		{core.Record{Kind: core.KindValue, Codec: 0x4A, Payload: []core.Word{0x0FC6}}, "V7"},
 		{core.EncodeLanguageText(core.EncodeUintValue(5), []byte("x")), "V7"},

@@ -1,11 +1,11 @@
 //ff:func feature=core type=decoder control=iteration dimension=1
-//ff:what TestDecodeBytesValue — round trip plus wrong codec and bad pad errors
+//ff:what TestDecodeBytesValue — round trip (a leading U+FEFF kept) plus wrong codec and bad pad errors
 package core
 
 import "testing"
 
 func TestDecodeBytesValue(t *testing.T) {
-	for _, s := range []string{"", "a", "ab", "한글"} {
+	for _, s := range []string{"", "a", "ab", "한글", "\ufeff", "\ufeffAbecásia (GE)"} {
 		b, err := DecodeBytesValue(EncodeBytesValue(CodecUTF8TextEven, []byte(s)), CodecUTF8TextEven)
 		if err != nil || string(b) != s {
 			t.Fatalf("%q: got %q err=%v", s, b, err)

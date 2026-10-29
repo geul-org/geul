@@ -1,5 +1,5 @@
 //ff:func feature=schema type=rule control=iteration dimension=1
-//ff:what TestCheckText — UTF-8 and BOM for text, ASCII for URI, language tags, EDTF and GEDCOM-DATE (spaces inside), plain-day EDTF fails V6
+//ff:what TestCheckText — UTF-8 for text (leading or inner U+FEFF passes), ASCII for URI, language tags, EDTF and GEDCOM-DATE (spaces inside), plain-day EDTF fails V6
 package schema
 
 import (
@@ -14,7 +14,10 @@ func TestCheckText(t *testing.T) {
 	}{
 		{0x40, "가", ""},
 		{0x40, "\xff", "V5"},
-		{0x40, "\xef\xbb\xbfx", "V5"},
+		{0x40, "\xef\xbb\xbfx", ""},
+		{0x40, "\xef\xbb\xbf", ""},
+		{0x40, "x\xef\xbb\xbf", ""},
+		{0x40, "\xef\xbb\xbf\xff", "V5"},
 		{0x44, "http://x", ""},
 		{0x44, "", "V5"},
 		{0x46, "ko KR", "V5"},

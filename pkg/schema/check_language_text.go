@@ -11,7 +11,7 @@ import (
 // checkLanguageText applies V7 to a UTF8-LANGUAGE-TEXT Value: its Payload
 // starts with one whole LANGUAGE-SHORT-CODE or LANGUAGE-BCP47-CODE record,
 // which must pass its own Value rules (checkValue), and the words after it
-// are the text, which follows V4 (odd padding) and V5 (UTF-8, no BOM) as
+// are the text, which follows V4 (odd padding) and V5 (UTF-8, a leading U+FEFF allowed) as
 // UTF8-TEXT does.
 func checkLanguageText(r rec) []Fact {
 	lang, n, err := core.DecodeRecord(r.R.Payload)
