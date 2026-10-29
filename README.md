@@ -20,7 +20,8 @@ pkg/toulmin/           TOULMIN 코덱 (판정·실행 그래프 레코드, 코�
 pkg/delta/             버전 diff(DELTA-BASE·DELTA-REMOVE) 생성·적용, 변경 목록·blame, LOCAL ID 이어받기(같은 서술 같은 번호, auto increment)
 pkg/inspect/           해석된 문서 모델 (레코드별 이름·내용·Edge Id·참조, 무손실일 때만)
 pkg/notation/          텍스트 표기 (레코드 한 줄 ↔ 레코드, geul CLI의 show·add·meta, 왕복 보장)
-pkg/resolve/           아카이브(공표·버전 목록·이름·폐기)와 IMPORT 의존성 해석 (Resolver 주입)
+pkg/resolve/           아카이브(공표·버전 목록·이름·폐기)와 IMPORT 의존성 해석 (Resolver 주입). 바이트 층은 Store(디렉터리 또는 pack)
+pkg/pack/              pack 저장 포맷: 매니페스트·색인·데이터 pack(내용 해시 이름, 불변)과 latest.txt, 로컬 pread·HTTP Range 읽기, 세대 쓰기
 pkg/schema/            형식 검증 (0층 → Codec 규격 → 격틀)
 cmd/geul/              geul CLI 진입점
 internal/cli/          CLI 명령 (cobra, 명령마다 파일 하나)
@@ -46,7 +47,7 @@ internal/view/static/  그래프 JS(vendor/, MIT)를 내장해 /.well-known/geul
 ## 원칙
 
 - core는 외부 의존과 네트워크 I/O가 없다. 다른 패키지가 core에 의존하고, 반대 방향은 없다.
-- `pkg/*`는 외부 모듈에 의존하지 않는다. cobra는 `cmd/geul`·`internal/cli`만, 그래프 JS는 `internal/view`만 쓴다. 예외 예정: BCP 47 검사용 `golang.org/x/text`(BSD-3).
+- `pkg/*`는 외부 모듈에 의존하지 않는다. cobra는 `cmd/geul`·`internal/cli`만, 그래프 JS는 `internal/view`만 쓴다. 예외 예정: BCP 47 검사용 `golang.org/x/text`(BSD-3). `pkg/pack`의 zstd는 이 원칙에 따라 표준 라이브러리만 쓴다: 압축 없는 raw 블록 zstd 프레임(체크섬 포함)을 쓰고 raw·RLE 블록을 읽으며, 압축 코덱은 `pack.Codec` 자리에 끼운다.
 - 디코딩은 IMPORT를 조회하지 않는다. 조회는 `resolve`의 명시적 단계이고, 위치는 Resolver로 주입한다.
 - 쓰기는 빌더로만 한다. 폭과 ID는 빌더가 정한다. 같은 내용은 같은 바이트가 된다.
 - 결과는 `doc, warns, err`로 돌려준다. 경고를 실패로 볼지는 호출하는 쪽이 정한다.
@@ -64,6 +65,7 @@ internal/view/static/  그래프 JS(vendor/, MIT)를 내장해 /.well-known/geul
 | 공표 | `publish [--amend] [--name]`, `delta`, `deprecate`, `tombstone --reason`, `name` |
 | Issuer·설정 | `issuer new\|ls\|show`(Ed25519, 16 WORD Issuer), `env [-w\|-u]` |
 | 뷰어 | `serve [--addr]`(브라우저로 보기), `build -o`(정적 웹 호스트용 굽기) |
+| pack | `pack build -o OUT [--single]`(디렉터리 → pack), `pack unpack -o OUT`, `pack verify`, `pack compact` |
 
 ```
 geul issuer new --name me
@@ -99,6 +101,9 @@ geul build -o OUT [DIR]                           OUT/.well-known/geul/ 에 정�
 
 ## 아카이브
 
+- 저장 형식은 두 가지다. `.well-known/geul/`이 디렉터리 트리(경로마다 파일)이거나 pack 세트(`<Issuer>/latest.txt`·`m/`·`o/`, 또는 맨 위 `latest.txt` 하나)다. 명세는 geul-dev `files/pack/README.md`. 읽기는 둘 다 `resolve.Store`(fs.FS + 쓰기) 뒤에서 같다.
+- 새(빈) 데이터 폴더는 pack으로 쓴다(`GEULSTORE=dir`이면 디렉터리). 파일이 있는 디렉터리 아카이브는 그대로 디렉터리로 쓴다. pack 아카이브에 쓰는 명령은 성공한 뒤 바뀐 세트마다 새 세대를 하나 낸다(델타 층, pack 객체는 불변, `latest.txt`가 마지막).
+- `GEULPROXY`의 `file://` 폴더가 pack이면 pack으로 읽는다. `GEULPACK`(쉼표 구분: `https://` 세트 주소, 로컬 세트 폴더, pack 데이터 폴더)은 GEULPROXY보다 먼저 읽는다(문법 밖 설정).
 - 로컬 아카이브는 geul.org 웹사이트 저장소의 `artifacts/geul/.well-known/geul/`(geul-dev `draft/geul-org/` 아래)이다. 경로는 GEUL-ORG 공표 주소와 같다.
 - 아카이브, 미러, geul.org 덤프는 같은 구조라서 Resolver 하나로 읽는다.
 

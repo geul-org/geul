@@ -4,14 +4,13 @@ package resolve
 
 import (
 	"context"
-	"os"
 	"sort"
 )
 
 // Issuers lists the Issuer directories under `.well-known/geul/` (canonical
 // IDs only) in ID order, each with the names `issuers.geul` binds to it.
 func (d Dir) Issuers() ([]Named, error) {
-	ents, err := os.ReadDir(d.file(""))
+	ents, err := d.store().ReadDir(".")
 	if err != nil {
 		return nil, err
 	}

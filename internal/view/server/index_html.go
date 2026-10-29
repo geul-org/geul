@@ -2,12 +2,16 @@
 //ff:what IndexHTML — the listing page of a tree directory, the same page serve answers
 package server
 
-import "io"
+import (
+	"io"
+
+	"github.com/geul-org/gogeul/pkg/resolve"
+)
 
 // IndexHTML writes the listing page of the tree directory at URL path urlPath
-// (ending in /) under root, for a static copy of the tree (build).
-func IndexHTML(w io.Writer, root, urlPath string) error {
-	p, err := treeIndex(root, urlPath)
+// (ending in /) in the tree t, for a static copy of the tree (build).
+func IndexHTML(w io.Writer, t resolve.Store, urlPath string) error {
+	p, err := treeIndex(t, urlPath)
 	if err != nil {
 		return err
 	}

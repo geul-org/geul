@@ -3,8 +3,6 @@
 package resolve
 
 import (
-	"os"
-
 	"github.com/geul-org/gogeul/pkg/core"
 )
 
@@ -13,7 +11,7 @@ import (
 // order so the last is the main name.
 func (d Dir) Documents(issuer []core.Word) ([]Named, error) {
 	is := core.FormatID(issuer)
-	ents, err := os.ReadDir(d.file(is))
+	ents, err := d.store().ReadDir(is)
 	if err != nil {
 		return nil, err
 	}

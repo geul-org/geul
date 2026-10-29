@@ -5,6 +5,7 @@ package build
 import (
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -15,7 +16,7 @@ import (
 // doc copies the document rel (relative to the tree, ending in .geul) and
 // writes its viewer page at the same path without .geul.
 func (b *baker) doc(rel string) error {
-	data, err := os.ReadFile(filepath.Join(b.src, filepath.FromSlash(rel)))
+	data, err := fs.ReadFile(b.tree, rel)
 	if err != nil {
 		return err
 	}
@@ -24,7 +25,7 @@ func (b *baker) doc(rel string) error {
 		return err
 	}
 	u := wellKnown + strings.TrimSuffix(rel, ".geul")
-	err = writeFile(strings.TrimSuffix(to, ".geul"), func(w io.Writer) error { return server.PageHTML(w, b.root, u, data, b.spec) })
+	err = writeFile(strings.TrimSuffix(to, ".geul"), func(w io.Writer) error { return server.PageHTML(w, b.tree, u, data, b.spec) })
 	if err != nil {
 		return fmt.Errorf("%s: %w", rel, err)
 	}

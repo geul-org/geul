@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
 func TestServeTree(t *testing.T) {
@@ -21,7 +23,7 @@ func TestServeTree(t *testing.T) {
 	}
 	var out bytes.Buffer
 	done := make(chan error)
-	go func() { done <- serveTree(ln, root, &out) }()
+	go func() { done <- serveTree(ln, root, resolve.Dir{Root: root}.Tree(), &out) }()
 	resp, err := http.Get("http://" + ln.Addr().String() + "/.well-known/geul/")
 	if err != nil {
 		t.Fatal(err)

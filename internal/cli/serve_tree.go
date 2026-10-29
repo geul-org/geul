@@ -9,11 +9,12 @@ import (
 	"net/http"
 
 	"github.com/geul-org/gogeul/internal/view/server"
+	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
-// serveTree prints the URL of the tree and serves root on ln until ln fails or
+// serveTree prints the URL of the tree at root and serves t on ln until ln fails or
 // closes.
-func serveTree(ln net.Listener, root string, out io.Writer) error {
+func serveTree(ln net.Listener, root string, t resolve.Store, out io.Writer) error {
 	fmt.Fprintf(out, "geul: %s → http://%s/.well-known/geul/\n", root, ln.Addr())
-	return http.Serve(ln, server.TreeHandler(root))
+	return http.Serve(ln, server.TreeHandler(t))
 }

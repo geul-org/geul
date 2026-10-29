@@ -3,13 +3,12 @@
 package server
 
 import (
-	"path/filepath"
 	"testing"
 )
 
 func TestIsDir(t *testing.T) {
-	h := filepath.Join(treeFixture(t), ".well-known", "geul", "h")
-	if !isDir(h) || isDir(filepath.Join(h, "a.geul")) || isDir(filepath.Join(h, "none")) {
+	tr := treeOf(treeFixture(t))
+	if !isDir(tr, "h") || isDir(tr, "h/a.geul") || isDir(tr, "h/none") {
 		t.Fatal("isDir")
 	}
 }

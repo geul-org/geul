@@ -10,14 +10,14 @@ import (
 
 func TestIssuerNames(t *testing.T) {
 	root := namesFixture(t)
-	if n := issuerNames(root); len(n) != 1 || n["geul.org"] != "0x0000" {
+	if n := issuerNames(treeOf(root)); len(n) != 1 || n["geul.org"] != "0x0000" {
 		t.Fatalf("got %v", n)
 	}
 	os.WriteFile(filepath.Join(root, ".well-known", "geul", "issuers.geul"), []byte{1}, 0o644)
-	if n := issuerNames(root); len(n) != 0 {
+	if n := issuerNames(treeOf(root)); len(n) != 0 {
 		t.Fatalf("broken: %v", n)
 	}
-	if n := issuerNames(t.TempDir()); len(n) != 0 {
+	if n := issuerNames(treeOf(t.TempDir())); len(n) != 0 {
 		t.Fatalf("missing: %v", n)
 	}
 }

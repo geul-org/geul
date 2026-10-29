@@ -11,7 +11,8 @@ import (
 )
 
 // resolve builds the dependency graph of the document (resolve.Resolver)
-// with the data folder as the first source, then GEULPROXY and GEULPRIVATE.
+// with the data folder as the first source, then GEULPACK, GEULPROXY and
+// GEULPRIVATE.
 // Each imported version is printed as `<Issuer>/<문서>@<버전> <출처>`.
 func (a *app) resolve(arg string) error {
 	b, err := a.readDoc(arg)
@@ -19,6 +20,9 @@ func (a *app) resolve(arg string) error {
 		return err
 	}
 	cfg, err := resolve.ConfigFromEnv(a.cfg.Get)
+	if err == nil {
+		cfg, err = packSources(cfg, a.cfg.Get("GEULPACK"))
+	}
 	if err != nil {
 		return err
 	}

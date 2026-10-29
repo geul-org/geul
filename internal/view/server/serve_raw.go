@@ -1,12 +1,15 @@
 //ff:func feature=server type=handler control=sequence
-//ff:what serveRaw — a .geul file's bytes as application/vnd.geul
+//ff:what serveRaw — answer with a document's bytes under the GEUL media type
 package server
 
-import "net/http"
+import (
+	"io/fs"
+	"net/http"
+)
 
-// serveRaw answers with the bytes of the .geul file at file under the GEUL
-// media type.
-func serveRaw(w http.ResponseWriter, r *http.Request, file string) {
+// serveRaw answers with the bytes of the .geul file name in t under the GEUL
+// media type (Range and conditional requests as http.ServeFileFS does).
+func serveRaw(w http.ResponseWriter, r *http.Request, t fs.FS, name string) {
 	w.Header().Set("Content-Type", MediaType)
-	http.ServeFile(w, r, file)
+	http.ServeFileFS(w, r, t, name)
 }

@@ -4,6 +4,7 @@ package server
 
 import (
 	"net/http"
+	"os"
 	"path/filepath"
 )
 
@@ -19,5 +20,5 @@ func servePage(w http.ResponseWriter, r *http.Request, path string) {
 		http.NotFound(w, r)
 		return
 	}
-	renderFile(w, path, filepath.Base(path), false, nil)
+	renderFile(w, os.DirFS(filepath.Dir(path)), filepath.Base(path), filepath.Base(path), false, nil)
 }

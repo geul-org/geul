@@ -3,17 +3,14 @@
 package server
 
 import (
-	"os"
-	"path/filepath"
-
 	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
 // documentNames reads `<space>/documents.geul` (GEUL-ORG 문서 이름) of an
 // Issuer and keeps the names of that Issuer's own documents.
-func documentNames(root, space string) map[string]string {
+func documentNames(t resolve.Store, space string) map[string]string {
 	out := map[string]string{}
-	b, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(wellKnown), filepath.FromSlash(space), "documents.geul"))
+	b, err := t.ReadFile(space + "/documents.geul")
 	if err != nil {
 		return out
 	}

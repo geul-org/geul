@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
 func TestBakerDoc(t *testing.T) {
@@ -14,7 +16,7 @@ func TestBakerDoc(t *testing.T) {
 	src := filepath.Join(root, ".well-known", "geul")
 	out := t.TempDir()
 	os.Mkdir(filepath.Join(out, "h"), 0o755)
-	b := &baker{root: root, src: src, out: out}
+	b := &baker{tree: resolve.Dir{Root: root}.Tree(), src: src, out: out}
 	if err := b.doc("h/a.geul"); err != nil {
 		t.Fatal(err)
 	}

@@ -14,7 +14,7 @@ func TestTitleOf(t *testing.T) {
 		"/.well-known/geul/h/0xab.geul":                               ".well-known/geul/h/0xab.geul",
 		"/.well-known/geul/0x0000/0x0000000000001018/0x00000001.geul": ".well-known/geul/geul.org/publication/0x00000001.geul",
 	} {
-		if got := titleOf(root, p); got != want {
+		if got := titleOf(treeOf(root), p); got != want {
 			t.Fatalf("%s: %q", p, got)
 		}
 	}

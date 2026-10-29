@@ -24,12 +24,20 @@ func serveCmd(addr, arg string, out io.Writer) error {
 			return err
 		}
 	}
+	if root == "" {
+		ln, err := listen("tcp", addr)
+		if err != nil {
+			return err
+		}
+		return serve(ln, arg, out)
+	}
+	t, _, err := openTree(root)
+	if err != nil {
+		return err
+	}
 	ln, err := listen("tcp", addr)
 	if err != nil {
 		return err
 	}
-	if root != "" {
-		return serveTree(ln, root, out)
-	}
-	return serve(ln, arg, out)
+	return serveTree(ln, root, t, out)
 }

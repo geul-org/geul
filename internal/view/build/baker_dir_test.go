@@ -6,12 +6,14 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
 func TestBakerDir(t *testing.T) {
 	root := fixture(t)
 	out := t.TempDir()
-	b := &baker{root: root, out: out}
+	b := &baker{tree: resolve.Dir{Root: root}.Tree(), out: out}
 	if err := b.dir("h/"); err != nil {
 		t.Fatal(err)
 	}

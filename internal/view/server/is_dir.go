@@ -1,11 +1,11 @@
 //ff:func feature=server type=helper control=sequence
-//ff:what isDir — whether a path is a directory
+//ff:what isDir — whether a tree name is a directory
 package server
 
-import "os"
+import "io/fs"
 
-// isDir reports whether p names a directory.
-func isDir(p string) bool {
-	fi, err := os.Stat(p)
+// isDir reports whether name in t is a directory.
+func isDir(t fs.FS, name string) bool {
+	fi, err := fs.Stat(t, name)
 	return err == nil && fi.IsDir()
 }

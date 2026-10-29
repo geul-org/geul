@@ -3,37 +3,28 @@
 package resolve
 
 import (
-	"path/filepath"
-	"sort"
-
 	"github.com/geul-org/gogeul/pkg/codecspec"
 	"github.com/geul-org/gogeul/pkg/core"
-	"github.com/geul-org/gogeul/pkg/inspect"
 )
 
 // CodecSpec gathers the specs of the latest version of every codec spec
-// document, the GEUL Issuer documents `0x0000/<codecDocID>/` (GEUL-ORG 직접
-// 코드 코덱북). Other documents of the Issuer are skipped. The first error
-// stops it.
+// document, the GEUL Issuer documents `0x0000/<codecDocID>/` that have a
+// version list (GEUL-ORG 직접 코드 코덱북), in ID order. Other documents of
+// the Issuer are skipped. The first error stops it.
 func (d Dir) CodecSpec() (codecspec.Spec, error) {
-	lists, _ := filepath.Glob(d.file(core.FormatID([]core.Word{0}) + "/*/" + listFile))
-	sort.Strings(lists)
+	is := core.FormatID([]core.Word{0})
+	ents, _ := d.store().ReadDir(is)
 	s := codecspec.Spec{}
-	for _, l := range lists {
-		target, ok := codecTargetOf(filepath.Base(filepath.Dir(l)))
-		if !ok {
+	for _, e := range ents {
+		target, ok := codecTargetOf(e.Name())
+		if _, err := d.store().ReadFile(is + "/" + e.Name() + "/" + listFile); !ok || err != nil {
 			continue
 		}
-		b, err := d.latestCodec(target)
+		spec, err := d.codecSpecOf(target)
 		if err != nil {
 			return nil, err
 		}
-		doc, _ := inspect.Decode(b)
-		body := make([]core.Record, len(doc.Body))
-		for i, e := range doc.Body {
-			body[i] = e.Record
-		}
-		s = s.Merge(codecspec.Collect(body))
+		s = s.Merge(spec)
 	}
 	return s, nil
 }

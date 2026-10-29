@@ -1,5 +1,5 @@
 //ff:func feature=resolve type=resolver control=iteration dimension=1
-//ff:what TestDirRemoveOtherVersions — version files other than 1 go, version 1 and the list stay; a missing folder is fine; an undeletable file fails
+//ff:what TestDirRemoveOtherVersions — version files other than 1 go, version 1 and the list stay; a missing folder is fine; an unlistable folder or undeletable file fails
 package resolve
 
 import (
@@ -31,7 +31,10 @@ func TestDirRemoveOtherVersions(t *testing.T) {
 	if err := d.removeOtherVersions(k); err == nil {
 		t.Fatal("non-empty folder named like a version: want error")
 	}
-	if err := (Dir{Root: "["}).removeOtherVersions(DocKey{Issuer: "[", Doc: "["}); err == nil {
-		t.Fatal("bad pattern: want error")
+	f := DocKey{Issuer: "0x0003", Doc: "0x0000000000000001"}
+	os.MkdirAll(d.file(f.Issuer), 0o755)
+	os.WriteFile(d.file(f.Issuer+"/"+f.Doc), nil, 0o644)
+	if err := d.removeOtherVersions(f); err == nil {
+		t.Fatal("document folder is a file: want error")
 	}
 }

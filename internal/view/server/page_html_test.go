@@ -14,13 +14,13 @@ func TestPageHTML(t *testing.T) {
 	root := namesFixture(t)
 	data, _ := os.ReadFile(filepath.Join(root, ".well-known", "geul", "0x0000", "0xffff000000000002", "0x00000001.geul"))
 	var b bytes.Buffer
-	if err := PageHTML(&b, root, "/.well-known/geul/0x0000/0xffff000000000002/0x00000001", data, nil); err != nil {
+	if err := PageHTML(&b, treeOf(root), "/.well-known/geul/0x0000/0xffff000000000002/0x00000001", data, nil); err != nil {
 		t.Fatal(err)
 	}
 	if !strings.Contains(b.String(), "browseBtn") || !strings.Contains(b.String(), ".well-known/geul/geul.org/sample-b/0x00000001") {
 		t.Fatalf("page: %s", b.String()[:200])
 	}
-	if err := PageHTML(&b, root, "/x", []byte{1, 2}, nil); err == nil {
+	if err := PageHTML(&b, treeOf(root), "/x", []byte{1, 2}, nil); err == nil {
 		t.Fatal("bad: want error")
 	}
 }

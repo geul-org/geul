@@ -9,7 +9,7 @@ import (
 )
 
 func TestTreeHandler(t *testing.T) {
-	h := TreeHandler(treeFixture(t))
+	h := TreeHandler(treeOf(treeFixture(t)))
 	for _, u := range []string{"/.well-known/geul/h/a.geul", "/.well-known/geul/_static/dagre.min.js"} {
 		rec := httptest.NewRecorder()
 		h.ServeHTTP(rec, httptest.NewRequest(http.MethodGet, u, nil))

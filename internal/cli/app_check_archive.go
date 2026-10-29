@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 )
 
-// checkArchive checks every `.geul` under `.well-known/geul/` (checkPath) and
+// checkArchive checks every `.geul` under `.well-known/geul/` (checkTree) and
 // then each document's versions (checkVersions). The walk has read the
 // folder, so listing its Issuers and their documents does not fail.
 func (a *app) checkArchive() ([]finding, error) {
@@ -14,7 +14,7 @@ func (a *app) checkArchive() ([]finding, error) {
 	if err != nil {
 		return nil, err
 	}
-	out, err := checkPath(filepath.Join(d.Root, ".well-known", "geul"))
+	out, err := checkTree(d.Tree(), filepath.Join(d.Root, ".well-known", "geul"))
 	if err != nil {
 		return nil, err
 	}

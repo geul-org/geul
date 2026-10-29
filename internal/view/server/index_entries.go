@@ -3,15 +3,15 @@
 package server
 
 import (
-	"os"
+	"io/fs"
 	"strings"
 )
 
-// indexEntries lists dir's subdirectories (with a trailing /) and .geul files,
+// indexEntries lists the tree directory dir's subdirectories (with a trailing /) and .geul files,
 // in name order, as links under the URL path base (ending in /). A document
 // links to its path without .geul, the page a browser is given (serveDoc).
-func indexEntries(dir, base string) ([]indexEntry, error) {
-	des, err := os.ReadDir(dir)
+func indexEntries(t fs.FS, dir, base string) ([]indexEntry, error) {
+	des, err := fs.ReadDir(t, dir)
 	if err != nil {
 		return nil, err
 	}

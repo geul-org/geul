@@ -4,19 +4,20 @@ package server
 
 import (
 	"net/http"
-	"path/filepath"
+
+	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
 // serveDoc answers the extensionless path p of the document p.geul (GEUL-ORG
 // 형식 지정): a tool that accepts application/vnd.geul gets the bytes, a
 // browser gets the viewer page with the tree browser on. The answer depends
 // on Accept, so it says so in Vary.
-func serveDoc(w http.ResponseWriter, r *http.Request, root, p string) {
-	file := filepath.Join(root, filepath.FromSlash(p)) + ".geul"
+func serveDoc(w http.ResponseWriter, r *http.Request, t resolve.Store, p string) {
+	file := treeName(p) + ".geul"
 	w.Header().Set("Vary", "Accept")
 	if acceptsGeul(r) {
-		serveRaw(w, r, file)
+		serveRaw(w, r, t, file)
 		return
 	}
-	renderFile(w, file, titleOf(root, p), true, treeSpec(root))
+	renderFile(w, t, file, titleOf(t, p), true, treeSpec(t))
 }

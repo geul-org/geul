@@ -3,13 +3,12 @@
 package server
 
 import (
-	"path/filepath"
 	"testing"
 )
 
 func TestIsFile(t *testing.T) {
-	h := filepath.Join(treeFixture(t), ".well-known", "geul", "h")
-	if !isFile(filepath.Join(h, "a.geul")) || isFile(h) || isFile(filepath.Join(h, "none")) {
+	tr := treeOf(treeFixture(t))
+	if !isFile(tr, "h/a.geul") || isFile(tr, "h") || isFile(tr, "h/none") {
 		t.Fatal("isFile")
 	}
 }

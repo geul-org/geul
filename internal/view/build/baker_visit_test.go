@@ -8,27 +8,29 @@ import (
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
 func TestBakerVisit(t *testing.T) {
 	root := fixture(t)
-	b := &baker{root: root, src: filepath.Join(root, ".well-known", "geul"), out: filepath.Join(t.TempDir(), ".well-known", "geul")}
+	b := &baker{tree: resolve.Dir{Root: root}.Tree(), src: filepath.Join(root, ".well-known", "geul"), out: filepath.Join(t.TempDir(), ".well-known", "geul")}
 	walk := errors.New("walk")
-	if err := b.visit(b.src, nil, walk); err != walk {
+	if err := b.visit(".", nil, walk); err != walk {
 		t.Fatalf("walk: %v", err)
 	}
 	entry := func(p string) fs.DirEntry { fi, _ := os.Stat(p); return fs.FileInfoToDirEntry(fi) }
-	if err := b.visit(b.src, entry(b.src), nil); err != nil {
+	if err := b.visit(".", entry(b.src), nil); err != nil {
 		t.Fatal(err)
 	}
 	h := filepath.Join(b.src, "h")
-	if err := b.visit(h, entry(h), nil); err != nil {
+	if err := b.visit("h", entry(h), nil); err != nil {
 		t.Fatal(err)
 	}
-	if err := b.visit(filepath.Join(h, "a.geul"), entry(filepath.Join(h, "a.geul")), nil); err != nil {
+	if err := b.visit("h/a.geul", entry(filepath.Join(h, "a.geul")), nil); err != nil {
 		t.Fatal(err)
 	}
-	if err := b.visit(filepath.Join(h, "notes.txt"), entry(filepath.Join(h, "notes.txt")), nil); err != nil {
+	if err := b.visit("h/notes.txt", entry(filepath.Join(h, "notes.txt")), nil); err != nil {
 		t.Fatal(err)
 	}
 	if b.count != (Count{Docs: 1, Dirs: 2}) {

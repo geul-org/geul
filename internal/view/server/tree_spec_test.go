@@ -10,7 +10,7 @@ import (
 
 func TestTreeSpec(t *testing.T) {
 	root := treeFixture(t)
-	if s := treeSpec(root); s == nil || len(s) != 0 {
+	if s := treeSpec(treeOf(root)); s == nil || len(s) != 0 {
 		t.Fatalf("empty: %v", s)
 	}
 	dir := filepath.Join(root, ".well-known", "geul", "0x0000", "0x0000000000001018")
@@ -20,7 +20,7 @@ func TestTreeSpec(t *testing.T) {
 	if err := os.WriteFile(filepath.Join(dir, "versions.geul"), []byte("x"), 0o644); err != nil {
 		t.Fatal(err)
 	}
-	if s := treeSpec(root); s != nil {
+	if s := treeSpec(treeOf(root)); s != nil {
 		t.Fatalf("broken: %v", s)
 	}
 }

@@ -16,7 +16,11 @@ func buildCmd(arg, dst string, out io.Writer) error {
 	if err != nil {
 		return err
 	}
-	c, err := build.Tree(root, dst)
+	t, src, err := openTree(root)
+	if err != nil {
+		return err
+	}
+	c, err := build.TreeFrom(t, src, dst)
 	if err != nil {
 		return err
 	}

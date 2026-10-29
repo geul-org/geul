@@ -5,7 +5,6 @@ package resolve
 import (
 	"errors"
 	"io/fs"
-	"os"
 )
 
 // removeCopies deletes `h/<hash>.geul` for each hash in hs that is not in
@@ -15,7 +14,7 @@ func (d Dir) removeCopies(hs [][32]byte, keep map[[32]byte]bool) error {
 		if keep[h] {
 			continue
 		}
-		if err := os.Remove(d.file(hashPath(h))); err != nil && !errors.Is(err, fs.ErrNotExist) {
+		if err := d.store().Remove(hashPath(h)); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
 	}

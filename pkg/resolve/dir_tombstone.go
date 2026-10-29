@@ -4,7 +4,7 @@ package resolve
 
 import (
 	"errors"
-	"os"
+	"io/fs"
 
 	"github.com/geul-org/gogeul/pkg/core"
 )
@@ -24,7 +24,7 @@ func (d Dir) Tombstone(issuer, doc []core.Word, v uint32, reason uint16) error {
 		return err
 	}
 	for _, p := range []string{versionPath(k, v), hashPath(e.Hash)} {
-		if err := os.Remove(d.file(p)); err != nil && !errors.Is(err, os.ErrNotExist) {
+		if err := d.store().Remove(p); err != nil && !errors.Is(err, fs.ErrNotExist) {
 			return err
 		}
 	}

@@ -22,26 +22,26 @@ func TestServeByName(t *testing.T) {
 	for u, want := range cases {
 		rec := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, u, nil)
-		serveTree(rec, r, root)
+		serveTree(rec, r, treeOf(root))
 		if rec.Code != http.StatusFound || rec.Header().Get("Location") != want {
 			t.Fatalf("%s: %d %q", u, rec.Code, rec.Header().Get("Location"))
 		}
 	}
 	rec := httptest.NewRecorder()
-	serveTree(rec, httptest.NewRequest(http.MethodGet, "/.well-known/geul/nope.org/x", nil), root)
+	serveTree(rec, httptest.NewRequest(http.MethodGet, "/.well-known/geul/nope.org/x", nil), treeOf(root))
 	if rec.Code != 404 {
 		t.Fatalf("unknown: %d", rec.Code)
 	}
 	issuers := filepath.Join(root, ".well-known", "geul", "issuers.geul")
 	os.WriteFile(issuers, []byte{1}, 0o644)
 	rec = httptest.NewRecorder()
-	serveTree(rec, httptest.NewRequest(http.MethodGet, "/.well-known/geul/geul.org/x", nil), root)
+	serveTree(rec, httptest.NewRequest(http.MethodGet, "/.well-known/geul/geul.org/x", nil), treeOf(root))
 	if rec.Code != 404 {
 		t.Fatalf("broken: %d", rec.Code)
 	}
 	os.Remove(issuers)
 	rec = httptest.NewRecorder()
-	serveTree(rec, httptest.NewRequest(http.MethodGet, "/.well-known/geul/geul.org/x", nil), root)
+	serveTree(rec, httptest.NewRequest(http.MethodGet, "/.well-known/geul/geul.org/x", nil), treeOf(root))
 	if rec.Code != 404 {
 		t.Fatalf("missing: %d", rec.Code)
 	}

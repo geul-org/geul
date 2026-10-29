@@ -5,21 +5,19 @@ package server
 import (
 	"net/http"
 	"net/http/httptest"
-	"os"
-	"path/filepath"
 	"testing"
 )
 
 func TestServeRaw(t *testing.T) {
-	file := filepath.Join(treeFixture(t), ".well-known", "geul", "h", "a.geul")
+	tr, file := treeOf(treeFixture(t)), "h/a.geul"
 	rec := httptest.NewRecorder()
-	serveRaw(rec, httptest.NewRequest(http.MethodGet, "/a.geul", nil), file)
-	want, _ := os.ReadFile(file)
+	serveRaw(rec, httptest.NewRequest(http.MethodGet, "/a.geul", nil), tr, file)
+	want, _ := tr.ReadFile(file)
 	if rec.Code != 200 || rec.Body.String() != string(want) || rec.Header().Get("Content-Type") != MediaType {
 		t.Fatalf("got %d %v", rec.Code, rec.Header())
 	}
 	rec = httptest.NewRecorder()
-	serveRaw(rec, httptest.NewRequest(http.MethodGet, "/x.geul", nil), file+".none")
+	serveRaw(rec, httptest.NewRequest(http.MethodGet, "/x.geul", nil), tr, file+".none")
 	if rec.Code != 404 {
 		t.Fatalf("missing: %d", rec.Code)
 	}

@@ -7,12 +7,12 @@ import (
 	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
-// treeSpec reads the codec spec documents of the tree at root (GEUL-ORG 직접
+// treeSpec reads the codec spec documents of the tree t (GEUL-ORG 직접
 // 코드 코덱북) on every request, so a republished spec shows at once. A tree
 // whose specs do not read gives no spec, and records fall back to the generic
 // layout.
-func treeSpec(root string) codecspec.Spec {
-	s, err := resolve.Dir{Root: root}.CodecSpec()
+func treeSpec(t resolve.Store) codecspec.Spec {
+	s, err := resolve.Dir{Store: t}.CodecSpec()
 	if err != nil {
 		return nil
 	}

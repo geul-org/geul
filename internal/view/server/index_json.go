@@ -5,13 +5,15 @@ package server
 import (
 	"encoding/json"
 	"io"
+
+	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
 // IndexJSON writes the listing of the tree directory at URL path urlPath
-// (ending in /) under root as the tree browser's JSON, for a static copy of
+// (ending in /) in the tree t as the tree browser's JSON, for a static copy of
 // the tree (build).
-func IndexJSON(w io.Writer, root, urlPath string) error {
-	p, err := treeIndex(root, urlPath)
+func IndexJSON(w io.Writer, t resolve.Store, urlPath string) error {
+	p, err := treeIndex(t, urlPath)
 	if err != nil {
 		return err
 	}

@@ -29,7 +29,7 @@ func TestServeTree(t *testing.T) {
 		rec := httptest.NewRecorder()
 		r := httptest.NewRequest(http.MethodGet, "/", nil)
 		r.URL.Path = u
-		serveTree(rec, r, root)
+		serveTree(rec, r, treeOf(root))
 		if got := fmt.Sprintf("%d %s", rec.Code, rec.Header().Get("Content-Type")); got != want {
 			t.Fatalf("%s: %q want %q", u, got, want)
 		}

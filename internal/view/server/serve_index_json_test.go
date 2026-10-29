@@ -5,14 +5,13 @@ package server
 import (
 	"encoding/json"
 	"net/http/httptest"
-	"path/filepath"
 	"testing"
 )
 
 func TestServeIndexJSON(t *testing.T) {
 	root := treeFixture(t)
 	rec := httptest.NewRecorder()
-	serveIndexJSON(rec, filepath.Join(root, ".well-known", "geul", "h"), "/.well-known/geul/h/", nil)
+	serveIndexJSON(rec, treeOf(root), "h", "/.well-known/geul/h/", nil)
 	var p indexPage
 	if err := json.Unmarshal(rec.Body.Bytes(), &p); err != nil || rec.Header().Get("Content-Type") != "application/json" {
 		t.Fatalf("decode: %v %s", err, rec.Body)
@@ -21,7 +20,7 @@ func TestServeIndexJSON(t *testing.T) {
 		t.Fatalf("got %+v", p)
 	}
 	rec = httptest.NewRecorder()
-	serveIndexJSON(rec, filepath.Join(root, "none"), "/x/", nil)
+	serveIndexJSON(rec, treeOf(root), "none", "/x/", nil)
 	if rec.Code != 500 {
 		t.Fatalf("missing: %d", rec.Code)
 	}

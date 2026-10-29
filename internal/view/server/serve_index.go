@@ -2,11 +2,14 @@
 //ff:what serveIndex — a directory of the tree as a page of links
 package server
 
-import "net/http"
+import (
+	"io/fs"
+	"net/http"
+)
 
 // serveIndex lists the directory dir whose URL path is urlPath (ending in /).
-func serveIndex(w http.ResponseWriter, dir, urlPath string, labels map[string]string) {
-	p, err := indexPageOf(dir, urlPath, labels)
+func serveIndex(w http.ResponseWriter, t fs.FS, dir, urlPath string, labels map[string]string) {
+	p, err := indexPageOf(t, dir, urlPath, labels)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

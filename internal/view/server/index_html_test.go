@@ -11,10 +11,10 @@ import (
 func TestIndexHTML(t *testing.T) {
 	root := treeFixture(t)
 	var b bytes.Buffer
-	if err := IndexHTML(&b, root, "/.well-known/geul/h/"); err != nil || !strings.Contains(b.String(), `href="/.well-known/geul/h/a"`) || !strings.Contains(b.String(), `href="/.well-known/geul/"`) {
+	if err := IndexHTML(&b, treeOf(root), "/.well-known/geul/h/"); err != nil || !strings.Contains(b.String(), `href="/.well-known/geul/h/a"`) || !strings.Contains(b.String(), `href="/.well-known/geul/"`) {
 		t.Fatalf("%v %s", err, b.String())
 	}
-	if err := IndexHTML(&b, root, "/.well-known/geul/none/"); err == nil {
+	if err := IndexHTML(&b, treeOf(root), "/.well-known/geul/none/"); err == nil {
 		t.Fatal("missing: want error")
 	}
 }

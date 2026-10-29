@@ -18,8 +18,8 @@ func (b *baker) dir(rel string) error {
 		return err
 	}
 	u := wellKnown + rel
-	if err := writeFile(filepath.Join(dir, "index.html"), func(w io.Writer) error { return server.IndexHTML(w, b.root, u) }); err != nil {
+	if err := writeFile(filepath.Join(dir, "index.html"), func(w io.Writer) error { return server.IndexHTML(w, b.tree, u) }); err != nil {
 		return err
 	}
-	return writeFile(filepath.Join(dir, "index.json"), func(w io.Writer) error { return server.IndexJSON(w, b.root, u) })
+	return writeFile(filepath.Join(dir, "index.json"), func(w io.Writer) error { return server.IndexJSON(w, b.tree, u) })
 }

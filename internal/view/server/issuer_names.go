@@ -3,15 +3,12 @@
 package server
 
 import (
-	"os"
-	"path/filepath"
-
 	"github.com/geul-org/gogeul/pkg/resolve"
 )
 
 // issuerNames reads issuers.geul at the top of the tree (GEUL-ORG Issuer 이름).
-func issuerNames(root string) map[string]string {
-	b, err := os.ReadFile(filepath.Join(root, filepath.FromSlash(wellKnown), "issuers.geul"))
+func issuerNames(t resolve.Store) map[string]string {
+	b, err := t.ReadFile("issuers.geul")
 	if err != nil {
 		return map[string]string{}
 	}

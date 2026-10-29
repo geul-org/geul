@@ -3,26 +3,30 @@
 package resolve
 
 import (
-	"os"
-	"path/filepath"
+	"errors"
+	"io/fs"
+	"path"
 	"strings"
 )
 
 // removeOtherVersions deletes every `0x????????.geul` version file in the
 // folder of document k except version 1 (Overwrite). The version list and
-// other files stay.
+// other files stay; a document with no folder has nothing to delete.
 func (d Dir) removeOtherVersions(k DocKey) error {
-	dir := d.file(k.Issuer + "/" + k.Doc)
-	files, err := filepath.Glob(filepath.Join(dir, "0x????????.geul"))
+	dir := k.Issuer + "/" + k.Doc
+	ents, err := d.store().ReadDir(dir)
+	if errors.Is(err, fs.ErrNotExist) {
+		return nil
+	}
 	if err != nil {
 		return err
 	}
 	keep := FormatVersion(1) + ".geul"
-	for _, f := range files {
-		if strings.EqualFold(filepath.Base(f), keep) {
+	for _, e := range ents {
+		if ok, _ := path.Match("0x????????.geul", e.Name()); !ok || strings.EqualFold(e.Name(), keep) {
 			continue
 		}
-		if err := os.Remove(f); err != nil {
+		if err := d.store().Remove(dir + "/" + e.Name()); err != nil {
 			return err
 		}
 	}

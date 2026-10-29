@@ -3,10 +3,11 @@
 package server
 
 import (
-	"github.com/geul-org/gogeul/pkg/core"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/geul-org/gogeul/pkg/core"
 )
 
 func treeFixture(t *testing.T) string {
