@@ -1,5 +1,5 @@
 //ff:func feature=inspect type=decoder control=iteration dimension=1
-//ff:what TestEdgeLayout — a gated FuncRef LINK and a plain REF LINK walk their whole payloads
+//ff:what TestEdgeLayout — a gated FuncRef LINK, a plain REF LINK and an ATTACKS with force walk their whole payloads
 package inspect
 
 import (
@@ -11,9 +11,11 @@ import (
 
 func TestEdgeLayout(t *testing.T) {
 	g := toulmin.Gate{Op: toulmin.GateAtLeast, Percent: 75}
+	half := toulmin.VFix(5000)
 	cases := map[int]toulmin.EdgePacket{
 		9: {ID: 1, Prop: toulmin.PropDo, Src: 2, DstFunc: &toulmin.FuncRef{Alias: 3}, Flags: toulmin.EdgeFlagGate, Gate: &g},
 		6: {ID: 4, Prop: toulmin.PropAttacks, Src: 2, DstTID: 3},
+		7: {ID: 5, Prop: toulmin.PropAttacks, Src: 2, DstTID: 3, Flags: toulmin.EdgeFlagForce, Force: &half},
 	}
 	for parts, p := range cases {
 		ws, _ := toulmin.EncodeEdge(p, testWire)

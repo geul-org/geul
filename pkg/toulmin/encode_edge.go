@@ -1,5 +1,5 @@
 //ff:func feature=toulmin type=encoder control=sequence
-//ff:what EncodeEdge — encode an EdgePacket as a LINK record (do+once as DO-ONCE)
+//ff:what EncodeEdge — encode an EdgePacket as a LINK record (do+once as DO-ONCE, force on ATTACKS)
 package toulmin
 
 import (
@@ -9,7 +9,8 @@ import (
 )
 
 // EncodeEdge encodes p as a LINK record (GEUL t002 TOULMIN LINK): Edge Id, src
-// REF, dst, flag word, the gate when F_GATE, then the SPAN. A `do` with F_ONCE
+// REF, dst, flag word, the gate when F_GATE, the attack force when F_FORCE,
+// then the SPAN. A `do` with F_ONCE
 // is written under DO-ONCE and the flag is dropped from the wire, since the
 // codec already says once.
 func EncodeEdge(p EdgePacket, w Wire) ([]core.Word, error) {
@@ -36,6 +37,11 @@ func EncodeEdge(p EdgePacket, w Wire) ([]core.Word, error) {
 			return nil, err
 		}
 		body = append(body, g...)
+	}
+	if p.Flags&EdgeFlagForce != 0 {
+		if body, err = encodeForce(body, p); err != nil {
+			return nil, err
+		}
 	}
 	if body, err = PutSpan(body, p.Span, w.Span); err != nil {
 		return nil, err

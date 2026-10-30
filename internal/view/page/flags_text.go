@@ -1,5 +1,5 @@
 //ff:func feature=page type=helper control=iteration dimension=1
-//ff:what flagsText — the set LINK flags by name (once, strike, ordered); gate is shown on its own
+//ff:what flagsText — the set LINK flags by name (once, strike, ordered); gate and force are shown on their own
 package page
 
 import (
@@ -15,7 +15,8 @@ var linkFlagNames = []struct {
 }{{toulmin.EdgeFlagOnce, "once"}, {toulmin.EdgeFlagStrike, "strike"}, {toulmin.EdgeFlagOrdered, "ordered"}}
 
 // flagsText names the set once/strike/ordered flags, space-separated; "" when
-// none is set. F_GATE is not named: the gate is its own field.
+// none is set. F_GATE and F_FORCE are not named: the gate and the attack force
+// are their own fields.
 func flagsText(flags toulmin.EdgeFlags) string {
 	var names []string
 	for _, fl := range linkFlagNames {

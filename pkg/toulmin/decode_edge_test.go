@@ -1,5 +1,5 @@
 //ff:func feature=toulmin type=decoder control=iteration dimension=1
-//ff:what TestDecodeEdge — DecodeEdge rejects non-LINK records, truncation, reserved flags, F_ONCE on DO-ONCE, bad gates and leftovers
+//ff:what TestDecodeEdge — DecodeEdge rejects non-LINK records, truncation, reserved flags, F_ONCE on DO-ONCE, bad gates, bad forces and leftovers
 package toulmin
 
 import (
@@ -21,7 +21,11 @@ func TestDecodeEdge(t *testing.T) {
 		rec(CodecAttacks, 0x0088, 1, 0x0088, 2),
 		rec(CodecDo, 0x0088, 1, 0x0088, 2, 0x0088, 3),
 		rec(CodecAttacks, 0x0088, 1, 0x0088, 2, 0x0088, 3),
-		rec(CodecAttacks, 0x0088, 1, 0x0088, 2, 0x0088, 3, 0x0010, 0, 0),
+		rec(CodecAttacks, 0x0088, 1, 0x0088, 2, 0x0088, 3, 0x0020, 0, 0),
+		rec(CodecSupersedes, 0x0088, 1, 0x0088, 2, 0x0088, 3, 0x0010, 0x0990, 0xFFFF, 0xFFFF, 5, 0, 0),
+		rec(CodecAttacks, 0x0088, 1, 0x0088, 2, 0x0088, 3, 0x0010, 0x0990, 0xFFFF, 0xFFFF, 0xFFFB, 0, 0),
+		rec(CodecAttacks, 0x0088, 1, 0x0088, 2, 0x0088, 3, 0x0010, 0x0990, 0, 0, 2, 0, 0),
+		rec(CodecAttacks, 0x0088, 1, 0x0088, 2, 0x0088, 3, 0x0010),
 		rec(CodecDoOnce, 0x0088, 1, 0x0088, 2, 0x0088, 3, 4, 1, 0, 0),
 		rec(CodecAttacks, 0x0088, 1, 0x0088, 2, 0x0088, 3, 2, 0x0001),
 		rec(CodecAttacks, 0x0088, 1, 0x0088, 2, 0x0088, 3, 0),

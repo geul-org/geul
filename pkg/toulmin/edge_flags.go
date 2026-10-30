@@ -1,8 +1,8 @@
 //ff:type feature=toulmin type=model
-//ff:what EdgeFlags — the Edge flag bits (codebook §6.1 b0-b3)
+//ff:what EdgeFlags — the Edge flag bits (codebook §6.1 b0-b4)
 package toulmin
 
-// EdgeFlags is the 4-bit flag bitset in the low bits of the Edge flag word
+// EdgeFlags is the 5-bit flag bitset in the low bits of the Edge flag word
 // (§6.1). FROZEN append-only.
 type EdgeFlags uint16
 
@@ -16,4 +16,7 @@ const (
 	EdgeFlagStrike EdgeFlags = 1 << 2
 	// EdgeFlagOrdered (F_ORDERED, b3) — belongs to a `1.` ordered sequence.
 	EdgeFlagOrdered EdgeFlags = 1 << 3
+	// EdgeFlagForce (F_FORCE, b4) — an attack force SIGNED-DECIMAL slot follows
+	// (ATTACKS only).
+	EdgeFlagForce EdgeFlags = 1 << 4
 )

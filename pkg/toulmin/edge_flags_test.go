@@ -1,5 +1,5 @@
 //ff:func feature=toulmin type=model control=iteration dimension=1
-//ff:what TestEdgeFlags — each Edge flag occupies its §6.1 bit (F_ONCE b0 … F_ORDERED b3)
+//ff:what TestEdgeFlags — each Edge flag occupies its §6.1 bit (F_ONCE b0 … F_FORCE b4)
 package toulmin
 
 import "testing"
@@ -13,6 +13,7 @@ func TestEdgeFlags(t *testing.T) {
 		{EdgeFlagGate, 1},
 		{EdgeFlagStrike, 2},
 		{EdgeFlagOrdered, 3},
+		{EdgeFlagForce, 4},
 	}
 	for _, c := range cases {
 		if uint16(c.got) != uint16(1)<<c.bit {

@@ -1,5 +1,5 @@
 //ff:func feature=page type=builder control=sequence
-//ff:what TestLinkFields — REF and function dst, flags and gate; a bare link has only src and dst
+//ff:what TestLinkFields — REF and function dst, flags, gate and attack force; a bare link has only src and dst
 package page
 
 import (
@@ -17,5 +17,10 @@ func TestLinkFields(t *testing.T) {
 	f = linkFields(p, nil)
 	if len(f) != 4 || f[1].Text != "verb 0x0000" || f[2].Text != "once" || f[3].Text != "≥ 75%" {
 		t.Fatalf("full: %+v", f)
+	}
+	half := toulmin.VFix(5000)
+	f = linkFields(toulmin.EdgePacket{Src: 1, DstTID: 2, Flags: toulmin.EdgeFlagForce, Force: &half}, nil)
+	if len(f) != 3 || f[2].Key != "force" || f[2].Text != "0.5" {
+		t.Fatalf("force: %+v", f)
 	}
 }
